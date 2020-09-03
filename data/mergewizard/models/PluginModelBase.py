@@ -30,7 +30,7 @@ class Column(IntEnum):
     Priority = auto()
     PluginOrder = auto()
     MasterOrder = auto()
-    IsMOPlugin = auto()  # a plugin MO knows about, not one one added
+    IsMOPlugin = auto()  # a plugin MO knows about, not one we added
     IsMissing = auto()
     IsHidden = auto()
     IsInactive = auto()

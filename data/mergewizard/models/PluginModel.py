@@ -120,8 +120,6 @@ class PluginModel(PluginModelBase):
 
     # TODO: refresh list
     def disableMods(self, names: List[str]):
-        for name in names:
-            qInfo("*** Disabling {}".format(name))
         self._organizer.modList().setActive(names, False)
 
     # ------------------------------------------------
@@ -232,7 +230,7 @@ class PluginModel(PluginModelBase):
         if not rowsToMove:
             self.log.emit("There are no plugins to move.", LogStatus.Info)
             return self.ActionStatus.Skipped
-        self.log.emit("Adjusting load order of {} selected plugin(s)".format(len(rowsToMove)), LogStatus.Info)
+        self.log.emit("Adjusting priority of {} selected plugin(s)".format(len(rowsToMove)), LogStatus.Info)
         self.movePlugins(rowsToMove)
         return self.ActionStatus.Completed
 
@@ -241,35 +239,20 @@ class PluginModel(PluginModelBase):
             return -1
         return max(plugin.priority for plugin in self._plugins)
 
-    # TODO: Needs complete rework.  Cannot disable mods using cached data.
-    # One mod may have a plugin with the same name as another mod.  If you disable the mod with the
-    # higher priority, it will reveal the plugin in the mod with the lower priority.
-    # To fix this: load the mod list from MO and disable those mods.  not just the mods associated with
-    # the self._plugins.
     def deactivateUnneededMods(self):
         # this will require a reload of the pluginModel, because plugin
         # priorities will change and plugins will be removed from the plugin list
-        modNames = set()
+        modsToKeep = set()
         for plugin in self._plugins:
-            if plugin.key() == "medieval lanterns of skyrim.esp":
-                qInfo(
-                    "Medieval: selected? {}, selAsMaster? {}, missing?: {}".format(
-                        plugin.isSelected(), plugin.isSelectedAsMaster(), plugin.isMissing
-                    )
-                )
-                qInfo("Medieval Mod Name: {}".format(plugin.modName))
-            if not plugin.isSelected() and not plugin.isSelectedAsMaster() and not plugin.isMissing:
-                modNames.add(plugin.modName)
-            else:
-                if plugin.modName in modNames:
-                    qInfo("removing modname from deactivate list: {}", format(plugin.modName))
-                    modNames.remove(plugin.modName)
-
-        if not modNames:
-            self.log.emit("There are not mods to deactivate", LogStatus.Info)
+            if (plugin.isSelected() or plugin.isSelectedAsMaster()) and not plugin.isMissing:
+                modsToKeep.add(plugin.modName)
+        allMods = set(self._organizer.modList().allMods())
+        modsToRemove = allMods - modsToKeep
+        if not modsToRemove:
+            self.log.emit("There are no mods to deactivate", LogStatus.Info)
             return self.ActionStatus.Skipped
-        self.log.emit("Deactivating {} mods".format(len(modNames)), LogStatus.Info)
-        self.disableMods(list(modNames))
+        self.log.emit("Deactivating {} mods".format(len(modsToRemove)), LogStatus.Info)
+        self.disableMods(list(modsToRemove))
         return self.ActionStatus.Completed
 
     # ------------------------------------------------
@@ -277,19 +260,19 @@ class PluginModel(PluginModelBase):
     # ------------------------------------------------
 
     def onRefreshed(self):
-        print("OnRefreshed")
+        qInfo("OnRefreshed")
         self.log.emit("ModOrganizer refreshed the plugin list", LogStatus.Info)
 
     def onPluginMoved(self, name, old, new):
-        print("OnPluginMoved")
+        qInfo("OnPluginMoved")
         self.log.emit("Plugin {}: load order moved from {} to {}".format(name, old, new), LogStatus.Info)
 
     def onPluginStateChanged(self, name, state):
-        print("onPluginStateChanged")
+        qInfo("onPluginStateChanged")
         self.log.emit("Plugin {}: changed to {}".format(name, state), LogStatus.Info)
 
     def onModStateChanged(self, stateDict):
-        print("onModStateChanged")
+        qInfo("onModStateChanged")
         # active = (state & ModState.Active) == ModState.Active
         ModStateActive = 2
         for name in stateDict:
