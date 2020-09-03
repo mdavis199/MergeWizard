@@ -44,7 +44,8 @@ class Wizard(QWizard):
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         # self.currentIdChanged.connect(self.currentPageChanged)
 
-        self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
+        # TODO: Renable MergeSelect after debugging MO Callbacks
+        # self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
 
