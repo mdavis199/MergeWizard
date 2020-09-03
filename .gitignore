@@ -1,0 +1,12 @@
+# Ignore everything in this folder
+/*
+**/__pycache__/
+**/*.bak
+**/*.bak.*
+
+!.gitignore
+!pyMergeWizard.py
+
+!/data
+/data/*
+!/data/mergewizard/

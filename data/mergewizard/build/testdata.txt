@@ -1,0 +1,29 @@
+
+KrittaKittyHorsesForSSE.esp
+CH GFC_FAL_WYR.esp
+Convenient Horses - Apocalypse+CACO+SIC+Summermyst.esp
+Skytest Immersive Creatures.esp
+Skytest Creature Extension.esp
+CrittersAintSnitches.esp
+CrittersAintSnitches-SkyTEST-RA&P Patch.esp
+SkyTEST Less Fear SSE Patch.esp
+True Hunter.esp
+OMEGA Lexy LOTD Animals Merged Consistency Patch.esp
+
+
+Skyrim.esm
+Update.esm | Cleaned Vanilla ESMs |
+Dawnguard.esm | Cleaned Vanilla ESMs |
+HearthFires.esm | Cleaned Vanilla ESMs |
+Dragonborn.esm | Cleaned Vanilla ESMs |
+Apocalypse - Magic of Skyrim.esp | Apocalypse - Magic of Skyrim |
+Convenient Horses.esp | Convenient Horses |
+Falskaar.esm | Falskaar |
+Gray Fox Cowl.esm | The Gray Cowl of Nocturnal SE |
+Skyrim Immersive Creatures Special Edition.esp | Skyrim Immersive Creatures - SIC SSE Patch |
+Skyrim Revamped - Complete Enemy Overhaul.esp | Skyrim Revamped - Complete Enemy Overhaul |
+SkyTEST-RealisticAnimals&Predators.esp | SkyTEST No Extra Spawns |
+Summermyst - Enchantments of Skyrim.esp | Summermyst - Enchantments of Skyrim |
+Unofficial Skyrim Special Edition Patch.esp | Unofficial Skyrim Special Edition Patch |
+Wyrmstooth.esp | Wyrmstooth |
+Complete Alchemy & Cooking Overhaul.esp | Complete Alchemy and Cooking Overhaul |

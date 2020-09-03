@@ -1,0 +1,24 @@
+{
+    "python.pythonPath": "E:\\Apps\\Tools\\python\\conda3\\envs\\mo2\\python.exe",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "python.autoComplete.extraPaths": [],
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "120"
+    ],
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E402,W503,E203",
+    ],
+    "cSpell.words": [
+        "deinitialize",
+        "mobase",
+        "pyqt",
+        "qabstractitemmodeldatalist",
+        "reimplement",
+        "rfind"
+    ],
+}

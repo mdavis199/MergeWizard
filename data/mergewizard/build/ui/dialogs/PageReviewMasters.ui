@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PageReviewMasters</class>
+ <widget class="QWizardPage" name="PageReviewMasters">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>610</width>
+    <height>429</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WizardPage</string>
+  </property>
+  <property name="title">
+   <string>Apply Changes</string>
+  </property>
+  <property name="subTitle">
+   <string>Apply changes to enable teh plugins and all their required plugins, disable unselected plugin and unneccessary mods.</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QSplitter" name="verticalSplitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QSplitter" name="topSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QGroupBox" name="masterGroup">
+       <property name="title">
+        <string>Plugin Masters</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="PluginView" name="masterPlugins"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="selectedGroup">
+       <property name="title">
+        <string>Selected Plugins</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="PluginView" name="selectedPlugins"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="ActionWidget" name="actionWidget" native="true"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PluginView</class>
+   <extends>QTreeView</extends>
+   <header>mergewizard/views/PluginView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ActionWidget</class>
+   <extends>QWidget</extends>
+   <header>mergewizard/widgets/ActionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

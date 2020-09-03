@@ -1,0 +1,94 @@
+from enum import IntEnum
+
+from PyQt5.QtCore import Qt, QSize, QPoint
+from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
+from PyQt5.QtWidgets import QWidget, QWizard
+
+from mobase import IOrganizer
+
+from mergewizard.dialogs.PageMergeSelect import PageMergeSelect
+from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
+from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
+from mergewizard.domain.Context import Context
+from mergewizard.models.MergeModel import MergeModel
+from mergewizard.models.PluginModel import PluginModel
+from mergewizard.constants import Icon
+
+
+class PageId(IntEnum):
+    PageMergeSelect = 0
+    PagePluginsSelect = 1
+    PageReviewMasters = 2
+
+
+class Wizard(QWizard):
+    def __init__(self, organizer: IOrganizer, parent: QWidget = None):
+        super().__init__(parent)
+        self.__context = Context()
+        self.__context.setOrganizer(organizer)
+        self.__context.setPluginModel(PluginModel(organizer))
+        self.__context.setMergeModel(MergeModel(organizer.modsPath()))
+
+        self.resize(700, 500)
+        self.setWizardStyle(0)
+        self.setWindowTitle(self.tr("Merge Wizard"))
+        self.setWindowIcon(QIcon(Icon.MERGEWIZARD))
+        self.setSizeGripEnabled(True)
+        self.setModal(True)
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint | Qt.Window)
+        self.setButtonLayout(
+            [self.CustomButton1, self.CancelButton, self.Stretch, self.BackButton, self.NextButton, self.CustomButton2]
+        )
+        self.setOptions(self.NoBackButtonOnStartPage)
+        self.button(self.CustomButton1).setVisible(False)  # removing for now
+        self.button(self.CustomButton2).setVisible(False)  # removing for now
+        # self.currentIdChanged.connect(self.currentPageChanged)
+
+        self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
+        self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
+        self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
+
+        self.restoreSize()
+
+    def context(self) -> Context:
+        return self.__context
+
+    def keyPressEvent(self, event: QKeySequence) -> None:
+        # Prevent escape from closing window
+        if event.key() != Qt.Key_Escape:
+            super().keyPressEvent(event)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if not self.currentPage().isOkToExit():
+            event.ignore()
+        else:
+            self.saveSize()
+            for id in self.pageIds():
+                self.page(id).deinitializePage()
+
+    def saveSize(self) -> None:
+        self.context().setSetting("WindowMaximized", self.isMaximized())
+        if not self.isMaximized():
+            self.context().setSetting("WindowHeight", self.size().height())
+            self.context().setSetting("WindowWidth", self.size().width())
+            self.context().setSetting("WindowX", self.pos().x())
+            self.context().setSetting("WindowY", self.pos().y())
+
+    def restoreSize(self) -> None:
+        try:
+            height = int(self.context().getSetting("WindowHeight", 0))
+            width = int(self.context().getSetting("WindowWidth", 0))
+            x = int(self.context().getSetting("WindowX", 0))
+            y = int(self.context().getSetting("WindowY", 0))
+        except ValueError:
+            height = 0
+            width = 0
+            x = 0
+            y = 0
+        if height and width:
+            self.resize(QSize(width, height))
+        if x and y:
+            self.move(QPoint(x, y))
+        isMaximized = self.context().getSetting("WindowMaximized", "false")
+        if isMaximized == "true" or (isinstance(isMaximized, bool) and isMaximized):
+            self.setWindowState(self.windowState() | Qt.WindowMaximized)
