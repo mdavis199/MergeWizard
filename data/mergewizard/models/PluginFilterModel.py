@@ -1,5 +1,5 @@
 from enum import Flag, auto
-from PyQt5.QtCore import Qt, QObject, QSortFilterProxyModel, QModelIndex
+from PyQt5.QtCore import Qt, QObject, QSortFilterProxyModel, QModelIndex, qInfo
 from mergewizard.models.PluginModelBase import Column, Role, isBoolColumn
 
 
@@ -96,6 +96,13 @@ class PluginFilterModel(QSortFilterProxyModel):
     def lessThan(self, srcLeft: QModelIndex, srcRight: QModelIndex):
         if isBoolColumn(srcLeft.column()):
             return super().lessThan(srcRight, srcLeft)
+        if srcLeft.column() == Column.Priority:
+            leftData = self.sourceModel().data(srcLeft)
+            rightData = self.sourceModel().data(srcRight)
+            if rightData is None or rightData < 0:
+                return True
+            if leftData is None or leftData < 0:
+                return False
         return super().lessThan(srcLeft, srcRight)
 
     def columnForFilter(self, filtr: Filter):
