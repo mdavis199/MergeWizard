@@ -54,7 +54,7 @@ class PageMergeSelect(WizardPage):
         self.ui.progressBar.setValue(self.PROGRESS_OFFSET)
 
     def modelLoadingCompleted(self):
-        self.ui.progressBar.setVisible(False)
+        self.ui.progressFrame.setVisible(False)
         self.ui.mergeView.selectionModel().select(
             self.ui.mergeView.model().index(0, 0), QItemSelectionModel.Select | QItemSelectionModel.Rows
         )
