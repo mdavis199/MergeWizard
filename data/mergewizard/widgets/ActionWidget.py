@@ -32,13 +32,15 @@ class ActionWidget(QWidget):
         actionModel.headerDataChanged.connect(
             lambda: actionHeader.setCheckState(actionModel.headerData(0, Qt.Horizontal, Qt.CheckStateRole))
         )
+        actionModel.headerDataChanged.connect(lambda: self.ui.applyButton.setEnabled(not actionModel.isNoneEnabled()))
         self.ui.actionView.setHorizontalHeader(actionHeader)
         actionHeader.setStretchLastSection(True)
         self.ui.actionView.resizeColumnToContents(0)
 
         self.setActionViewSize()  # set the view height to fit all the rows
 
-        self.ui.applyButton.clicked.connect(lambda x: actionModel.applyActions())
+        self.ui.applyButton.setEnabled(not actionModel.isNoneEnabled())
+        self.ui.applyButton.clicked.connect(lambda x: self.applyActions())
 
     def setActionViewSize(self):
         h = self.ui.actionView.horizontalHeader().height() + 4
@@ -61,6 +63,10 @@ class ActionWidget(QWidget):
         pluginModel.log.connect(self.logModel().log)
         self.actionModel().setPluginModel(pluginModel)
         pass
+
+    def applyActions(self):
+        self.ui.logView.model().sourceModel().clear()
+        self.ui.actionView.model().applyActions()
 
     def createLogContextMenu(self):
         pass
