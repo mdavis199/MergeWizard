@@ -9,7 +9,7 @@ class CheckableHeader(QHeaderView):
     def __init__(self, orientation: Qt.Orientation = Qt.Horizontal, parent: QWidget = None):
         super().__init__(orientation, parent)
         self.checkState: Qt.CheckState = Qt.Unchecked
-        self.rect = QRect(3, 1, 20, 20)
+        self.rect = QRect(3, 1, 16, 16)
 
     def paintSection(self, painter: QPainter, rect: QRect, logicalIndex: int) -> None:
         painter.save()
