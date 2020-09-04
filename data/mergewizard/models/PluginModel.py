@@ -7,7 +7,7 @@ from PyQt5.QtCore import (
     QThreadPool,
     qInfo,
 )
-from mobase import IOrganizer, PluginState
+from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.ILogger import Status as LogStatus
 from mergewizard.domain.PluginLoader import AsyncPluginLoader
 from mergewizard.domain.AsyncWorker import Worker
@@ -246,8 +246,12 @@ class PluginModel(PluginModelBase):
         for plugin in self._plugins:
             if (plugin.isSelected() or plugin.isSelectedAsMaster()) and not plugin.isMissing:
                 modsToKeep.add(plugin.modName)
-        allMods = set(self._organizer.modList().allMods())
-        modsToRemove = allMods - modsToKeep
+        activeMods = {
+            mod
+            for mod in self._organizer.modList().allMods()
+            if self._organizer.modList().state(mod) & ModState.ACTIVE == ModState.ACTIVE
+        }
+        modsToRemove = activeMods - modsToKeep
         if not modsToRemove:
             self.log.emit("There are no mods to deactivate", LogStatus.Info)
             return self.ActionStatus.Skipped
