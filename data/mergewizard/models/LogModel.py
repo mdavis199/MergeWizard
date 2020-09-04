@@ -42,7 +42,7 @@ class LogModel(QAbstractItemModel):
 
     def clear(self):
         self.beginRemoveRows(QModelIndex(), 0, len(self.content) - 1)
-        self.content.clear()
+        self.content = []
         self.endRemoveRows()
 
     # --- Model method overrides
