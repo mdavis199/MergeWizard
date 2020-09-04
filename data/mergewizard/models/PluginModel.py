@@ -161,7 +161,7 @@ class PluginModel(PluginModelBase):
         if rowsMissing:
             self.log.emit("Not enabling {} missing selected plugin(s).".format(len(rowsMissing)), LogStatus.Warn)
         if not rowsToEnable:
-            self.log.emit("No plugins require enabling", LogStatus.Info)
+            self.log.emit("No plugins require enabling.", LogStatus.Info)
             return self.ActionStatus.Skipped
 
         self.log.emit(
@@ -226,11 +226,11 @@ class PluginModel(PluginModelBase):
             else:
                 rowsToMove.append(row)
         if rowsMissing:
-            self.log.emit("Not moving {} missing plugin(s)".format(len(rowsMissing)), LogStatus.Warn)
+            self.log.emit("Not moving {} missing plugin(s).".format(len(rowsMissing)), LogStatus.Warn)
         if not rowsToMove:
             self.log.emit("There are no plugins to move.", LogStatus.Info)
             return self.ActionStatus.Skipped
-        self.log.emit("Adjusting priority of {} selected plugin(s)".format(len(rowsToMove)), LogStatus.Info)
+        self.log.emit("Adjusting priority of {} selected plugin(s).".format(len(rowsToMove)), LogStatus.Info)
         self.movePlugins(rowsToMove)
         return self.ActionStatus.Completed
 
@@ -242,10 +242,11 @@ class PluginModel(PluginModelBase):
     def deactivateUnneededMods(self):
         # this will require a reload of the pluginModel, because plugin
         # priorities will change and plugins will be removed from the plugin list
-        modsToKeep = set()
-        for plugin in self._plugins:
-            if (plugin.isSelected() or plugin.isSelectedAsMaster()) and not plugin.isMissing:
-                modsToKeep.add(plugin.modName)
+        modsToKeep = {
+            plugin.modName
+            for plugin in self._plugins
+            if (plugin.isSelected() or plugin.isSelectedAsMaster()) and not plugin.isMissing
+        }
         activeMods = {
             mod
             for mod in self._organizer.modList().allMods()
@@ -253,9 +254,9 @@ class PluginModel(PluginModelBase):
         }
         modsToRemove = activeMods - modsToKeep
         if not modsToRemove:
-            self.log.emit("There are no mods to deactivate", LogStatus.Info)
+            self.log.emit("There are no mods to deactivate.", LogStatus.Info)
             return self.ActionStatus.Skipped
-        self.log.emit("Deactivating {} mods".format(len(modsToRemove)), LogStatus.Info)
+        self.log.emit("Deactivating {} mods.".format(len(modsToRemove)), LogStatus.Info)
         self.disableMods(list(modsToRemove))
         return self.ActionStatus.Completed
 
