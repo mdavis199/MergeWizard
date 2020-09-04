@@ -57,7 +57,7 @@ def _configureColumns(type: ViewType, view: PluginView):
             Column.IsMissing,
             Column.IsMaster,
             Column.IsMerge,
-            Column.IsSelected,
+            Column.IsSelectedAsMaster,
         ]
 
 
