@@ -17,7 +17,7 @@
    <string>Apply Changes</string>
   </property>
   <property name="subTitle">
-   <string>Apply changes to enable teh plugins and all their required plugins, disable unselected plugin and unneccessary mods.</string>
+   <string>Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

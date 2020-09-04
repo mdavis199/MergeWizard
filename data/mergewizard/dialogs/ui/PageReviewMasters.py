@@ -48,7 +48,7 @@ class Ui_PageReviewMasters(object):
         _translate = QtCore.QCoreApplication.translate
         PageReviewMasters.setWindowTitle(_translate("PageReviewMasters", "WizardPage"))
         PageReviewMasters.setTitle(_translate("PageReviewMasters", "Apply Changes"))
-        PageReviewMasters.setSubTitle(_translate("PageReviewMasters", "Apply changes to enable teh plugins and all their required plugins, disable unselected plugin and unneccessary mods."))
+        PageReviewMasters.setSubTitle(_translate("PageReviewMasters", "Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods."))
         self.masterGroup.setTitle(_translate("PageReviewMasters", "Plugin Masters"))
         self.selectedGroup.setTitle(_translate("PageReviewMasters", "Selected Plugins"))
 from mergewizard.views.PluginView import PluginView
