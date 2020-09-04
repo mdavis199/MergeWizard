@@ -27,3 +27,9 @@ class Icon:
     FILTER = ":/mergewizard/icon_filter"
     EDIT = ":/mergewizard/icon_keyboard"
     INFO = ":/mergewizard/icon_info"
+    SETTINGS = ":/mergewizard/icon_settings"
+
+
+class Setting:
+    LOAD_ZMERGE = "Load zMerge files"
+

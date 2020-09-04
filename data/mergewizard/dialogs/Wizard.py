@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-from PyQt5.QtCore import Qt, QSize, QPoint
+from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QWizard
 
@@ -9,6 +9,7 @@ from mobase import IOrganizer
 from mergewizard.dialogs.PageMergeSelect import PageMergeSelect
 from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
+from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
@@ -22,6 +23,9 @@ class PageId(IntEnum):
 
 
 class Wizard(QWizard):
+
+    settingsChanged = pyqtSignal(list)
+
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
         self.__context = Context()
@@ -40,19 +44,35 @@ class Wizard(QWizard):
             [self.CustomButton1, self.CancelButton, self.Stretch, self.BackButton, self.NextButton, self.CustomButton2]
         )
         self.setOptions(self.NoBackButtonOnStartPage)
-        self.button(self.CustomButton1).setVisible(False)  # removing for now
+        self.button(self.CustomButton1).setIcon(QIcon(Icon.SETTINGS))
+        self.button(self.CustomButton1).setToolTip(self.tr("Set options for MergeWizard"))
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         # self.currentIdChanged.connect(self.currentPageChanged)
+
+        self.customButtonClicked.connect(self.handleCustomButton)
 
         # TODO: Renable MergeSelect after debugging MO Callbacks
         # self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
+        for pageId in self.pageIds():
+            self.settingsChanged.connect(self.page(pageId).settingsChanged)
 
         self.restoreSize()
 
     def context(self) -> Context:
         return self.__context
+
+    def handleCustomButton(self, which: int):
+        if which == QWizard.CustomButton1:
+            self.showSettingsDialog()
+
+    def showSettingsDialog(self):
+        settingsDialog = SettingsDialog(self)
+        settingsDialog.loadSettings(self.context())
+        settingsDialog.settingsChanged.connect(self.settingsChanged)
+        if settingsDialog.exec() == SettingsDialog.Accepted:
+            settingsDialog.storeSettings(self.context())
 
     def keyPressEvent(self, event: QKeySequence) -> None:
         # Prevent escape from closing window

@@ -1,3 +1,4 @@
+from typing import List
 from PyQt5.QtWidgets import QWidget, QWizardPage
 
 
@@ -11,3 +12,5 @@ class WizardPage(QWizardPage):
     def deinitializePage(self) -> None:
         pass
 
+    def settingsChanged(self, settings: List[str]) -> None:
+        pass
