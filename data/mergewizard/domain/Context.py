@@ -49,6 +49,6 @@ class Context:
     def setUserSetting(self, name: str, value: Any) -> Any:
         self.organizer().setPluginSetting(INTERNAL_PLUGIN_NAME, name, value)
 
-    def getUserSetting(self, name: str, default: any) -> Any:
+    def getUserSetting(self, name: str, default: Any) -> Any:
         value = self.organizer().pluginSetting(INTERNAL_PLUGIN_NAME, name)
         return value if value is not None else default

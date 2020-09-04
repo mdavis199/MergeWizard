@@ -1,5 +1,5 @@
 # key used set/get persistent plugin settings from MO
-INTERNAL_PLUGIN_NAME = "mergewizard"
+INTERNAL_PLUGIN_NAME = "MergeWizard"
 
 
 class Icon:

@@ -13,7 +13,7 @@ from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
-from mergewizard.constants import Icon
+from mergewizard.constants import Icon, Setting
 
 
 class PageId(IntEnum):
@@ -48,20 +48,21 @@ class Wizard(QWizard):
         self.button(self.CustomButton1).setToolTip(self.tr("Set options for MergeWizard"))
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         # self.currentIdChanged.connect(self.currentPageChanged)
-
         self.customButtonClicked.connect(self.handleCustomButton)
-
-        # TODO: Renable MergeSelect after debugging MO Callbacks
-        # self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
-        self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
-        self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
-        for pageId in self.pageIds():
-            self.settingsChanged.connect(self.page(pageId).settingsChanged)
-
+        self.addWizardPages()
         self.restoreSize()
 
     def context(self) -> Context:
         return self.__context
+
+    def addWizardPages(self):
+        loadZMerge = self.context().getUserSetting(Setting.LOAD_ZMERGE, True)
+        if loadZMerge:
+            self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
+        self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
+        self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
+        for pageId in self.pageIds():
+            self.settingsChanged.connect(self.page(pageId).settingsChanged)
 
     def handleCustomButton(self, which: int):
         if which == QWizard.CustomButton1:

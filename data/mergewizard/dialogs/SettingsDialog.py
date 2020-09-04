@@ -6,7 +6,7 @@ from .ui.SettingsDialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):
-    settingsChanged = pyqtSignal(list)
+    settingsChanged = pyqtSignal(list)  # list of names of settings that changed.
 
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
@@ -19,6 +19,7 @@ class SettingsDialog(QDialog):
         self.ui.loadZMerge.setCheckState(Qt.Checked if self.loadZMerge else Qt.Unchecked)
 
     def storeSettings(self, context: Context):
-        if self.loadZMerge != (self.ui.loadZMerge.checkState() == Qt.Checked):
-            context.setUserSetting(Setting.LOAD_ZMERGE, not self.loadZMerge)
+        newLoadZMerge = self.ui.loadZMerge.checkState() == Qt.Checked
+        if self.loadZMerge != newLoadZMerge:
+            context.setUserSetting(Setting.LOAD_ZMERGE, newLoadZMerge)
             self.settingsChanged.emit([Setting.LOAD_ZMERGE])
