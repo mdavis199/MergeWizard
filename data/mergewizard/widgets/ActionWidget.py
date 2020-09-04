@@ -1,10 +1,11 @@
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.ActionModel import ActionModel
 from mergewizard.models.LogModel import LogModel, LogFilterModel
 from mergewizard.widgets.Splitter import Splitter
+from mergewizard.widgets.CheckableHeader import CheckableHeader
 from .ui.ActionWidget import Ui_ActionWidget
 
 
@@ -23,10 +24,19 @@ class ActionWidget(QWidget):
         self.ui.logView.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
 
         actionModel = ActionModel()
-        self.ui.actionView.setModel(actionModel)
-        self.ui.actionView.resizeColumnToContents(0)
-        self.setActionViewSize()
         actionModel.log.connect(logModel.log)
+        self.ui.actionView.setModel(actionModel)
+
+        actionHeader = CheckableHeader(parent=self)
+        actionHeader.clicked.connect(actionModel.toggleAll)
+        actionModel.headerDataChanged.connect(
+            lambda: actionHeader.setCheckState(actionModel.headerData(0, Qt.Horizontal, Qt.CheckStateRole))
+        )
+        self.ui.actionView.setHorizontalHeader(actionHeader)
+        actionHeader.setStretchLastSection(True)
+        self.ui.actionView.resizeColumnToContents(0)
+
+        self.setActionViewSize()  # set the view height to fit all the rows
 
         self.ui.applyButton.clicked.connect(lambda x: actionModel.applyActions())
 

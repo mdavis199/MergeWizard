@@ -38,3 +38,4 @@ class DataCache(QObject):
             return
         if self.context.pluginModel().isLoading():
             return
+

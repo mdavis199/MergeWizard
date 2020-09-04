@@ -280,4 +280,3 @@ class PluginModel(PluginModelBase):
             self.log.emit(
                 "Mod: {} changed (active? {}, state: {})".format(name, active, stateDict[name]), LogStatus.Info
             )
-

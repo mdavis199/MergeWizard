@@ -1,4 +1,5 @@
 from enum import IntEnum, auto
+from functools import reduce
 from typing import List
 from PyQt5.QtCore import pyqtSignal, Qt, QObject, QModelIndex, QAbstractItemModel, qInfo
 
@@ -113,6 +114,7 @@ class ActionModel(QAbstractItemModel):
                 if self.isActionEnabled(idx.row()) != enable:
                     self._enabled[idx.row()] = value == Qt.Checked
                     self.dataChanged.emit(idx, idx, [role])
+                    self.headerDataChanged.emit(Qt.Horizontal, Column.Action, Column.Action)
                     return True
         return False
 
@@ -125,7 +127,30 @@ class ActionModel(QAbstractItemModel):
                     return self.tr("Action")
                 if section == Column.Status:
                     return self.tr("Status")
+            elif role == Qt.CheckStateRole:
+                if self.isAllEnabled():
+                    return Qt.Checked
+                if self.isNoneEnabled():
+                    return Qt.Unchecked
+                return Qt.PartiallyChecked
+
         return super().headerData(section, orientation, role)
+
+    def toggleAll(self):
+        self.setAllActionsEnabled(not self.isAllEnabled())
+
+    def setAllActionsEnabled(self, on: bool):
+        self._enabled = [on] * len(Action)
+        self.dataChanged.emit(
+            self.index(0, Column.Action), self.index(len(self._enabled) - 1, Column.Action), [Qt.CheckStateRole]
+        )
+        self.headerDataChanged.emit(Qt.Horizontal, Column.Action, Column.Action)
+
+    def isAllEnabled(self):
+        return reduce(lambda a, b: a & b, self._enabled)
+
+    def isNoneEnabled(self):
+        return not reduce(lambda a, b: a | b, self._enabled)
 
     # --- Methods related to performing actions
 
