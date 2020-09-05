@@ -50,7 +50,6 @@ class PageMergeSelect(WizardPage):
         self.ui.mergeView.model().setSelectedMerge(idx)
 
     def itemClicked(self, idx: QModelIndex):
-        qInfo("clicked: {}".format(idx.row()))
         if idx.parent().isValid():
             self.ui.mergeView.selectionModel().select(idx.parent(), QItemSelectionModel.ClearAndSelect)
             self.selectIndex(idx.parent())
