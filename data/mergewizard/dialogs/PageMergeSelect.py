@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QItemSelectionModel
+from PyQt5.QtCore import QItemSelectionModel, QModelIndex, qInfo
 from PyQt5.QtWidgets import QWidget, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
@@ -22,6 +22,7 @@ class PageMergeSelect(WizardPage):
         mergeSortModel.setSourceModel(context.mergeModel())
         self.ui.mergeView.setModel(mergeSortModel)
         self.ui.mergeView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.mergeView.clicked.connect(self.itemClicked)
         self.ui.mergeView.selectionModel().selectionChanged.connect(lambda: self.selectionChanged())
         self.ui.sortByPriority.clicked.connect(mergeSortModel.sortByPriority)
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
@@ -41,13 +42,18 @@ class PageMergeSelect(WizardPage):
 
     def selectionChanged(self):
         indexes = self.ui.mergeView.selectionModel().selectedRows(0)
-        if indexes:
-            name = self.ui.mergeView.model().data(indexes[0])
-            self.ui.selectedMerge.setText(name if name else "")
-            self.ui.mergeView.model().setSelectedMerge(indexes[0])
-        else:
-            self.ui.selectedMerge.setText("")
-            self.ui.mergeView.model().setSelectedMerge()
+        self.selectIndex(indexes[0] if indexes else QModelIndex())
+
+    def selectIndex(self, idx: QModelIndex = QModelIndex()):
+        name = self.ui.mergeView.model().data(idx)
+        self.ui.selectedMerge.setText(name if name else "")
+        self.ui.mergeView.model().setSelectedMerge(idx)
+
+    def itemClicked(self, idx: QModelIndex):
+        qInfo("clicked: {}".format(idx.row()))
+        if idx.parent().isValid():
+            self.ui.mergeView.selectionModel().select(idx.parent(), QItemSelectionModel.ClearAndSelect)
+            self.selectIndex(idx.parent())
 
     def modelLoadingStarted(self):
         self.ui.progressBar.setVisible(True)
