@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QItemSelectionModel, QModelIndex, qInfo
+from PyQt5.QtCore import QItemSelectionModel, QModelIndex
 from PyQt5.QtWidgets import QWidget, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context

@@ -16,13 +16,14 @@ class ViewType(Enum):
     Masters = auto()
 
 
-def _configureColumns(type: ViewType, view: PluginView):
+def _configureColumns(type: ViewType, view: PluginView, showMergeColumns: bool):
     if type == ViewType.All:
         view._columns = [
             Column.IsInactive,
             Column.IsMissing,
             Column.IsMaster,
             Column.IsMerge,
+            Column.IsMerged,
             Column.IsSelectedAsMaster,
             Column.IsSelected,
             Column.Priority,
@@ -37,6 +38,7 @@ def _configureColumns(type: ViewType, view: PluginView):
             Column.IsMissing,
             Column.IsMaster,
             Column.IsMerge,
+            Column.IsMerged,
             Column.IsSelected,
         ]
     elif type == ViewType.SelectedNoEdit:
@@ -47,6 +49,7 @@ def _configureColumns(type: ViewType, view: PluginView):
             Column.IsMissing,
             Column.IsMaster,
             Column.IsMerge,
+            Column.IsMerged,
             Column.IsSelected,
         ]
     elif type == ViewType.Masters:
@@ -57,8 +60,12 @@ def _configureColumns(type: ViewType, view: PluginView):
             Column.IsMissing,
             Column.IsMaster,
             Column.IsMerge,
+            Column.IsMerged,
             Column.IsSelectedAsMaster,
         ]
+
+    if not showMergeColumns:
+        view._columns = [c for c in view._columns if c not in [Column.IsMerge, Column.IsMerged]]
 
 
 def _configureActions(type: ViewType, view: PluginView):
@@ -226,7 +233,7 @@ def _addActions(view: PluginView):
 
 class PluginViewFactory:
     @staticmethod
-    def configureView(type: ViewType, view: PluginView, model: PluginModel):
+    def configureView(type: ViewType, view: PluginView, model: PluginModel, showMergeColumns: bool = True):
         if view is None:
             view = PluginView()
 
@@ -263,7 +270,7 @@ class PluginViewFactory:
         else:
             return
 
-        _configureColumns(type, view)
+        _configureColumns(type, view, showMergeColumns)
         _configureModels(type, view, model)
         _configureHeaders(type, view)
         _configureSignals(type, view)

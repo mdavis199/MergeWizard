@@ -54,10 +54,7 @@ class PluginView(QTreeView):
             self.resizeColumnToContents(i)
 
     def sectionForColumn(self, column: Column):
-        for i in range(len(self._columns)):
-            if self._columns[i] == column:
-                return i
-        return -1
+        return next((i for i in range(len(self._columns)) if self._columns[i] == column), -1)
 
     # ---- Methods related to filters
 

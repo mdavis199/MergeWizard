@@ -53,6 +53,7 @@ def isBoolColumn(col: Column):
         Column.IsInactive,
         Column.IsMaster,
         Column.IsMerge,
+        Column.IsMerged,
     ]
 
 

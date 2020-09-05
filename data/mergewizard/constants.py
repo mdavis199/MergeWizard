@@ -12,7 +12,7 @@ class Icon:
     MASTER = ":/mergewizard/icon_master"
     MERGE = ":/mergewizard/icon_merge"
     MERGE2 = ":/mergewizard/icon_merge2"
-    MERGABLE = ":/mergewizard/icon_mergable"
+    MERGED = ":/mergewizard/icon_mergable"
     SELECTED = ":/mergewizard/icon_selected"
     SELECTED_AS_MASTER = ":/mergewizard/icon_selected_as_master"
 

@@ -44,6 +44,9 @@ class PluginStyleModel(QIdentityProxyModel):
                 return QIcon(Icon.MASTER) if v else None
             if idx.column() == Column.IsMerge:
                 return QIcon(Icon.MERGE) if v else None
+            if idx.column() == Column.IsMerged:
+                return QIcon(Icon.MERGE) if v else None
+            return None
             return None
         elif role == Qt.ForegroundRole:
             missing = super().data(idx.siblingAtColumn(Column.IsMissing), Role.Cell)
@@ -108,6 +111,8 @@ class PluginStyleModel(QIdentityProxyModel):
                     return QIcon(Icon.MASTER)
                 if section == Column.IsMerge:
                     return QIcon(Icon.MERGE)
+                if section == Column.IsMerged:
+                    return QIcon(Icon.MERGED)
             return None
         if role == Qt.ToolTipRole:
             if section == Column.IsSelectedAsMaster:
@@ -122,6 +127,8 @@ class PluginStyleModel(QIdentityProxyModel):
                 return self.tr("Plugin tagged as a 'Master' library")
             if section == Column.IsMerge:
                 return self.tr("Plugins that were created by a merge")
+            if section == Column.IsMerged:
+                return self.tr("Plugins that were consumed by a merge")
         return super().headerData(section, orientation, role)
 
     def flags(self, idx: QModelIndex):
