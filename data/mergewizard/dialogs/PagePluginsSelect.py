@@ -7,7 +7,7 @@ from mergewizard.domain.Context import Context
 from mergewizard.models.PluginModel import Column
 from mergewizard.views.PluginViewFactory import PluginViewFactory, ViewType
 from mergewizard.widgets.Splitter import Splitter
-from mergewizard.constants import Icon, Setting
+from mergewizard.constants import Icon
 from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 
@@ -21,13 +21,10 @@ class PagePluginsSelect(WizardPage):
         self.ui.setupUi(self)
         self.context = context
 
-        showMergeColumns = context.getUserSetting(Setting.LOAD_ZMERGE, True)
-
         #  views/models for the top plugin panels
-        PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel(), showMergeColumns)
-        PluginViewFactory.configureView(
-            ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel(), showMergeColumns
-        )
+        PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel())
+        PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel())
+
         self.ui.pluginsList.selectionModel().currentChanged.connect(lambda: self.showPluginInfo(ViewType.All))
         self.ui.selectedPluginsList.selectionModel().currentChanged.connect(
             lambda: self.showPluginInfo(ViewType.Selected)

@@ -16,7 +16,7 @@ class ViewType(Enum):
     Masters = auto()
 
 
-def _configureColumns(type: ViewType, view: PluginView, showMergeColumns: bool):
+def _configureColumns(type: ViewType, view: PluginView, excludeMergeColumns: bool):
     if type == ViewType.All:
         view._columns = [
             Column.IsInactive,
@@ -64,7 +64,7 @@ def _configureColumns(type: ViewType, view: PluginView, showMergeColumns: bool):
             Column.IsSelectedAsMaster,
         ]
 
-    if not showMergeColumns:
+    if excludeMergeColumns:
         view._columns = [c for c in view._columns if c not in [Column.IsMerge, Column.IsMerged]]
 
 
@@ -232,8 +232,10 @@ def _addActions(view: PluginView):
 
 
 class PluginViewFactory:
+    excludeMergeColumns = False
+
     @staticmethod
-    def configureView(type: ViewType, view: PluginView, model: PluginModel, showMergeColumns: bool = True):
+    def configureView(type: ViewType, view: PluginView, model: PluginModel):
         if view is None:
             view = PluginView()
 
@@ -270,7 +272,7 @@ class PluginViewFactory:
         else:
             return
 
-        _configureColumns(type, view, showMergeColumns)
+        _configureColumns(type, view, PluginViewFactory.excludeMergeColumns)
         _configureModels(type, view, model)
         _configureHeaders(type, view)
         _configureSignals(type, view)

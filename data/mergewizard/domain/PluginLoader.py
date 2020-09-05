@@ -59,7 +59,7 @@ class PluginLoader(QObject):
         if mod:
             plugin.modName = mod.name()
             plugin.modPath = mod.absolutePath()
-            plugin.isMerge = self.isModMerged(plugin.modPath)
+            # plugin.isMerge = self.isModMerged(plugin.modPath)
         self.progressBump.emit()
         return plugin
 

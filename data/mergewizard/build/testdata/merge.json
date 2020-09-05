@@ -1,0 +1,97 @@
+{
+  "name": "[Merge] Animals Merged",
+  "filename": "Animals Merged.esp",
+  "method": "Clobber",
+  "loadOrder": [
+    "Skyrim.esm",
+    "Update.esm",
+    "Dawnguard.esm",
+    "HearthFires.esm",
+    "Dragonborn.esm",
+    "Unofficial Skyrim Special Edition Patch.esp",
+    "Wyrmstooth.esp",
+    "Gray Fox Cowl.esm",
+    "Falskaar.esm",
+    "Skyrim Revamped - Complete Enemy Overhaul.esp",
+    "SkyTEST-RealisticAnimals&Predators.esp",
+    "Skyrim Immersive Creatures Special Edition.esp",
+    "Summermyst - Enchantments of Skyrim.esp",
+    "Complete Alchemy & Cooking Overhaul.esp",
+    "Apocalypse - Magic of Skyrim.esp",
+    "Convenient Horses.esp",
+    "KrittaKittyHorsesForSSE.esp",
+    "CH GFC_FAL_WYR.esp",
+    "Convenient Horses - Apocalypse+CACO+SIC+Summermyst.esp",
+    "Skytest Immersive Creatures.esp",
+    "Skytest Creature Extension.esp",
+    "CrittersAintSnitches.esp",
+    "CrittersAintSnitches-SkyTEST-RA&P Patch.esp",
+    "SkyTEST Less Fear SSE Patch.esp",
+    "True Hunter.esp",
+    "OMEGA Lexy LOTD Animals Merged Consistency Patch.esp"
+  ],
+  "archiveAction": "Extract",
+  "buildMergedArchive": false,
+  "useGameLoadOrder": true,
+  "handleFaceData": true,
+  "handleVoiceData": true,
+  "handleBillboards": true,
+  "handleStringFiles": true,
+  "handleTranslations": true,
+  "handleIniFiles": true,
+  "handleDialogViews": true,
+  "copyGeneralAssets": false,
+  "dateBuilt": "2020-07-11T17:30:22.169Z",
+  "plugins": [
+    {
+      "filename": "KrittaKittyHorsesForSSE.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Realistic Horse Breeds by KrittaKitty\\",
+      "hash": "ed6ee00de6d19be3cc3324a360ef3b44"
+    },
+    {
+      "filename": "CH GFC_FAL_WYR.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Bruma and Other Patches for Convenient Horses\\",
+      "hash": "a8dcede94baaefda555af86733de1a1a"
+    },
+    {
+      "filename": "Convenient Horses - Apocalypse+CACO+SIC+Summermyst.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Convenient Horses Patch Hub\\",
+      "hash": "aad7cd1ed55435f9a98c037e9635904b"
+    },
+    {
+      "filename": "Skytest Immersive Creatures.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Immersive Creatures\\",
+      "hash": "6d65f52aa78572a799ed77dcd6f26002"
+    },
+    {
+      "filename": "Skytest Creature Extension.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Vanilla and DLC Creation Extension\\",
+      "hash": "380e89647d11cccbfaad1d11677dcb03"
+    },
+    {
+      "filename": "CrittersAintSnitches.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Critters Aint Snitches v1.0 SSE\\",
+      "hash": "a3c8abc0c3796d70d33d2aff7e5534de"
+    },
+    {
+      "filename": "CrittersAintSnitches-SkyTEST-RA&P Patch.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Critters Aint Snitches v1.0 SSE-SkyTEST RAandP Patch\\",
+      "hash": "53e77d2f788e2cf58abbfcfe7708a873"
+    },
+    {
+      "filename": "SkyTEST Less Fear SSE Patch.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Less Fear SSE Patch\\",
+      "hash": "c6634faaa1c90f4b690a5669daff9b0d"
+    },
+    {
+      "filename": "True Hunter.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\True Hunter\\",
+      "hash": "0ab8210f16fcec4cd6f764378ef68088"
+    },
+    {
+      "filename": "OMEGA Lexy LOTD Animals Merged Consistency Patch.esp",
+      "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Lexy LOTD Animals Merged Consistency Patch\\",
+      "hash": "2cb15e7b79c7ef6ee4dd5dedb596eb20"
+    }
+  ]
+}

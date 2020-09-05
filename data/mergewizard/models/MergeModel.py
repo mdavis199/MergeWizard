@@ -73,6 +73,9 @@ class MergeModel(QAbstractItemModel):
     def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
         self.__selectedMerge = index.row()
 
+    def merges(self):
+        return self.__merges
+
     # ------------------------------------------------
     # --- AbstractItemModel overrides
     # ------------------------------------------------

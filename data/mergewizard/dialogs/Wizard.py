@@ -13,6 +13,7 @@ from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
+from mergewizard.views.PluginViewFactory import PluginViewFactory
 from mergewizard.constants import Icon, Setting
 
 
@@ -57,6 +58,8 @@ class Wizard(QWizard):
 
     def addWizardPages(self):
         loadZMerge = self.context().getUserSetting(Setting.LOAD_ZMERGE, True)
+        PluginViewFactory.excludeMergeColumns = not loadZMerge
+
         if loadZMerge:
             self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
