@@ -1,5 +1,5 @@
 from typing import List
-from mergewizard.domain.JSONObject import JSONObject
+from mergewizard.domain.merge.JSONObject import JSONObject
 
 
 class PluginFileDesc(JSONObject):
@@ -51,7 +51,7 @@ class Merge(JSONObject):
     ):
         self.__key = name.lower()
         self.__hash = hash(self.__key)
-        self.__mergePath: str = ""
+        self.__mergePath: str = ""  # full path to the json file
         self.name: str = name
         self.filename: str = filename
         self.method: str = method
@@ -81,8 +81,19 @@ class Merge(JSONObject):
     def key(self):
         return self.__key
 
+    def modName(self):
+        return self.name
+
+    def pluginName(self):
+        return self.filename
+
+    # ----------------------------------
+    # full path the merge.json file
+    # ----------------------------------
+
     def setMergePath(self, path: str):
         self.__mergePath = path
 
     def mergePath(self):
         return self.__mergePath
+

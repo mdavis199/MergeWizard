@@ -22,8 +22,8 @@ class PagePluginsSelect(WizardPage):
         self.context = context
 
         #  views/models for the top plugin panels
-        PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel())
-        PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel())
+        PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel)
+        PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel)
 
         self.ui.pluginsList.selectionModel().currentChanged.connect(lambda: self.showPluginInfo(ViewType.All))
         self.ui.selectedPluginsList.selectionModel().currentChanged.connect(
@@ -32,8 +32,8 @@ class PagePluginsSelect(WizardPage):
         self.pluginlist_pluginname_section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
 
         # views/models for the bottom panels
-        self.ui.pluginInfoWidget.setPluginModel(context.pluginModel())
-        self.ui.bulkAddWidget.setPluginModel(context.pluginModel())
+        self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
+        self.ui.bulkAddWidget.setPluginModel(context.pluginModel)
         self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
 
@@ -59,10 +59,9 @@ class PagePluginsSelect(WizardPage):
 
         # progressbar
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
-        context.pluginModel().modelLoadingStarted.connect(self.modelLoadingStarted)
-        context.pluginModel().modelLoadingProgress.connect(self.modelLoadingProgress)
-        context.pluginModel().modelLoadingCompleted.connect(self.modelLoadingCompleted)
-        context.pluginModel().loadPlugins()
+        context.dataCache.pluginModelLoadingStarted.connect(self.modelLoadingStarted)
+        context.dataCache.pluginModelLoadingProgress.connect(self.modelLoadingProgress)
+        context.dataCache.pluginModelLoadingCompleted.connect(self.modelLoadingCompleted)
 
     def initializePage(self) -> None:
         self.restoreSettings()

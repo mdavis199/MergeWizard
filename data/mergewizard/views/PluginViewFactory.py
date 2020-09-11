@@ -151,6 +151,7 @@ def _configureHeaders(type: ViewType, view: PluginView):
 
 
 def _configureSignals(type: ViewType, view: PluginView):
+    # toggle selected when the plugin name is double clicked
     if type == ViewType.All or type == ViewType.Selected:
         view.doubleClicked.connect(view.toggle)
     view.models().pluginModel.modelLoadingCompleted.connect(view.resizeColumns)

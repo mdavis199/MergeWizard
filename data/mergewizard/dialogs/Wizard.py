@@ -11,6 +11,7 @@ from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
+from mergewizard.domain.SavedPluginsFile import SavedPluginsFile
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.views.PluginViewFactory import PluginViewFactory
@@ -29,10 +30,8 @@ class Wizard(QWizard):
 
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
-        self.__context = Context()
-        self.__context.setOrganizer(organizer)
-        self.__context.setPluginModel(PluginModel(organizer))
-        self.__context.setMergeModel(MergeModel(organizer.modsPath()))
+        self.__context = Context(organizer)
+        self.__context.dataCache.loadData()
 
         self.resize(700, 500)
         self.setWizardStyle(0)
@@ -48,7 +47,6 @@ class Wizard(QWizard):
         self.button(self.CustomButton1).setIcon(QIcon(Icon.SETTINGS))
         self.button(self.CustomButton1).setToolTip(self.tr("Set options for MergeWizard"))
         self.button(self.CustomButton2).setVisible(False)  # removing for now
-        # self.currentIdChanged.connect(self.currentPageChanged)
         self.customButtonClicked.connect(self.handleCustomButton)
         self.addWizardPages()
         self.restoreSize()
@@ -86,10 +84,15 @@ class Wizard(QWizard):
     def closeEvent(self, event: QCloseEvent) -> None:
         if not self.currentPage().isOkToExit():
             event.ignore()
-        else:
-            self.saveSize()
-            for id in self.pageIds():
-                self.page(id).deinitializePage()
+            return
+        self.saveSize()
+        for id in self.pageIds():
+            self.page(id).deinitializePage()
+        self.saveSelectedPluginsToFile()
+
+    def saveSelectedPluginsToFile(self):
+        pluginsFile = SavedPluginsFile(self.context())
+        pluginsFile.write()
 
     def saveSize(self) -> None:
         self.context().setSetting("WindowMaximized", self.isMaximized())

@@ -12,7 +12,7 @@ from PyQt5.QtCore import (
     QAbstractItemModel,
 )
 
-from mergewizard.domain.Plugin import Plugin
+from mergewizard.domain.plugin import Plugin, Plugins
 
 
 DEFAULT_MIME_FORMAT = "application/x-qabstractitemmodeldatalist"
@@ -21,26 +21,33 @@ DEFAULT_MIME_FORMAT = "application/x-qabstractitemmodeldatalist"
 class Role(IntEnum):
     Cell = Qt.UserRole  # value represented by column
     Data = Qt.UserRole + 1  # plugin represented by row
+    Associations = Qt.UserRole + 2  # used by the info model
+
+
+# The columns are ordered to reduce the number of emits.
+# Check for side-effects before changing the column order here.
 
 
 class Column(IntEnum):
     PluginName = 0
     ModName = auto()
     ModPath = auto()
-    Priority = auto()
-    PluginOrder = auto()
-    MasterOrder = auto()
     IsMOPlugin = auto()  # a plugin MO knows about, not one we added
-    IsMissing = auto()
-    IsHidden = auto()
-    IsInactive = auto()
-    IsMaster = auto()
+    IsMaster = auto()  # data from MO2
+    #
     IsMerge = auto()  # Created by a merge
     IsMerged = auto()  # Consumed by one or more merges
-
-    # Calculated Values
-    IsSelectedAsMaster = auto()
-    IsSelected = auto()
+    #
+    Priority = auto()  # determined by MO2
+    IsHidden = auto()
+    IsMissing = auto()
+    IsInactive = auto()
+    #
+    PluginOrder = auto()  # position of selected plugins
+    IsSelected = auto()  # calculated value
+    #
+    MasterOrder = auto()  # position of selected plugins' required plugins
+    IsSelectedAsMaster = auto()  # calculated value
 
 
 def isBoolColumn(col: Column):
@@ -57,18 +64,29 @@ def isBoolColumn(col: Column):
     ]
 
 
+# A position column displays the value as 'value + 1'
 def isPositionColumn(col: Column):
     return col in [Column.PluginOrder, Column.MasterOrder]
 
 
 class PluginModelBase(QAbstractItemModel):
+    """ A fully functional Plugin model for QAbstractItemViews.
+
+    It has no direct interactions with MO interfaces.  (Those are provided by
+    the PluginModel subclass.)
+
+    Formatting, sorting and filtering are performed by proxy classes.
+    """
 
     # When selected plugins change, we update the selected masters
     _selectedPluginsChanged = pyqtSignal()
 
+    # When the plugins are completely reset, we emit this after loading is completed
+    modelLoadingCompleted = pyqtSignal()
+
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
-        self._plugins: List[Plugin] = []
+        self._plugins: Plugins = Plugins()
         self._selected: List[int] = []  # ordered list of selected plugins (user sets order)
         self._masters: List[int] = []  # ordered list of required plugins for all selected plugins (priority order)
         self._originalSelected = []
@@ -79,10 +97,10 @@ class PluginModelBase(QAbstractItemModel):
     # ---- Methods related to initializing model data
     # ------------------------------------------------
 
-    def setPlugins(self, plugins: List[Plugin]) -> None:
+    def setPlugins(self, plugins: Plugins) -> None:
         if len(self._plugins) > 1:
             self.beginRemoveRows(QModelIndex(), 0, len(self._plugins) - 1)
-            self._plugins = []
+            self._plugins.clear()
             self.endRemoveRows()
         if plugins:
             self.beginInsertRows(QModelIndex(), 0, len(plugins) - 1)
@@ -90,6 +108,7 @@ class PluginModelBase(QAbstractItemModel):
             self.endInsertRows()
         self._originalMasters = self._masters
         self._originalSelected = self._selected
+        self.modelLoadingCompleted.emit()
 
     # ------------------------------------------------
     # --- Methods for detecting plugin selection changes
@@ -106,6 +125,13 @@ class PluginModelBase(QAbstractItemModel):
 
     def resetMastersDidChange(self):
         self._originalMasters = self._masters
+
+    # ------------------------------------------------
+    # --- Get names of selected plugins (for SavePluginsFile)
+    # ------------------------------------------------
+
+    def selectedPluginNames(self):
+        return [self._plugins[row].pluginName for row in self._selected]
 
     # ------------------------------------------------
     # ---- Methods related to plugin order and selection
@@ -135,8 +161,7 @@ class PluginModelBase(QAbstractItemModel):
                 if self._plugins[row].pluginOrder != Plugin.NOT_SELECTED:
                     self._selected[self._plugins[row].pluginOrder] = Plugin.NOT_SELECTED
                     self._plugins[row].pluginOrder = Plugin.NOT_SELECTED
-                    idx = self.index(row, Column.PluginOrder)
-                    self.dataChanged.emit(idx, idx)
+                    self.dataChanged.emit(self.index(row, Column.PluginOrder), self.index(row, Column.IsSelected))
         else:
             if position > len(self._selected):
                 position = len(self._selected)
@@ -160,8 +185,12 @@ class PluginModelBase(QAbstractItemModel):
             if self._plugins[self._selected[i]].pluginOrder != i:
                 self._plugins[self._selected[i]].pluginOrder = i
                 idx = self.index(self._selected[i], Column.PluginOrder)
-                self.dataChanged.emit(idx, idx)
+                self.dataChanged.emit(
+                    self.index(self._selected[i], Column.IsSelected), self.index(self._selected[i], Column.IsSelected)
+                )
 
+        # Selected plugins changed, so the selected masters must change
+        # Emit a signal to start the process of updating the list of selected masters
         self._selectedPluginsChanged.emit()
 
     # ------------------------------------------------
@@ -175,10 +204,10 @@ class PluginModelBase(QAbstractItemModel):
 
         requiredPlugins = set()
         for row in self._selected:
-            for plugin, _ in self._plugins[row].requires:
-                requiredPlugins.add(plugin)
-        sortedRequired = Plugin.sortByPriority(list(requiredPlugins))
-        requiredRows = [self._plugins.index(p) for p in sortedRequired]
+            for req in self._plugins.requirements(self._plugins[row]):
+                requiredPlugins.add(req.plugin)
+        sortedRequired = sorted(requiredPlugins, key=Plugin.priority_sort)
+        requiredRows = [self._plugins.index(p.key) for p in sortedRequired]
 
         changed: Set[int] = set()
         for i in range(min(len(self._masters), len(requiredRows))):
@@ -194,8 +223,7 @@ class PluginModelBase(QAbstractItemModel):
                 self._plugins[row].masterOrder = Plugin.NOT_SELECTED
             else:
                 self._plugins[row].masterOrder = requiredRows.index(row)
-            idx = self.index(row, Column.MasterOrder)
-            self.dataChanged.emit(idx, idx)
+            self.dataChanged.emit(self.index(row, Column.MasterOrder), self.index(row, Column.IsSelectedAsMaster))
         self._masters = requiredRows
 
     # ------------------------------------------------
@@ -252,11 +280,13 @@ class PluginModelBase(QAbstractItemModel):
             if col == Column.IsMerged:
                 return self._plugins[idx.row()].isMerged
             if col == Column.IsSelectedAsMaster:
-                return self._plugins[idx.row()].isSelectedAsMaster()
+                return self._plugins[idx.row()].isSelectedAsMaster
             if col == Column.IsSelected:
-                return self._plugins[idx.row()].isSelected()
+                return self._plugins[idx.row()].isSelected
         elif role == Role.Data:
             return self._plugins[idx.row()]
+        elif role == Role.Associations:
+            return self._plugins.associations(self._plugins[idx.row()])
 
     # TODO: add setting master from here maybe
     def setData(self, idx: QModelIndex, value, role: int = Qt.EditRole):

@@ -32,4 +32,5 @@ class Icon:
 
 class Setting:
     LOAD_ZMERGE = "Load zMerge files"
+    SAVE_PLUGIN_LIST = "Save selected plugins list"
 

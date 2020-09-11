@@ -67,10 +67,10 @@ class PluginFilterModel(QSortFilterProxyModel):
     def filterAcceptsRow(self, sourceRow: int, sourceParent: QModelIndex):
         plugin = self.sourceModel().data(self.sourceModel().index(sourceRow, 0, sourceParent), Role.Data)
         if self._pluginType == PluginType.Selected:
-            return plugin.isSelected()
+            return plugin.isSelected
 
         if self._pluginType == PluginType.Masters:
-            return plugin.isSelectedAsMaster() and not plugin.isSelected()
+            return plugin.isSelectedAsMaster and not plugin.isSelected
 
         if self._filters & Filter.Inactive != Filter.NoFilter:
             if plugin.isInactive:
@@ -85,7 +85,7 @@ class PluginFilterModel(QSortFilterProxyModel):
             if plugin.isMerge:
                 return False
         if self._filters & Filter.Selected != Filter.NoFilter:
-            if plugin.isSelected():
+            if plugin.isSelected:
                 return False
         if not self._nameFilter:
             return True

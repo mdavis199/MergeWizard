@@ -4,14 +4,10 @@ from PyQt5.QtCore import (
     pyqtSignal,
     QObject,
     QModelIndex,
-    QThreadPool,
     qInfo,
 )
 from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.ILogger import Status as LogStatus
-from mergewizard.domain.PluginLoader import AsyncPluginLoader
-from mergewizard.domain.AsyncWorker import Worker
-from mergewizard.domain.Plugin import Plugin
 from mergewizard.models.PluginModelBase import PluginModelBase, Column
 
 
@@ -21,9 +17,6 @@ class PluginModel(PluginModelBase):
         requiring the MO2 interface
     """
 
-    modelLoadingStarted = pyqtSignal()
-    modelLoadingProgress = pyqtSignal(int)
-    modelLoadingCompleted = pyqtSignal()
     log = pyqtSignal(str, LogStatus)
 
     def __init__(self, organizer: IOrganizer, parent: QObject = None):
@@ -35,26 +28,6 @@ class PluginModel(PluginModelBase):
         organizer.pluginList().onPluginMoved(self.onPluginMoved)
         organizer.pluginList().onPluginStateChanged(self.onPluginStateChanged)
         organizer.modList().onModStateChanged(self.onModStateChanged)
-
-    # ------------------------------------------------
-    # ---- Methods related to loading model data
-    # ------------------------------------------------
-
-    def isLoading(self) -> bool:
-        return self._isLoading
-
-    def loadPlugins(self) -> None:
-        self._isLoading = True
-        self.modelLoadingStarted.emit()
-        worker = Worker(AsyncPluginLoader.loadPlugins, self._organizer)
-        worker.signals.result.connect(self.setPlugins)
-        worker.signals.progress.connect(self.modelLoadingProgress)
-        QThreadPool.globalInstance().start(worker)
-
-    def setPlugins(self, plugins: List[Plugin]) -> None:
-        super().setPlugins(plugins)
-        self._isLoading = False
-        self.modelLoadingCompleted.emit()
 
     # ------------------------------------------------
     # ---- Adding info from MergeModel
@@ -202,7 +175,7 @@ class PluginModel(PluginModelBase):
         rowsToDisable = []
         for row in range(len(self._plugins)):
             plugin = self._plugins[row]
-            if not plugin.isSelected() and not plugin.isSelectedAsMaster():
+            if not plugin.isSelected and not plugin.isSelectedAsMaster:
                 if not plugin.isInactive and not plugin.priority < 0:
                     rowsToDisable.append(row)
         if not rowsToDisable:
@@ -237,15 +210,15 @@ class PluginModel(PluginModelBase):
     def maxPriority(self):
         if not self._plugins:
             return -1
-        return max(plugin.priority for plugin in self._plugins)
+        return max(plugin.priority for plugin in self._plugins.values())
 
     def deactivateUnneededMods(self):
         # this will require a reload of the pluginModel, because plugin
         # priorities will change and plugins will be removed from the plugin list
         modsToKeep = {
             plugin.modName
-            for plugin in self._plugins
-            if (plugin.isSelected() or plugin.isSelectedAsMaster()) and not plugin.isMissing
+            for plugin in self._plugins.values()
+            if (plugin.isSelected or plugin.isSelectedAsMaster) and not plugin.isMissing
         }
         activeMods = {
             mod

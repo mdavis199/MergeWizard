@@ -19,19 +19,18 @@ class PageMergeSelect(WizardPage):
         self.registerField("selectedMerge*", self.ui.selectedMerge)
 
         mergeSortModel = MergeSortModel()
-        mergeSortModel.setSourceModel(context.mergeModel())
+        mergeSortModel.setSourceModel(context.mergeModel)
         self.ui.mergeView.setModel(mergeSortModel)
         self.ui.mergeView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.ui.mergeView.clicked.connect(self.itemClicked)
         self.ui.mergeView.selectionModel().selectionChanged.connect(lambda: self.selectionChanged())
         self.ui.sortByPriority.clicked.connect(mergeSortModel.sortByPriority)
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
-        context.mergeModel().modelLoadingStarted.connect(self.modelLoadingStarted)
-        context.mergeModel().modelLoadingProgress.connect(self.modelLoadingProgress)
-        context.mergeModel().modelLoadingCompleted.connect(self.modelLoadingCompleted)
+        context.dataCache.mergeModelLoadingStarted.connect(self.modelLoadingStarted)
+        context.dataCache.mergeModelLoadingProgress.connect(self.modelLoadingProgress)
+        context.dataCache.mergeModelLoadingCompleted.connect(self.modelLoadingCompleted)
 
     def initializePage(self):
-        self.context.mergeModel().loadMerges()
         pass
 
     def deinitializePage(self) -> None:

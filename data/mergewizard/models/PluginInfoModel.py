@@ -3,7 +3,7 @@ from typing import List
 from PyQt5.QtCore import Qt, QObject, QModelIndex, QIdentityProxyModel, QAbstractProxyModel, QSortFilterProxyModel
 from PyQt5.QtGui import QIcon, QColor, QFont
 
-from . import ItemId as Id
+import mergewizard.models.ItemId as Id
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.PluginModelBase import Role, Column as PluginColumn
 from mergewizard.constants import Icon
@@ -25,6 +25,9 @@ Filtering out a plugin in one row would incorrectly remove the sibling plugin fr
 To avoid that problem, each column is represented by a ReqColumnModel.
 These are inserted into their own subclassed QSortFilterProxyModel.  The InfoModel holds
 the two filter models and coordinates between them.
+
+TODO: This whole arrangement is just a hack and needs to change.  Just bite the bullet and rewrite
+the QSortFilterItemModel.  Need to use persistent indexes anyway.
 
 """
 
@@ -54,11 +57,11 @@ class ReqColumnModel(QIdentityProxyModel):
             return 0
         if parent.column() != 0:
             return 0
-        plugin = self.sourceModel().data(self.mapToSource(parent), Role.Data)
+        requirements, dependents = self.sourceModel().data(self.mapToSource(parent), Role.Associations)
         if self._dataType == DataType.Requires:
-            return len(plugin.requires)
+            return len(requirements)
         else:
-            return len(plugin.requiredBy)
+            return len(dependents)
 
     def columnCount(self, parent: QModelIndex = QModelIndex()):
         return 1
@@ -106,25 +109,27 @@ class ReqColumnModel(QIdentityProxyModel):
                 return self.sourceModel().data(sourceIdx, role)
         if depth == Id.Depth.D1:
             sourceParentIdx = self.sourceModel().index(idx.parent().row(), PluginColumn.PluginName)
-            plugin = self.sourceModel().data(sourceParentIdx, Role.Data)
+            requirements, dependents = self.sourceModel().data(sourceParentIdx, Role.Associations)
 
-            reqPlugin, isDirect = (
-                plugin.requires[idx.row()] if self._dataType == DataType.Requires else plugin.requiredBy[idx.row()]
-            )
+            association = requirements[idx.row()] if self._dataType == DataType.Requires else dependents[idx.row()]
+
+            plugin = association.plugin
+            isDirect = association.direct
 
             if role == Role.Data:
-                return (reqPlugin, isDirect)
+                return (plugin, isDirect)
+
             if role == Qt.DisplayRole:
-                return reqPlugin.pluginName
+                return association.plugin.pluginName
             elif role == Qt.DecorationRole:
-                if reqPlugin.isMissing:
-                    if reqPlugin.isSelected() or reqPlugin.isSelectedAsMaster():
+                if plugin.isMissing:
+                    if plugin.isSelected or plugin.isSelectedAsMaster:
                         return QIcon(Icon.INFO_MISSING_SELECTED)
                     return QIcon(Icon.INFO_MISSING)
                 else:
-                    if reqPlugin.isSelected():
+                    if plugin.isSelected:
                         return QIcon(Icon.INFO_SELECTED)
-                    elif reqPlugin.isSelectedAsMaster():
+                    elif plugin.isSelectedAsMaster:
                         return QIcon(Icon.INFO_SELECTED_AS_MASTER)
                     return QIcon(Icon.INFO_NOT_SELECTED)
             elif role == Qt.FontRole:
@@ -137,8 +142,6 @@ class ReqColumnModel(QIdentityProxyModel):
                     return QColor(Qt.lightGray).darker()
 
 
-# TODO: This has to be changed.  This will fail randomly.  Need to use persistent indexes.
-# Need to just bite the bullet and reimplement QSortFilterProxyModel
 class ReqSortFilterModel(QSortFilterProxyModel):
     def __init__(self, model: ReqColumnModel, parent: QObject = None):
         super().__init__(parent)
@@ -189,7 +192,7 @@ class ReqSortFilterModel(QSortFilterProxyModel):
             return True
 
         idx = self.sourceModel().index(sourceRow, 0, sourceParent)
-        plugin, isDirect = self.sourceModel().data(idx, Role.Data)
+        (plugin, isDirect) = self.sourceModel().data(idx, Role.Data)
         return isDirect
 
 

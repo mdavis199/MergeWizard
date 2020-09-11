@@ -13,13 +13,23 @@ class SettingsDialog(QDialog):
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
         self.loadZMerge = True
+        self.savePluginList = True
 
     def loadSettings(self, context: Context):
         self.loadZMerge = bool(context.getUserSetting(Setting.LOAD_ZMERGE, True))
-        self.ui.loadZMerge.setCheckState(Qt.Checked if self.loadZMerge else Qt.Unchecked)
+        self.ui.loadZMerge.setChecked(self.loadZMerge)
+        self.savePluginList = bool(context.getUserSetting(Setting.SAVE_PLUGIN_LIST, True))
+        self.ui.savePluginList.setChecked(self.savePluginList)
 
     def storeSettings(self, context: Context):
-        newLoadZMerge = self.ui.loadZMerge.checkState() == Qt.Checked
+        changedSettings = []
+        newLoadZMerge = self.ui.loadZMerge.isChecked()
         if self.loadZMerge != newLoadZMerge:
             context.setUserSetting(Setting.LOAD_ZMERGE, newLoadZMerge)
-            self.settingsChanged.emit([Setting.LOAD_ZMERGE])
+            changedSettings.append(Setting.LOAD_ZMERGE)
+        newSavePluginList = self.ui.savePluginList.isChecked()
+        if self.savePluginList != newSavePluginList:
+            context.setUserSetting(Setting.SAVE_PLUGIN_LIST, newSavePluginList)
+            changedSettings.append(Setting.SAVE_PLUGIN_LIST)
+        if changedSettings:
+            self.settingsChanged.emit(changedSettings)

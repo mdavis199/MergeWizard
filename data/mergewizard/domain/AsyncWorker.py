@@ -1,7 +1,9 @@
-import sys, traceback
+import sys
+import traceback
+
 from PyQt5.QtCore import pyqtSignal, QObject, QRunnable
 
-# REFER: https://www.learnpyqt.com/courses/concurrent-execution/multithreading-pyqt-applications-qthreadpool/#improved-qrunnables
+# REFER: https://www.learnpyqt.com/courses/concurrent-execution/multithreading-pyqt-applications-qthreadpool
 
 
 class WorkerSignals(QObject):
@@ -17,7 +19,7 @@ class WorkerSignals(QObject):
     result
         `object` data returned from processing, anything
     progress
-        `int` indicating % progress 
+        `int` indicating % progress
     """
 
     started = pyqtSignal()
@@ -33,7 +35,7 @@ class Worker(QRunnable):
 
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
 
-    :param callback: The function callback to run on this worker thread. Supplied args and 
+    :param callback: The function callback to run on this worker thread. Supplied args and
                      kwargs will be passed through to the runner.
     :type callback: function
     :param args: Arguments to pass to the callback function
@@ -66,4 +68,3 @@ class Worker(QRunnable):
             self.signals.result.emit(result)
         finally:
             self.signals.finished.emit()
-

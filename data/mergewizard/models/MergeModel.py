@@ -2,22 +2,17 @@ from enum import IntEnum, auto
 from typing import List
 
 from PyQt5.QtCore import (
-    pyqtSignal,
     pyqtSlot,
-    Qt,
-    QObject,
-    QModelIndex,
     QAbstractItemModel,
-    QThreadPool,
+    QModelIndex,
+    QObject,
     QSortFilterProxyModel,
+    Qt,
 )
 from PyQt5.QtGui import QColor, QFont
 
-from mergewizard.domain.AsyncWorker import Worker
-from mergewizard.domain.MergeFileReader import MergeFileReader
-from mergewizard.domain.Merge import Merge
-
-from . import ItemId as Id
+from mergewizard.domain.merge import Merge
+import mergewizard.models.ItemId as Id
 
 
 class Role(IntEnum):
@@ -30,45 +25,25 @@ class Column(IntEnum):
 
 
 class MergeModel(QAbstractItemModel):
-
-    modelLoadingStarted = pyqtSignal()
-    modelLoadingProgress = pyqtSignal(int)
-    modelLoadingCompleted = pyqtSignal()
-
-    def __init__(self, modFolder: str = "", parent: QObject = None):
+    def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self.__placeholder: Merge = Merge("")
-        self.__modFolder: str = modFolder
-        self.__isLoading: bool = False
         self.__merges: List[Merge] = [self.__placeholder]
         self.__selectedMerge: int = -1  # row that is selected
 
-    def setModFolder(self, modFolder: str):
-        self.__modFolder = modFolder
-
-    def isLoading(self) -> bool:
-        return self.__isLoading
-
-    def loadMerges(self):
-        self.__isLoading = True
-        self.modelLoadingStarted.emit()
-        worker = Worker(MergeFileReader.loadMerges, self.__modFolder)
-        worker.signals.result.connect(self.setMerges)
-        worker.signals.progress.connect(self.modelLoadingProgress)
-        QThreadPool.globalInstance().start(worker)
+    # ------------------------------------------------
+    # Methods for data initialization and access
+    # ------------------------------------------------
 
     def setMerges(self, merges: List[Merge]):
         if len(self.__merges) > 1:
             self.beginRemoveRows(QModelIndex(), 1, len(self.__merges))
             self.__merges = [self.__placeholder]
             self.endRemoveRows()
-        if self.__modFolder:
-            if merges:
-                self.beginInsertRows(QModelIndex(), 1, len(merges))
-                self.__merges = self.__merges + sorted(merges)
-                self.endInsertRows()
-        self.__isLoading = False
-        self.modelLoadingCompleted.emit()
+        if merges:
+            self.beginInsertRows(QModelIndex(), 1, len(merges))
+            self.__merges = self.__merges + sorted(merges)
+            self.endInsertRows()
 
     def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
         self.__selectedMerge = index.row()
@@ -169,6 +144,7 @@ class MergeSortModel(QSortFilterProxyModel):
     @pyqtSlot(bool)
     def sortByPriority(self, sortByPriority: bool):
         # The plugins in the underlying model are already sorted by priority
+        # so we set the sort column  to -1,
         self.sort(-1 if sortByPriority else 0)
         self.invalidate()
 

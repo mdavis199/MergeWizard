@@ -14,14 +14,14 @@ class PageReviewMasters(WizardPage):
         self.ui.setupUi(self)
         self.context = context
 
-        PluginViewFactory.configureView(ViewType.Masters, self.ui.masterPlugins, context.pluginModel())
-        PluginViewFactory.configureView(ViewType.SelectedNoEdit, self.ui.selectedPlugins, context.pluginModel())
+        PluginViewFactory.configureView(ViewType.Masters, self.ui.masterPlugins, context.pluginModel)
+        PluginViewFactory.configureView(ViewType.SelectedNoEdit, self.ui.selectedPlugins, context.pluginModel)
 
         Splitter.decorate(self.ui.verticalSplitter)
         Splitter.decorate(self.ui.topSplitter)
         self.ui.verticalSplitter.setStretchFactor(0, 100)
         self.ui.verticalSplitter.setStretchFactor(1, 1)
-        self.ui.actionWidget.setPluginModel(context.pluginModel())
+        self.ui.actionWidget.setPluginModel(context.pluginModel)
 
     def isOkToExit(self):
         return True
