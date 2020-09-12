@@ -7,7 +7,7 @@
     <file alias="icon_inactive">resources/warning-gray.svg</file>
     <file alias="icon_missing">resources/warning-red.svg</file>
     <file alias="icon_master">resources/crown.svg</file>
-    <file alias="icon_merge">resources/twotone-developer-board-steel.png</file>
+    <file alias="icon_merge">resources/developer_board-steelblue.svg</file>
     <file alias="icon_merge2">resources/twotone-developer-board-black.png</file>
     <file alias="icon_mergable">resources/pie-chart-filled.png</file>
     <file alias="icon_selected">resources/check_box_green.svg</file>
