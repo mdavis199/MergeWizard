@@ -1,21 +1,18 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/mergewizard">
-    <file alias="icon_settings">resources/gear_icon.png</file>
+    <file alias="icon_settings">resources/info-black.svg</file>
     <file alias="icon_mergewizard">resources/merge_icon.png</file>
-    <file alias="icon_keyboard">resources/create.png</file>
-    <file alias="icon_filter">resources/filter_icon_small.png</file>
-    <file alias="icon_inactive">resources/twotone-warning.png</file>
-    <file alias="icon_missing">resources/twotone-warning-red.png</file>
+    <file alias="icon_create">resources/create.svg</file>
+    <file alias="icon_filter">resources/filter.svg</file>
+    <file alias="icon_inactive">resources/warning-gray.svg</file>
+    <file alias="icon_missing">resources/warning-red.svg</file>
     <file alias="icon_master">resources/crown.svg</file>
     <file alias="icon_merge">resources/twotone-developer-board-steel.png</file>
     <file alias="icon_merge2">resources/twotone-developer-board-black.png</file>
     <file alias="icon_mergable">resources/pie-chart-filled.png</file>
     <file alias="icon_selected">resources/check_box_green.svg</file>
     <file alias="icon_selected_as_master">resources/check_box_purple.svg</file>
-    <file alias="icon_fixup_text">resources/edit-twotone.png</file>
-    <file alias="icon_warning">resources/twotone-warning.png</file>
-    <file alias="icon_error">resources/twotone-warning-red.png</file>
-    <file alias="icon_info">resources/twotone_info.png</file>
+    <file alias="icon_info">resources/info-black.svg</file>
 
     <file alias="icon_filled_square_gray">resources/filled_square_gray.svg</file>
     <file alias="icon_filled_square_green">resources/filled_square_green.svg</file>

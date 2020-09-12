@@ -25,7 +25,7 @@ class Icon:
 
     # tool buttons
     FILTER = ":/mergewizard/icon_filter"
-    EDIT = ":/mergewizard/icon_keyboard"
+    EDIT = ":/mergewizard/icon_create"
     INFO = ":/mergewizard/icon_info"
     SETTINGS = ":/mergewizard/icon_settings"
 

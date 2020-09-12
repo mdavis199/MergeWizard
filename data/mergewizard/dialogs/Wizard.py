@@ -46,6 +46,7 @@ class Wizard(QWizard):
         self.setOptions(self.NoBackButtonOnStartPage)
         self.button(self.CustomButton1).setIcon(QIcon(Icon.SETTINGS))
         self.button(self.CustomButton1).setToolTip(self.tr("Set options for MergeWizard"))
+        self.button(self.CustomButton1).setVisible(False)  # no setting at this time
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         self.customButtonClicked.connect(self.handleCustomButton)
         self.addWizardPages()
