@@ -48,6 +48,18 @@ class MergeModel(QAbstractItemModel):
     def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
         self.__selectedMerge = index.row()
 
+    def selectedMerge(self) -> QModelIndex:
+        return self.index(self.__selectedMerge, 0)
+
+    def selectedMergePluginNames(self) -> List[str]:
+        if self.__selectedMerge < 0:
+            return []
+        names = []
+        merge = self.__merges[self.__selectedMerge]
+        for pfd in merge.plugins:
+            names.append(pfd.filename)
+        return names
+
     def merges(self):
         return self.__merges
 

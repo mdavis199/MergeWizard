@@ -58,8 +58,8 @@ class Wizard(QWizard):
         loadZMerge = self.context().getUserSetting(Setting.LOAD_ZMERGE, True)
         PluginViewFactory.excludeMergeColumns = not loadZMerge
 
-        if loadZMerge:
-            self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
+        # if loadZMerge:
+        #    self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
         for pageId in self.pageIds():

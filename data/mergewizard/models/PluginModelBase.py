@@ -13,6 +13,7 @@ from PyQt5.QtCore import (
 )
 
 from mergewizard.domain.plugin import Plugin, Plugins
+from mergewizard.domain.MOLog import moWarn
 
 
 DEFAULT_MIME_FORMAT = "application/x-qabstractitemmodeldatalist"
@@ -167,6 +168,24 @@ class PluginModelBase(QAbstractItemModel):
     # ------------------------------------------------
     # ---- Methods related to plugin order and selection
     # ------------------------------------------------
+
+    def selectPluginsByName(self, names: List[str]):
+        if not names:
+            return
+        indexes = []
+        startIndex = self.index(0, Column.PluginName)
+        for n in names:
+            matches = self.match(startIndex, Qt.DisplayRole, n, 1, Qt.MatchExactly)
+            if matches:
+                indexes.append(matches[0])
+            else:
+                moWarn(self.tr("Failed to select plugin: {}").format(n))
+        if indexes:
+            self.selectPlugins(indexes, True)
+
+    def resetPluginSelection(self):
+        indexes = [self.index(self._selected[row], 0) for row in range(len(self._selected))]
+        self.selectPlugins(indexes, False)
 
     def selectPluginAtRow(self, row: int, select: bool):
         self.selectPlugin(self.index(row, 0), select)

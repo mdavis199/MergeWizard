@@ -1,3 +1,4 @@
+from enum import IntEnum
 from PyQt5.QtCore import Qt, QModelIndex
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget
@@ -14,6 +15,10 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 class PagePluginsSelect(WizardPage):
 
     PROGRESS_OFFSET = 10
+
+    class PageId(IntEnum):
+        TextPanel = 0
+        MergePanel = 1
 
     def __init__(self, context: Context, parent: QWidget = None):
         super().__init__(parent)
@@ -34,8 +39,10 @@ class PagePluginsSelect(WizardPage):
         # views/models for the bottom panels
         self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
         self.ui.bulkAddWidget.setPluginModel(context.pluginModel)
+        self.ui.mergeSelectWidget.setMergeModel(context.mergeModel)
         self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
+        self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
 
         # splitters
         Splitter.decorate(self.ui.splitter)
@@ -48,14 +55,15 @@ class PagePluginsSelect(WizardPage):
         self.didResizeSplitters = False
 
         # toggle buttons
+        self.ui.toggleMergeButton.setIcon(QIcon(Icon.MERGE))
         self.ui.toggleBulkButton.setIcon(QIcon(Icon.EDIT))
-        self.ui.toggleBulkButton.clicked.connect(
-            lambda: self.ui.bulkAddWidget.setVisible(not self.ui.bulkAddWidget.isVisible())
-        )
         self.ui.toggleInfoButton.setIcon(QIcon(Icon.INFO))
-        self.ui.toggleInfoButton.clicked.connect(
-            lambda: self.ui.pluginInfoWidget.setVisible(not self.ui.pluginInfoWidget.isVisible())
-        )
+        self.ui.toggleFilterButton.setIcon(QIcon(Icon.FILTER))
+
+        self.ui.toggleBulkButton.clicked.connect(lambda: self.openTextPanel(not self.isTextPanelOpen()))
+        self.ui.toggleMergeButton.clicked.connect(lambda: self.openMergePanel(not self.isMergePanelOpen()))
+        self.ui.toggleInfoButton.clicked.connect(lambda: self.openInfoPanel(not self.isInfoPanelOpen()))
+        self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
 
         # progressbar
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
@@ -74,30 +82,51 @@ class PagePluginsSelect(WizardPage):
         self.saveSettings()
 
     def saveSettings(self) -> None:
-        infoPanelVisible = self.isInfoPanelOpen()
-        textVisible = self.isTextBoxOpen()
-        self.context.setSetting("InfoPanelVisible", infoPanelVisible)
-        self.context.setSetting("TextBoxVisible", textVisible)
+        self.context.setSetting("InfoPanelVisible", self.isInfoPanelOpen())
+        self.context.setSetting("TextPanelVisible", self.isTextPanelOpen())
+        self.context.setSetting("FilterPanelVisible", self.isFilterPanelOpen())
 
     def restoreSettings(self) -> None:
-        infoPanelVisible = self.context.getSetting("InfoPanelVisible", "false")
-        infoPanelVisible = infoPanelVisible == "true" or (isinstance(infoPanelVisible, bool) and infoPanelVisible)
-        self.openInfoPanel(infoPanelVisible)
-        textVisible = self.context.getSetting("TextBoxVisible", "false")
-        textVisible = textVisible == "true" or (isinstance(textVisible, bool) and textVisible)
-        self.openTextBox(textVisible)
+        visible = self.context.getSetting("InfoPanelVisible", "false")
+        visible = visible == "true" or (isinstance(visible, bool) and visible)
+        self.openInfoPanel(visible)
+        visible = self.context.getSetting("TextPanelVisible", "false")
+        visible = visible == "true" or (isinstance(visible, bool) and visible)
+        self.openTextPanel(visible)
 
     def isInfoPanelOpen(self) -> bool:
         return self.ui.pluginInfoWidget.isVisibleTo(self)
 
-    def isTextBoxOpen(self) -> bool:
-        return self.ui.bulkAddWidget.isVisibleTo(self)
+    def isFilterPanelOpen(self) -> bool:
+        return self.ui.pluginFilterWidget.isVisibleTo(self)
+
+    def isTextPanelOpen(self) -> bool:
+        return self.ui.stackedWidget.currentIndex() == self.PageId.TextPanel and self.ui.stackedWidget.isVisible()
+
+    def isMergePanelOpen(self) -> bool:
+        return self.ui.stackedWidget.currentIndex() == self.PageId.MergePanel and self.ui.stackedWidget.isVisible()
+
+    def openFilterPanel(self, visible: bool = True) -> None:
+        self.ui.pluginFilterWidget.setVisible(visible)
+        self.ui.toggleFilterButton.setChecked(visible)
 
     def openInfoPanel(self, visible: bool = True) -> None:
         self.ui.pluginInfoWidget.setVisible(visible)
+        self.ui.toggleInfoButton.setChecked(visible)
 
-    def openTextBox(self, visible: bool = True) -> None:
-        self.ui.bulkAddWidget.setVisible(visible)
+    def openTextPanel(self, visible: bool = True) -> None:
+        if visible:
+            self.ui.stackedWidget.setCurrentIndex(self.PageId.TextPanel)
+        self.ui.stackedWidget.setVisible(visible)
+        self.ui.toggleBulkButton.setChecked(visible)
+        self.ui.toggleMergeButton.setChecked(False)
+
+    def openMergePanel(self, visible: bool = True) -> None:
+        if visible:
+            self.ui.stackedWidget.setCurrentIndex(self.PageId.MergePanel)
+        self.ui.stackedWidget.setVisible(visible)
+        self.ui.toggleMergeButton.setChecked(visible)
+        self.ui.toggleBulkButton.setChecked(False)
 
     def modelLoadingStarted(self):
         self.ui.progressBar.setVisible(True)
@@ -168,3 +197,20 @@ class PagePluginsSelect(WizardPage):
         )
         if indexes:
             self.ui.pluginsList.setCurrentIndex(indexes[0])
+
+    # ----
+    # ---- Methods releated to the Merge Panel
+    # ----
+
+    def selectPluginsFromMerge(self):
+        if self.context.mergeModel.selectedMerge().isValid():
+            self.ui.pluginSelectionGroup.setTitle(
+                self.tr("Plugins Selected for Merge: {}").format(self.ui.mergeSelectWidget.getSelectedMergeName())
+            )
+            pluginNames = self.context.mergeModel.selectedMergePluginNames()
+            self.context.pluginModel.resetPluginSelection()
+            self.context.pluginModel.selectPluginsByName(pluginNames)
+        else:
+            self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected For Merge"))
+            self.context.pluginModel.resetPluginSelection()
+
