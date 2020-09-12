@@ -62,9 +62,13 @@ class PagePluginsSelect(WizardPage):
         context.dataCache.pluginModelLoadingStarted.connect(self.modelLoadingStarted)
         context.dataCache.pluginModelLoadingProgress.connect(self.modelLoadingProgress)
         context.dataCache.pluginModelLoadingCompleted.connect(self.modelLoadingCompleted)
+        self.restoreSettings()
 
     def initializePage(self) -> None:
-        self.restoreSettings()
+        """ If QWizard is not set to 'independent' pages then this method is called
+        everytime the wizard switches from the previous page. Otherwize it is called only
+        the first time it switches to this page """
+        pass
 
     def deinitializePage(self) -> None:
         self.saveSettings()

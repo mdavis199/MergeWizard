@@ -117,8 +117,8 @@ class PluginModelBase(QAbstractItemModel):
                 self.addPlugin(pluginFileDesc.filename, modName=pluginFileDesc.modName, isMerged=True)
 
     def addPlugin(self, name: str, modName: str = "", isMerge=None, isMerged=None) -> Plugin:
-        row = self._plugins.insertionIndex(name)
-        if row < 0:
+        row = self._plugins.index(name)
+        if row >= 0:
             plugin = self._plugins[row]
             if isMerge:
                 plugin.isMerge = True
@@ -129,6 +129,7 @@ class PluginModelBase(QAbstractItemModel):
             row = self._plugins.index(name)
             self.dataChanged.emit(self.index(row, Column.IsMerge), self.index(row, Column.IsMerged))
             return plugin
+        row = self._plugins.insertionIndex(name)
         self.beginInsertRows(QModelIndex(), row, row)
         plugin = self._plugins.get(name, False)
         if isMerge:

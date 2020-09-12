@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, QThreadPool
 
 from mobase import IOrganizer
 from mergewizard.domain.plugin import Plugins, PluginLoader
-from mergewizard.domain.merge import Merge, MergeFileReader
+from mergewizard.domain.merge import MergeFile as Merge, MergeFileReader
 from mergewizard.domain.AsyncWorker import Worker
 from mergewizard.domain.MOLog import moPerf, moTime
 from mergewizard.models.PluginModel import PluginModel

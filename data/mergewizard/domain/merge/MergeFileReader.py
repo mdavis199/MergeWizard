@@ -2,7 +2,7 @@ from typing import Set, List, Callable
 from os import path
 from glob import glob
 from PyQt5.QtCore import qWarning
-from mergewizard.domain.merge import Merge
+from mergewizard.domain.merge import MergeFile as Merge
 
 
 class MergeFileReader:
@@ -12,8 +12,7 @@ class MergeFileReader:
             merge = Merge.fromJSON(f.read())
             return merge
 
-    # TODO: we need to limit this to the mods that MO is aware of, not every recursive
-    # folder in the Mods Folder.  Do we limit it to only "enabled" mods?
+    # TODO: Do we limit loading merges only from "enabled" mods?
     @staticmethod
     def loadMerges(modDir: str, progress_callback: Callable[[], int] = None) -> List[Merge]:
         merges: Set[Merge] = set()

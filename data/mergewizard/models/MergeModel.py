@@ -11,7 +11,7 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtGui import QColor, QFont
 
-from mergewizard.domain.merge import Merge
+from mergewizard.domain.merge import MergeFile as Merge
 import mergewizard.models.ItemId as Id
 
 

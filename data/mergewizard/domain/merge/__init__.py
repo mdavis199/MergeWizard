@@ -1,4 +1,4 @@
-from mergewizard.domain.merge.Merge import Merge
+from mergewizard.domain.merge.MergeFile import MergeFile
 from mergewizard.domain.merge.MergeFileReader import MergeFileReader
 
-__all__ = ["Merge", "MergeFileReader"]
+__all__ = ["MergeFile", "MergeFileReader"]

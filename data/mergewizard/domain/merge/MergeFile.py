@@ -1,7 +1,6 @@
 from typing import List
 from os import path
 from mergewizard.domain.merge.JSONObject import JSONObject
-from PyQt5.QtCore import qInfo
 
 
 class PluginFileDesc(JSONObject):
@@ -12,7 +11,6 @@ class PluginFileDesc(JSONObject):
 
         # TODO: is this always true?
         self.__modName = path.basename(path.dirname(self.dataFolder))
-        qInfo("{}: {}".format(self.dataFolder, self.__modName))
 
     @property
     def modName(self):
@@ -23,7 +21,7 @@ class PluginFileDesc(JSONObject):
         self.__modName = value
 
 
-class Merge(JSONObject):
+class MergeFile(JSONObject):
     def __hash__(self):
         return self.__hash
 
