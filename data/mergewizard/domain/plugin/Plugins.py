@@ -91,7 +91,7 @@ class Plugins(Mapping):
 
         key = name.lower()
         idx = self.__plugins.bisect_key_right(key)
-        if idx > 0 and self.__plugins.peek_item(idx - 1)[0] == key:
+        if idx > 0 and self.__plugins.peekitem(idx - 1)[0] == key:
             return -1
         return idx
 

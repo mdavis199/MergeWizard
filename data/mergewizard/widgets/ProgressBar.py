@@ -7,3 +7,5 @@ class ProgressBar(QWidget):
         super().__init__(parent)
         self.ui = Ui_ProgressBar()
         self.ui.setupUi(self)
+
+

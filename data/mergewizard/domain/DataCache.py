@@ -129,7 +129,8 @@ class DataCache(QObject):
             return
         if self.isLoadingPlugins:
             return
-        self.addMergeInfoToPluginModel()
+        # self.addMergeInfoToPluginModel()
+        self.pluginModel.addMergeInfo(self.__merges)
         self._dataStopTime = perf_counter()
         moPerf(self._dataStartTime, self._dataStopTime, "Finished loading data")
 
@@ -142,4 +143,9 @@ class DataCache(QObject):
         self.pluginModel.setPlugins(deepcopy(plugins))
 
     def addMergeInfoToPluginModel(self):
-        pass
+        for merge in self.__merges:
+            plugin = self.__plugins.get(merge.filename, False)  # False -> non-MO/Missing
+            plugin.isMerge = True
+            for p in merge.plugins:
+                plugin = self.__plugins.get(p, False)  # False -> non-MO/Missing
+                plugin.isMerged = True

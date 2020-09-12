@@ -1,5 +1,7 @@
 from typing import List
+from os import path
 from mergewizard.domain.merge.JSONObject import JSONObject
+from PyQt5.QtCore import qInfo
 
 
 class PluginFileDesc(JSONObject):
@@ -7,6 +9,18 @@ class PluginFileDesc(JSONObject):
         self.filename, self.dataFolder, self.hash = filename, dataFolder, hash
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+        # TODO: is this always true?
+        self.__modName = path.basename(path.dirname(self.dataFolder))
+        qInfo("{}: {}".format(self.dataFolder, self.__modName))
+
+    @property
+    def modName(self):
+        return self.__modName
+
+    @modName.setter
+    def modName(self, value):
+        self.__modName = value
 
 
 class Merge(JSONObject):
@@ -81,19 +95,23 @@ class Merge(JSONObject):
     def key(self):
         return self.__key
 
-    def modName(self):
-        return self.name
-
-    def pluginName(self):
-        return self.filename
-
     # ----------------------------------
-    # full path the merge.json file
+    # full path of the merge.json file
     # ----------------------------------
 
-    def setMergePath(self, path: str):
-        self.__mergePath = path
-
+    @property
     def mergePath(self):
         return self.__mergePath
+
+    @mergePath.setter
+    def mergePath(self, value):
+        self.__mergePath = value
+
+    @property
+    def modName(self):
+        return self.__modName
+
+    @modName.setter
+    def modName(self, value):
+        self.__modName = value
 

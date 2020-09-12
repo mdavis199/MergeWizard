@@ -45,7 +45,7 @@ class PluginStyleModel(QIdentityProxyModel):
             if idx.column() == Column.IsMerge:
                 return QIcon(Icon.MERGE) if v else None
             if idx.column() == Column.IsMerged:
-                return QIcon(Icon.MERGE) if v else None
+                return QIcon(Icon.MERGED) if v else None
             return None
             return None
         elif role == Qt.ForegroundRole:
