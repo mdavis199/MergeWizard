@@ -62,7 +62,7 @@ class Ui_PagePluginsSelect(object):
         self.pluginsList.header().setMinimumSectionSize(18)
         self.pluginsList.header().setStretchLastSection(True)
         self.allPluginsTopLayout.addWidget(self.pluginsList)
-        self.pluginFilterWidget = QtWidgets.QWidget(self.layoutWidget)
+        self.pluginFilterWidget = PluginFilterBox(self.layoutWidget)
         self.pluginFilterWidget.setObjectName("pluginFilterWidget")
         self.allPluginsTopLayout.addWidget(self.pluginFilterWidget)
         self.filterLayout = QtWidgets.QFormLayout()
@@ -179,5 +179,6 @@ class Ui_PagePluginsSelect(object):
         self.label.setText(_translate("PagePluginsSelect", "Loading Plugins:"))
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeSelectWidget import MergeSelectWidget
+from mergewizard.widgets.PluginFilterBox import PluginFilterBox
 from mergewizard.widgets.PluginInfoWidget import PluginInfoWidget
 from mergewizard.widgets.PluginTextWidget import PluginTextWidget

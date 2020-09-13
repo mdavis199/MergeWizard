@@ -1,5 +1,5 @@
 from enum import Flag, auto
-from PyQt5.QtCore import Qt, QObject, QSortFilterProxyModel, QModelIndex, qInfo
+from PyQt5.QtCore import Qt, QObject, QSortFilterProxyModel, QModelIndex
 from mergewizard.models.PluginModelBase import Column, Role, isBoolColumn
 
 
@@ -9,8 +9,10 @@ class Filter(Flag):
     Missing = auto()
     Masters = auto()
     Merges = auto()
+    Merged = auto()
+    SelectedAsMaster = auto()
     Selected = auto()
-    All = Inactive | Missing | Masters | Merges | Selected
+    All = Inactive | Missing | Masters | Merges | Merged | SelectedAsMaster | Selected
 
 
 class PluginType(Flag):
@@ -83,6 +85,12 @@ class PluginFilterModel(QSortFilterProxyModel):
                 return False
         if self._filters & Filter.Merges != Filter.NoFilter:
             if plugin.isMerge:
+                return False
+        if self._filters & Filter.Merged != Filter.NoFilter:
+            if plugin.isMerged:
+                return False
+        if self._filters & Filter.SelectedAsMaster != Filter.NoFilter:
+            if plugin.isSelectedAsMaster:
                 return False
         if self._filters & Filter.Selected != Filter.NoFilter:
             if plugin.isSelected:

@@ -42,6 +42,7 @@ class PagePluginsSelect(WizardPage):
         self.ui.mergeSelectWidget.setMergeModel(context.mergeModel)
         self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
+        self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
 
         # splitters
@@ -93,6 +94,7 @@ class PagePluginsSelect(WizardPage):
         visible = self.context.getSetting("TextPanelVisible", "false")
         visible = visible == "true" or (isinstance(visible, bool) and visible)
         self.openTextPanel(visible)
+        self.openFilterPanel(False)
 
     def isInfoPanelOpen(self) -> bool:
         return self.ui.pluginInfoWidget.isVisibleTo(self)

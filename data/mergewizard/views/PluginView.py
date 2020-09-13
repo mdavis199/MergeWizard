@@ -40,6 +40,16 @@ class PluginView(QTreeView):
 
     filterChanged = pyqtSignal()
 
+    ColumnFilters = [
+        Filter.Inactive,
+        Filter.Missing,
+        Filter.Masters,
+        Filter.Merges,
+        Filter.Merged,
+        Filter.SelectedAsMaster,
+        Filter.Selected,
+    ]
+
     def __init__(self, parent: QWidget):
         QTreeView.__init__(self, parent)
         self._columns: List[Column] = []
@@ -58,19 +68,29 @@ class PluginView(QTreeView):
 
     # ---- Methods related to filters
 
+    def sectionForFilter(self, filtr: Filter) -> int:
+        if filtr == Filter.Inactive:
+            return self.sectionForColumn(Column.IsInactive)
+        if filtr == Filter.Missing:
+            return self.sectionForColumn(Column.IsMissing)
+        if filtr == Filter.Masters:
+            return self.sectionForColumn(Column.IsMaster)
+        if filtr == Filter.Merges:
+            return self.sectionForColumn(Column.IsMerge)
+        if filtr == Filter.Merged:
+            return self.sectionForColumn(Column.IsMerged)
+        if filtr == Filter.SelectedAsMaster:
+            return self.sectionForColumn(Column.IsSelectedAsMaster)
+        if filtr == Filter.Selected:
+            return self.sectionForColumn(Column.IsSelected)
+        return -1
+
     def setFilter(self, filtr: Filter, enabled: bool):
-        # The filter options apply only to the ALL plugins view.
-        # This is why we can hardcode the column numbers rather
-        # than try to calculate them based on the view type
         self._models.filterModel.setFilter(filtr, enabled)
         filters = self._models.filterModel.filters()
 
-        self.setColumnHidden(0, filters & Filter.Inactive != Filter.NoFilter)
-        self.setColumnHidden(1, filters & Filter.Missing != Filter.NoFilter)
-        self.setColumnHidden(2, filters & Filter.Masters != Filter.NoFilter)
-        self.setColumnHidden(3, filters & Filter.Merges != Filter.NoFilter)
-        self.setColumnHidden(4, filters & Filter.Selected != Filter.NoFilter)
-        self.filterChanged.emit()
+        for f in self.ColumnFilters:
+            self.setColumnHidden(self.sectionForFilter(f), bool(filters & f))
 
     def setNameFilter(self, text: str):
         self._models.filterModel.setNameFilter(text)
