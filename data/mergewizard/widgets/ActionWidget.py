@@ -21,6 +21,7 @@ class ActionWidget(QWidget):
         logFilterModel.setSourceModel(logModel)
         self.ui.logView.setModel(logFilterModel)
         self.ui.logView.resizeColumnToContents(0)
+        self.ui.logView.setWordWrap(True)
         self.ui.logView.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
 
         actionModel = ActionModel()
@@ -70,3 +71,4 @@ class ActionWidget(QWidget):
 
     def createLogContextMenu(self):
         pass
+

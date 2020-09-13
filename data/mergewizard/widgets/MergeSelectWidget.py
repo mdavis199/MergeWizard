@@ -40,4 +40,3 @@ class MergeSelectWidget(QWidget):
                 idx.parent(), QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
             )
             self.selectIndex(idx.parent())
-
