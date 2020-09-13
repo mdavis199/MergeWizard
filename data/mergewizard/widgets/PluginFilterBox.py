@@ -73,7 +73,7 @@ class PluginFilterBox(QListWidget):
 
         item = QListWidgetItem(self.tr("Selected Plugins"))
         item.setIcon(QIcon(Icon.SELECTED))
-        item.setToolTip(self.tr("Plugins that are not active in the current profile."))
+        item.setToolTip(self.tr("Plugins to be included in the current merge."))
         item.setData(Qt.UserRole, Filter.Selected)
         item.setData(Qt.UserRole + 1, 6)
         item.setFlags(defaultFlags)
