@@ -1,9 +1,9 @@
-from enum import Flag, auto
+from enum import Flag, IntFlag, auto
 from PyQt5.QtCore import Qt, QObject, QSortFilterProxyModel, QModelIndex
 from mergewizard.models.PluginModelBase import Column, Role, isBoolColumn
 
 
-class Filter(Flag):
+class Filter(IntFlag):
     NoFilter = 0
     Inactive = auto()
     Missing = auto()

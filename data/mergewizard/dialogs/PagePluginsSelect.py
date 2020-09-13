@@ -1,5 +1,5 @@
 from enum import IntEnum
-from PyQt5.QtCore import Qt, QModelIndex
+from PyQt5.QtCore import Qt, QModelIndex, QVariant
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget
 
@@ -30,11 +30,14 @@ class PagePluginsSelect(WizardPage):
         PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel)
         PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel)
 
+        self.pluginlist_pluginname_section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
         self.ui.pluginsList.selectionModel().currentChanged.connect(lambda: self.showPluginInfo(ViewType.All))
         self.ui.selectedPluginsList.selectionModel().currentChanged.connect(
             lambda: self.showPluginInfo(ViewType.Selected)
         )
-        self.pluginlist_pluginname_section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
+        self.ui.pluginsList.filterChanged.connect(self.updateFilterCount)
+        self.context.pluginModel.rowsInserted.connect(lambda: self.updateFilterCount())
+        self.context.pluginModel.rowsRemoved.connect(lambda: self.updateFilterCount())
 
         # views/models for the bottom panels
         self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
@@ -86,15 +89,17 @@ class PagePluginsSelect(WizardPage):
         self.context.setSetting("InfoPanelVisible", self.isInfoPanelOpen())
         self.context.setSetting("TextPanelVisible", self.isTextPanelOpen())
         self.context.setSetting("FilterPanelVisible", self.isFilterPanelOpen())
+        self.context.setSetting("PluginFilters", self.ui.pluginsList.filters())
 
     def restoreSettings(self) -> None:
-        visible = self.context.getSetting("InfoPanelVisible", "false")
-        visible = visible == "true" or (isinstance(visible, bool) and visible)
+        visible = self.context.getSetting("InfoPanelVisible", QVariant.Bool, False)
         self.openInfoPanel(visible)
-        visible = self.context.getSetting("TextPanelVisible", "false")
-        visible = visible == "true" or (isinstance(visible, bool) and visible)
+        visible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
         self.openTextPanel(visible)
         self.openFilterPanel(False)
+        filters = self.context.getSetting("PluginFilters", QVariant.Int, 0)
+        if filters:
+            self.ui.pluginFilterWidget.enableFilters(filters)
 
     def isInfoPanelOpen(self) -> bool:
         return self.ui.pluginInfoWidget.isVisibleTo(self)
@@ -129,6 +134,12 @@ class PagePluginsSelect(WizardPage):
         self.ui.stackedWidget.setVisible(visible)
         self.ui.toggleMergeButton.setChecked(visible)
         self.ui.toggleBulkButton.setChecked(False)
+
+    def updateFilterCount(self) -> None:
+        showing = self.ui.pluginsList.model().rowCount()
+        total = self.context.pluginModel.rowCount()
+        filtered = total - showing
+        self.ui.filterCount.setText(self.tr("Filtered: {}, Total: {}").format(filtered, total))
 
     def modelLoadingStarted(self):
         self.ui.progressBar.setVisible(True)
@@ -201,7 +212,7 @@ class PagePluginsSelect(WizardPage):
             self.ui.pluginsList.setCurrentIndex(indexes[0])
 
     # ----
-    # ---- Methods releated to the Merge Panel
+    # ---- Methods related to the Merge Panel
     # ----
 
     def selectPluginsFromMerge(self):

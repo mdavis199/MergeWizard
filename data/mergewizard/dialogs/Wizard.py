@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint
+from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint, QVariant
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QWizard
 
@@ -105,10 +105,10 @@ class Wizard(QWizard):
 
     def restoreSize(self) -> None:
         try:
-            height = int(self.context().getSetting("WindowHeight", 0))
-            width = int(self.context().getSetting("WindowWidth", 0))
-            x = int(self.context().getSetting("WindowX", 0))
-            y = int(self.context().getSetting("WindowY", 0))
+            height = int(self.context().getSetting("WindowHeight", QVariant.Int, 0))
+            width = int(self.context().getSetting("WindowWidth", QVariant.Int, 0))
+            x = int(self.context().getSetting("WindowX", QVariant.Int, 0))
+            y = int(self.context().getSetting("WindowY", QVariant.Int, 0))
         except ValueError:
             height = 0
             width = 0
@@ -118,6 +118,6 @@ class Wizard(QWizard):
             self.resize(QSize(width, height))
         if x and y:
             self.move(QPoint(x, y))
-        isMaximized = self.context().getSetting("WindowMaximized", "false")
-        if isMaximized == "true" or (isinstance(isMaximized, bool) and isMaximized):
+        isMaximized = self.context().getSetting("WindowMaximized", QVariant.Bool, False)
+        if isMaximized:
             self.setWindowState(self.windowState() | Qt.WindowMaximized)

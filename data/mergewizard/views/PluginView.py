@@ -88,9 +88,12 @@ class PluginView(QTreeView):
     def setFilter(self, filtr: Filter, enabled: bool):
         self._models.filterModel.setFilter(filtr, enabled)
         filters = self._models.filterModel.filters()
-
         for f in self.ColumnFilters:
             self.setColumnHidden(self.sectionForFilter(f), bool(filters & f))
+        self.filterChanged.emit()
+
+    def filters(self):
+        return self._models.filterModel.filters()
 
     def setNameFilter(self, text: str):
         self._models.filterModel.setNameFilter(text)

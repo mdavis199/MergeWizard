@@ -1,4 +1,5 @@
 from typing import Any
+from PyQt5.QtCore import QVariant
 from mobase import IOrganizer
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
@@ -33,10 +34,30 @@ class Context:
     # Semi-private settings stored in modorganizer.ini
 
     def setSetting(self, name: str, value: Any) -> None:
+        # self.organizer.setPersistent(INTERNAL_PLUGIN_NAME, name, QVariant(value))
         self.organizer.setPersistent(INTERNAL_PLUGIN_NAME, name, value)
 
-    def getSetting(self, name: str, default: Any) -> Any:
-        return self.organizer.persistent(INTERNAL_PLUGIN_NAME, name, default)
+    def getSetting(self, name: str, variantType: int, default: Any) -> QVariant:
+        # TODO: This always seems to return a string
+        # We going to handle just enough types here to get by
+        variant = self.organizer.persistent(INTERNAL_PLUGIN_NAME, name)
+        if not variant:
+            return default
+        try:
+            if variantType == QVariant.Bool:
+                if variant == "false":
+                    return False
+                if variant == "true":
+                    return True
+                return default
+
+            if variantType == QVariant.String:
+                return variant
+
+            if variantType == QVariant.Int:
+                return int(variant)
+        except ValueError:
+            return default
 
     # Public settings stored in MO's user interface
 
