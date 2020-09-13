@@ -55,7 +55,7 @@ class PluginFilterBox(QListWidget):
 
         item = QListWidgetItem(self.tr("Merged Plugins"))
         item.setIcon(QIcon(Icon.MERGED))
-        item.setToolTip(self.tr("Plugins were consumed by a merge."))
+        item.setToolTip(self.tr("Plugins that were consumed by a merge."))
         item.setData(Qt.UserRole, Filter.Merged)
         item.setData(Qt.UserRole + 1, 4)
         item.setFlags(defaultFlags)

@@ -16,7 +16,10 @@ class PagePluginsSelect(WizardPage):
 
     PROGRESS_OFFSET = 10
 
-    class PageId(IntEnum):
+    class AllPageId(IntEnum):
+        InfoPanel = 0
+
+    class SelectedPageId(IntEnum):
         TextPanel = 0
         MergePanel = 1
 
@@ -102,36 +105,44 @@ class PagePluginsSelect(WizardPage):
             self.ui.pluginFilterWidget.enableFilters(filters)
 
     def isInfoPanelOpen(self) -> bool:
-        return self.ui.pluginInfoWidget.isVisibleTo(self)
+        return self.ui.allStacked.currentIndex() == self.AllPageId.InfoPanel and self.ui.allStacked.isVisible()
 
     def isFilterPanelOpen(self) -> bool:
         return self.ui.pluginFilterWidget.isVisibleTo(self)
 
     def isTextPanelOpen(self) -> bool:
-        return self.ui.stackedWidget.currentIndex() == self.PageId.TextPanel and self.ui.stackedWidget.isVisible()
+        return (
+            self.ui.selectedStacked.currentIndex() == self.SelectedPageId.TextPanel
+            and self.ui.selectedStacked.isVisible()
+        )
 
     def isMergePanelOpen(self) -> bool:
-        return self.ui.stackedWidget.currentIndex() == self.PageId.MergePanel and self.ui.stackedWidget.isVisible()
+        return (
+            self.ui.selectedStacked.currentIndex() == self.SelectedPageId.MergePanel
+            and self.ui.selectedStacked.isVisible()
+        )
 
     def openFilterPanel(self, visible: bool = True) -> None:
         self.ui.pluginFilterWidget.setVisible(visible)
         self.ui.toggleFilterButton.setChecked(visible)
 
     def openInfoPanel(self, visible: bool = True) -> None:
-        self.ui.pluginInfoWidget.setVisible(visible)
+        if visible:
+            self.ui.allStacked.setCurrentIndex(self.AllPageId.InfoPanel)
+        self.ui.allStacked.setVisible(visible)
         self.ui.toggleInfoButton.setChecked(visible)
 
     def openTextPanel(self, visible: bool = True) -> None:
         if visible:
-            self.ui.stackedWidget.setCurrentIndex(self.PageId.TextPanel)
-        self.ui.stackedWidget.setVisible(visible)
+            self.ui.selectedStacked.setCurrentIndex(self.SelectedPageId.TextPanel)
+        self.ui.selectedStacked.setVisible(visible)
         self.ui.toggleBulkButton.setChecked(visible)
         self.ui.toggleMergeButton.setChecked(False)
 
     def openMergePanel(self, visible: bool = True) -> None:
         if visible:
-            self.ui.stackedWidget.setCurrentIndex(self.PageId.MergePanel)
-        self.ui.stackedWidget.setVisible(visible)
+            self.ui.selectedStacked.setCurrentIndex(self.SelectedPageId.MergePanel)
+        self.ui.selectedStacked.setVisible(visible)
         self.ui.toggleMergeButton.setChecked(visible)
         self.ui.toggleBulkButton.setChecked(False)
 

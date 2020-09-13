@@ -47,8 +47,8 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QWidget" name="">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+         <widget class="QWidget" name="layoutWidget">
+          <layout class="QVBoxLayout" name="allPluginsTopLayout">
            <item>
             <widget class="PluginView" name="pluginsList">
              <property name="sizePolicy">
@@ -99,7 +99,7 @@
             <widget class="PluginFilterBox" name="pluginFilterWidget" native="true"/>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
+            <layout class="QHBoxLayout" name="filterEditLayout">
              <item>
               <widget class="QToolButton" name="toggleFilterButton">
                <property name="toolTip">
@@ -134,13 +134,14 @@
            </item>
           </layout>
          </widget>
-         <widget class="PluginInfoWidget" name="pluginInfoWidget" native="true">
+         <widget class="QStackedWidget" name="allStacked">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <widget class="PluginInfoWidget" name="pluginInfoWidget"/>
          </widget>
         </widget>
        </item>
@@ -210,7 +211,7 @@
            <bool>false</bool>
           </attribute>
          </widget>
-         <widget class="QStackedWidget" name="stackedWidget">
+         <widget class="QStackedWidget" name="selectedStacked">
           <widget class="PluginTextWidget" name="bulkAddWidget"/>
           <widget class="MergeSelectWidget" name="mergeSelectWidget"/>
          </widget>
