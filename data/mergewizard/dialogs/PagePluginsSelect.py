@@ -41,6 +41,7 @@ class PagePluginsSelect(WizardPage):
         self.ui.pluginsList.filterChanged.connect(self.updateFilterCount)
         self.context.pluginModel.rowsInserted.connect(lambda: self.updateFilterCount())
         self.context.pluginModel.rowsRemoved.connect(lambda: self.updateFilterCount())
+        self.context.pluginModel.dataChanged.connect(lambda: self.updateFilterCount())
 
         # views/models for the bottom panels
         self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
@@ -150,7 +151,7 @@ class PagePluginsSelect(WizardPage):
         showing = self.ui.pluginsList.model().rowCount()
         total = self.context.pluginModel.rowCount()
         filtered = total - showing
-        self.ui.filterCount.setText(self.tr("Filtered: {}, Total: {}").format(filtered, total))
+        self.ui.filterCount.setText(self.tr("Filtered: {}, Showing: {}, Total: {}").format(filtered, showing, total))
 
     def modelLoadingStarted(self):
         self.ui.progressBar.setVisible(True)
