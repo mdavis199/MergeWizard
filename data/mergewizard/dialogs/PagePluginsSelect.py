@@ -56,6 +56,7 @@ class PagePluginsSelect(WizardPage):
         self.ui.selectedPluginsSplitter.setStretchFactor(0, 2)
         self.ui.selectedPluginsSplitter.setStretchFactor(1, 1)
         self.didResizeSplitters = False
+        self.resizeSplitter()
 
         # toggle buttons
         self.ui.toggleMergeButton.setIcon(QIcon(Icon.MERGE))

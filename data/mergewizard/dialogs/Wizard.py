@@ -31,7 +31,7 @@ class Wizard(QWizard):
         self.__context = Context(organizer)
         self.__context.dataCache.loadData()
 
-        self.resize(700, 500)
+        # self.resize(700, 500)
         self.setWizardStyle(0)
         self.setWindowTitle(self.tr("Merge Wizard"))
         self.setWindowIcon(QIcon(Icon.MERGEWIZARD))
