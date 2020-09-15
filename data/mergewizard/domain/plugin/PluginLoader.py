@@ -1,41 +1,24 @@
-from typing import Callable
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import QThread, pyqtSignal
 from mobase import IOrganizer, PluginState
 from mergewizard.domain.plugin.Plugin import Plugin
 from mergewizard.domain.plugin.Plugins import Plugins
 
 
-class ProgressEmitter(QObject):
-    def __init__(self, callback: Callable[[], int] = None, maxValue=0):
-        super().__init__()
-        self.callback = callback
-        self.maxValue = maxValue
-        self.value = 0
-
-    def setMaxValue(self, value):
-        self.maxValue = value
-
-    @pyqtSlot()
-    def bump(self):
-        self.value = self.value + 1
-        if self.callback and self.maxValue:
-            self.callback.emit(self.value * 100 / self.maxValue)
-
-    def end(self) -> None:
-        self.value = self.maxValue
-        if self.callback:
-            self.callback.emit(100)
-
-
-class PluginDataLoader(QObject):
+class PluginLoader(QThread):
     """ Loads all plugins that MO2 knows about. """
 
-    def __init__(self, organizer: IOrganizer, callback: Callable[[], int]):
+    progress = pyqtSignal(int)
+    result = pyqtSignal(object)
+
+    def __init__(self, organizer: IOrganizer):
         super().__init__()
         self.__organizer = organizer
-        self.progressEmitter = ProgressEmitter(callback)
+        self._stopped = False
 
-    def loadPlugins(self) -> Plugins:
+    def stop(self):
+        self._stopped = True
+
+    def run(self) -> Plugins:
         """ Constructs a Plugin for each name with data from MO2 and adds it
         to the Plugins data structure.
 
@@ -46,23 +29,25 @@ class PluginDataLoader(QObject):
         as "non-MO/missing" and added to the Plugins structure.
         """
         pluginNames = self.__organizer.pluginList().pluginNames()
-        self.progressEmitter.maxValue = len(pluginNames) * 2
+        self._total = len(pluginNames) * 2
+        self._count = 0
+        self._progress = 0
 
         plugins = Plugins()
         if pluginNames is None:
             pluginNames = self.__organizer.pluginList().pluginNames()
         for name in pluginNames:
+            if self._stopped:
+                return
+            self.emitProgress()
             plugins.add(self.loadPlugin(name))
-            self.bumpProgress()
         for name in pluginNames:
-            self.bumpProgress()
+            self.emitProgress()
             for requirement in self.__organizer.pluginList().masters(name):
+                if self._stopped:
+                    return
                 plugins.addRequirement(plugins.get(name), plugins.get(requirement, False))
-        self.progressEmitter.end()
-        return plugins
-
-    def bumpProgress(self):
-        self.progressEmitter.bump()
+        self.result.emit(plugins)
 
     def loadPlugin(self, name: str) -> Plugin:
         plugin = Plugin(name)
@@ -77,10 +62,10 @@ class PluginDataLoader(QObject):
             plugin.modPath = mod.absolutePath()
         return plugin
 
-
-class PluginLoader:
-    @staticmethod
-    def loadPlugins(organizer: IOrganizer, progress_callback: Callable[[], int] = None) -> Plugins:
-        pluginLoader = PluginDataLoader(organizer, progress_callback)
-        plugins = pluginLoader.loadPlugins()
-        return plugins
+    def emitProgress(self):
+        QThread.usleep(1)
+        self._count = self._count + 1
+        v = int(self._count * 100 / self._total)
+        if v != self._progress:
+            self._progress = v
+            self.progress.emit(v)

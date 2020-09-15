@@ -73,6 +73,7 @@ class PagePluginsSelect(WizardPage):
         self.ui.toggleInfoButton.clicked.connect(lambda: self.openInfoPanel(not self.isInfoPanelOpen()))
         self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
 
+        # progress bar
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
         context.dataCache.dataCacheLoadingStarted.connect(self.modelLoadingStarted)
         context.dataCache.dataCacheLoadingProgress.connect(self.modelLoadingProgress)

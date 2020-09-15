@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import List, Callable
 from time import perf_counter
-from PyQt5.QtCore import pyqtSignal, QObject, QThreadPool
+from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 
 from mobase import IOrganizer
 from mergewizard.domain.plugin import Plugins, PluginLoader
@@ -25,6 +25,7 @@ class ProgressEmitter(QObject):
         self._pluginProgress = 0
         self._mergeProgress = 0
         self._dataCacheProgress = 0
+        self._maxValue = 300
 
     @property
     def maxValue(self):
@@ -35,14 +36,19 @@ class ProgressEmitter(QObject):
         self._maxValue = value
 
     def pluginProgress(self, amount: int) -> None:
+        # if not amount % 10:
+        #    qInfo("Plugin progress: {}".format(amount))
         self._pluginProgress = amount
         self._emitProgress()
 
     def mergeProgress(self, amount: int) -> None:
+        # qInfo("Merge progress: {}".format(amount))
         self._mergeProgress = amount
         self._emitProgress()
 
     def dataCacheProgress(self, amount: int) -> None:
+        # if not amount % 5:
+        #    qInfo("Data progress: {}".format(amount))
         self._dataCacheProgress = amount
         self._emitProgress()
 
@@ -74,22 +80,16 @@ class DataCache(QObject):
         self._organizer: IOrganizer = organizer
         self._mergeModel: MergeModel = MergeModel()
         self._pluginModel: PluginModel = PluginModel(organizer)
+        self._pluginLoader: PluginLoader = None
+        self._mergeLoader: MergeFileReader = None
 
-        self._isLoadingMerges: bool = False
-        self._isLoadingPlugins: bool = False
         self._isLoadingData: bool = False
 
-        self._programStartTime: float = perf_counter()
         self._mergeStartTime: float = 0
-        self._mergeStopTime: float = 0
         self._pluginStartTime: float = 0
-        self._pluginStopTime: float = 0
         self._dataStartTime: float = 0
-        self._dataStopTime: float = 0
 
         self._progressEmitter = ProgressEmitter(self.dataCacheLoadingProgress)
-        self.mergeModelLoadingProgress.connect(self._progressEmitter.mergeProgress)
-        self.pluginModelLoadingProgress.connect(self._progressEmitter.pluginProgress)
 
         # CACHED Data
         self.__merges = None
@@ -111,17 +111,23 @@ class DataCache(QObject):
 
     @property
     def isLoadingData(self) -> bool:
-        return self._isLoadingMerges or self._isLoadingPlugins
+        return self.isLoadingMerges or self.isLoadingPlugins
 
     @property
     def isLoadingMerges(self) -> bool:
-        return self._isLoadingMerges
+        return self._mergeLoader and self._mergeLoader.isRunning()
 
     @property
     def isLoadingPlugins(self) -> bool:
-        return self._isLoadingPlugins
+        return self._pluginLoader and self._pluginLoader.isRunning()
 
     # --------------------------------------------------------
+
+    def stopLoading(self) -> None:
+        if self.isLoadingMerges:
+            self._mergeLoader.stop()
+        if self.isLoadingPlugins:
+            self._pluginLoader.stop()
 
     def loadData(self) -> None:
         if self._isLoadingData:
@@ -135,54 +141,59 @@ class DataCache(QObject):
         self.loadPlugins()
 
     def loadMerges(self) -> None:
-        if self._isLoadingMerges:
+        if self._mergeLoader and self._mergeLoader.isRunning():
             return
-        self._isLoadingMerges = True
-        self._progressEmitter.maxValue = 300 if self._isLoadingPlugins else 100
+        self._mergeLoader = MergeFileReader(self._organizer.modsPath())
+        self._mergeLoader.started.connect(lambda: qInfo("Merge loader started"))
+        self._mergeLoader.progress.connect(self._progressEmitter.mergeProgress)
+        self._mergeLoader.finished.connect(self._finishedLoadingMerges)
+        self._mergeLoader.result.connect(self._setMerges)
+        self._mergeLoader.started.connect(self.mergeModelLoadingStarted)
+        self._mergeLoader.finished.connect(self.mergeModelLoadingCompleted)
+        self._mergeLoader.progress.connect(self.mergeModelLoadingProgress)
+
         self._mergeStartTime = perf_counter()
         moTime(self._mergeStartTime, "Started loading merges")
-        self.mergeModelLoadingStarted.emit()
-        modFolder = self.organizer.modsPath()
-        worker = Worker(MergeFileReader.loadMerges, modFolder)
-        worker.signals.result.connect(self.setMerges)
-        worker.signals.progress.connect(self.mergeModelLoadingProgress)
-        worker.signals.finished.connect(self.finishedLoadingMerges)
-        QThreadPool.globalInstance().start(worker)
+        self._mergeLoader.start()
 
     def loadPlugins(self) -> None:
-        if self._isLoadingPlugins:
+        if self._pluginLoader and self._pluginLoader.isRunning():
             return
-        self._isLoadingPlugins = True
-        self._progressEmitter.maxValue = 300 if self._isLoadingMerges else 100
+        self._pluginLoader = PluginLoader(self._organizer)
+        self._mergeLoader.started.connect(lambda: qInfo("Plugin loader started"))
+        self._pluginLoader.progress.connect(self._progressEmitter.pluginProgress)
+        self._pluginLoader.finished.connect(self._finishedLoadingPlugins)
+        self._pluginLoader.result.connect(self._setPlugins)
+        self._pluginLoader.started.connect(self.pluginModelLoadingStarted)
+        self._pluginLoader.finished.connect(self.pluginModelLoadingCompleted)
+        self._pluginLoader.progress.connect(self.pluginModelLoadingProgress)
+
         self._pluginStartTime = perf_counter()
         moTime(self._pluginStartTime, "Started loading plugins")
-        self.pluginModelLoadingStarted.emit()
-        worker = Worker(PluginLoader.loadPlugins, self._organizer)
-        worker.signals.result.connect(self.setPlugins)
-        worker.signals.progress.connect(self.pluginModelLoadingProgress)
-        worker.signals.finished.connect(self.finishedLoadingPlugins)
-        QThreadPool.globalInstance().start(worker)
+        self._pluginLoader.start()
 
-    def finishedLoadingMerges(self) -> None:
-        self._isLoadingMerges = False
-        self._mergeStopTime = perf_counter()
-        moPerf(self._mergeStartTime, self._mergeStopTime, "Finished loading merges")
-        self.mergeModelLoadingCompleted.emit()
-        self.combineModels()
+    def _finishedLoadingMerges(self) -> None:
+        moPerf(self._mergeStartTime, perf_counter(), "Finished loading merges")
 
-    def finishedLoadingPlugins(self) -> None:
-        self._isLoadingPlugins = False
-        self._pluginStopTime = perf_counter()
-        moPerf(self._pluginStartTime, self._pluginStopTime, "Finished loading plugins")
-        self.pluginModelLoadingCompleted.emit()
-        self.combineModels()
+    def _finishedLoadingPlugins(self) -> None:
+        moPerf(self._pluginStartTime, perf_counter(), "Finished loading plugins")
 
     # ------------------------------------------------
     # Combine the info from the merge model into the
     # plugin model
     # ------------------------------------------------
 
-    def combineModels(self):
+    def _setMerges(self, merges: List[Merge]):
+        self.__merges = merges
+        self.mergeModel.setMerges(merges)
+        self._combineModels()
+
+    def _setPlugins(self, plugins: Plugins):
+        self.__plugins = plugins
+        self.pluginModel.setPlugins(deepcopy(plugins))
+        self._combineModels()
+
+    def _combineModels(self):
         if self.isLoadingMerges:
             return
         if self.isLoadingPlugins:
@@ -198,15 +209,4 @@ class DataCache(QObject):
             self._progressEmitter.dataCacheProgress(count * 100 / total)
         self._progressEmitter.end()
         self.dataCacheLoadingCompleted.emit()
-        self._dataStopTime = perf_counter()
-        moPerf(self._dataStartTime, self._dataStopTime, "Finished loading data")
-
-    def setMerges(self, merges: List[Merge]):
-        self.__merges = merges
-        self.mergeModel.setMerges(merges)
-        self.mergeModelLoadingCompleted.emit()
-
-    def setPlugins(self, plugins: Plugins):
-        self.__plugins = plugins
-        self.pluginModel.setPlugins(deepcopy(plugins))
-        self.pluginModelLoadingCompleted.emit()
+        moPerf(self._dataStartTime, perf_counter(), "Finished loading data")

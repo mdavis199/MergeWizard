@@ -80,6 +80,7 @@ class Wizard(QWizard):
         if not self.currentPage().isOkToExit():
             event.ignore()
             return
+        self.__context.dataCache.stopLoading()
         self.saveSize()
         for id in self.pageIds():
             self.page(id).deinitializePage()
