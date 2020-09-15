@@ -1,6 +1,16 @@
 from enum import IntEnum, auto
 from typing import List
-from PyQt5.QtCore import Qt, QObject, QModelIndex, QIdentityProxyModel, QAbstractProxyModel, QSortFilterProxyModel
+from PyQt5.QtCore import (
+    QAbstractProxyModel,
+    QDataStream,
+    QIODevice,
+    QIdentityProxyModel,
+    QMimeData,
+    QModelIndex,
+    QObject,
+    QSortFilterProxyModel,
+    Qt,
+)
 from PyQt5.QtGui import QIcon, QColor, QFont
 
 import mergewizard.models.ItemId as Id
@@ -197,6 +207,8 @@ class ReqSortFilterModel(QSortFilterProxyModel):
 
 
 class PluginInfoModel(QAbstractProxyModel):
+    DEFAULT_MIME_FORMAT = "application/x-qabstractitemmodeldatalist"
+
     def __init__(self, model: PluginModel, parent: QObject = None):
         super().__init__(parent)
         self.setSourceModel(model)
@@ -313,3 +325,22 @@ class PluginInfoModel(QAbstractProxyModel):
 
         if PluginColumn.PluginOrder in range(leftCol, rightCol) or PluginColumn.MasterOrder in range(leftCol, rightCol):
             self.layoutChanged.emit()
+
+    def mimeTypes(self):
+        return [self.DEFAULT_MIME_FORMAT, "text/plain"]
+
+    def mimeData(self, indexes: List[QModelIndex]):
+        if not indexes or not self.mimeTypes():
+            return
+
+        rows = []
+        textList = []
+        for idx in indexes:
+            rows.append(idx.row())
+            textValue = self.data(idx, Qt.DisplayRole)
+            if textValue:
+                textList.append(textValue)
+
+        data = super().mimeData(indexes)
+        data.setText("\n".join(textList))
+        return data

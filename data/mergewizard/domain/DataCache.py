@@ -131,6 +131,7 @@ class DataCache(QObject):
             return
         # self.addMergeInfoToPluginModel()
         self.pluginModel.addMergeInfo(self.__merges)
+        self.dataCacheLoadingCompleted.emit()
         self._dataStopTime = perf_counter()
         moPerf(self._dataStartTime, self._dataStopTime, "Finished loading data")
 

@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QWidget
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
 from mergewizard.models.PluginModel import Column
+from mergewizard.models.PluginModelCollection import PluginModelCollection
 from mergewizard.views.PluginViewFactory import PluginViewFactory, ViewType
 from mergewizard.widgets.Splitter import Splitter
 from mergewizard.constants import Icon
@@ -13,9 +14,6 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 
 class PagePluginsSelect(WizardPage):
-
-    PROGRESS_OFFSET = 10
-
     class AllPageId(IntEnum):
         InfoPanel = 0
 
@@ -33,11 +31,8 @@ class PagePluginsSelect(WizardPage):
         PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel)
         PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel)
 
-        self.pluginlist_pluginname_section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
-        self.ui.pluginsList.selectionModel().currentChanged.connect(lambda: self.showPluginInfo(ViewType.All))
-        self.ui.selectedPluginsList.selectionModel().currentChanged.connect(
-            lambda: self.showPluginInfo(ViewType.Selected)
-        )
+        self.ui.pluginsList.selectionModel().currentChanged.connect(lambda c, p: self.showPluginInfo(c))
+        self.ui.selectedPluginsList.selectionModel().currentChanged.connect(lambda c, p: self.showPluginInfo(c))
         self.ui.pluginsList.filterChanged.connect(self.updateFilterCount)
         self.context.pluginModel.rowsInserted.connect(lambda: self.updateFilterCount())
         self.context.pluginModel.rowsRemoved.connect(lambda: self.updateFilterCount())
@@ -73,11 +68,8 @@ class PagePluginsSelect(WizardPage):
         self.ui.toggleInfoButton.clicked.connect(lambda: self.openInfoPanel(not self.isInfoPanelOpen()))
         self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
 
-        # progressbar
-        self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
-        context.dataCache.pluginModelLoadingStarted.connect(self.modelLoadingStarted)
-        context.dataCache.pluginModelLoadingProgress.connect(self.modelLoadingProgress)
-        context.dataCache.pluginModelLoadingCompleted.connect(self.modelLoadingCompleted)
+        context.dataCache.pluginModelLoadingCompleted.connect(self.setUpViewsAfterModelReload)
+        context.dataCache.dataCacheLoadingCompleted.connect(self.modelLoadingCompleted)
         self.restoreSettings()
 
     def initializePage(self) -> None:
@@ -153,17 +145,14 @@ class PagePluginsSelect(WizardPage):
         filtered = total - showing
         self.ui.filterCount.setText(self.tr("Filtered: {}, Showing: {}, Total: {}").format(filtered, showing, total))
 
-    def modelLoadingStarted(self):
-        self.ui.progressBar.setVisible(True)
-        self.ui.progressBar.setValue(self.PROGRESS_OFFSET)
-
-    def modelLoadingProgress(self, value) -> None:
-        self.ui.progressBar.setValue(value + self.PROGRESS_OFFSET)
-
     def modelLoadingCompleted(self) -> None:
-        self.ui.progressFrame.setVisible(False)
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
+        self.showPluginInfo()
+
+    def setUpViewsAfterModelReload(self):
+        width = self.ui.pluginsList.columnWidth(self.ui.pluginsList.sectionForColumn(Column.PluginName))  # pluginname
+        self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width / 2)
 
     def resizeSplitter(self):
         # the Selected Plugin view has fewer columns than the plugin view
@@ -185,31 +174,22 @@ class PagePluginsSelect(WizardPage):
             )
             self.ui.splitter.setSizes([width, width - diffWidth])
 
-    def setUpViewsAfterModelReload(self):
-        width = self.ui.pluginsList.columnWidth(self.pluginlist_pluginname_section)  # pluginname
-        self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width)
-        self.ui.pluginsList.setCurrentIndex(self.ui.pluginsList.model().index(0, 0))
-
     # ----
     # ---- Methods related to the InfoView
     # ----
 
-    def showPluginInfo(self, view: ViewType) -> None:
-        idx = QModelIndex()
-        # convert view's index to the PluginModel index
-        if view == ViewType.Selected and self.ui.selectedPluginsList.currentIndex().isValid():
-            idx = self.ui.selectedPluginsList.models().indexForModel(
-                self.ui.selectedPluginsList.currentIndex(), self.ui.selectedPluginsList.models().pluginModel
-            )
-        elif not self.ui.pluginsList.currentIndex().isValid():
-            self.ui.pluginsList.setCurrentIndex(self.ui.pluginsList.model().index(0, 0))
-
-        if not idx.isValid():
-            idx = self.ui.pluginsList.models().indexForModel(
+    def showPluginInfo(self, viewIndex: QModelIndex = QModelIndex()) -> None:
+        # It does not matter if the view is the allPlugins or selectedPlugins, they share
+        # the same PluginModel.  We just need to drill through the proxies to the final index.
+        if viewIndex.isValid():
+            idx = PluginModelCollection.indexForModel(viewIndex, self.ui.pluginsList.models().pluginModel)
+            self.ui.pluginInfoWidget.setRootIndex(idx)
+        else:
+            idx = PluginModelCollection.indexForModel(
                 self.ui.pluginsList.currentIndex(), self.ui.pluginsList.models().pluginModel
             )
-        self.ui.pluginInfoWidget.setRootIndex(idx)
-        self.ui.pluginInfoWidget.ui.infoView.scrollToTop()
+            self.ui.pluginInfoWidget.setRootIndex(idx)
+            self.ui.pluginInfoWidget.ui.infoView.scrollToTop()
 
     def onInfoWidgetDoubleClicked(self, pluginName: str):
         model = self.ui.pluginsList.model()

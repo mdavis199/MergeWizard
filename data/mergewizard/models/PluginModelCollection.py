@@ -21,8 +21,9 @@ class PluginModelCollection:
         self.filterModel.setSourceModel(pluginModel)
         self.pluginModel = pluginModel
 
+    @staticmethod
     def indexForModel(
-        self, idx: QModelIndex, desiredModel: QAbstractItemModel,
+        idx: QModelIndex, desiredModel: QAbstractItemModel,
     ):
         if desiredModel is None:
             return idx.model().index(-1, -1)
@@ -37,5 +38,6 @@ class PluginModelCollection:
             return modelIndex
         return desiredModel.index(-1, -1)
 
-    def indexesForModel(self, indexes: List[QModelIndex], desiredModel: QAbstractItemModel):
-        return [self.indexForModel(idx, desiredModel) for idx in indexes]
+    @staticmethod
+    def indexesForModel(indexes: List[QModelIndex], desiredModel: QAbstractItemModel):
+        return [PluginModelCollection.indexForModel(idx, desiredModel) for idx in indexes]

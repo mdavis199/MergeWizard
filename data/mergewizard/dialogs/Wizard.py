@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget, QWizard
 
 from mobase import IOrganizer
 
-from mergewizard.dialogs.PageMergeSelect import PageMergeSelect
 from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
@@ -19,9 +18,8 @@ from mergewizard.constants import Icon, Setting
 
 
 class PageId(IntEnum):
-    PageMergeSelect = 0
-    PagePluginsSelect = 1
-    PageReviewMasters = 2
+    PagePluginsSelect = 0
+    PageReviewMasters = 1
 
 
 class Wizard(QWizard):
@@ -59,8 +57,6 @@ class Wizard(QWizard):
         loadZMerge = self.context().getUserSetting(Setting.LOAD_ZMERGE, True)
         PluginViewFactory.excludeMergeColumns = not loadZMerge
 
-        # if loadZMerge:
-        #    self.setPage(PageId.PageMergeSelect, PageMergeSelect(self.context(), self))
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
         for pageId in self.pageIds():
