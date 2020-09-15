@@ -14,9 +14,13 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 
 class PagePluginsSelect(WizardPage):
+    PROGRESS_OFFSET = 0
+
+    # Left panel stack widget
     class AllPageId(IntEnum):
         InfoPanel = 0
 
+    # Right panel stack widget
     class SelectedPageId(IntEnum):
         TextPanel = 0
         MergePanel = 1
@@ -69,7 +73,9 @@ class PagePluginsSelect(WizardPage):
         self.ui.toggleInfoButton.clicked.connect(lambda: self.openInfoPanel(not self.isInfoPanelOpen()))
         self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
 
-        context.dataCache.pluginModelLoadingCompleted.connect(self.setUpViewsAfterModelReload)
+        self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
+        context.dataCache.dataCacheLoadingStarted.connect(self.modelLoadingStarted)
+        context.dataCache.dataCacheLoadingProgress.connect(self.modelLoadingProgress)
         context.dataCache.dataCacheLoadingCompleted.connect(self.modelLoadingCompleted)
         self.restoreSettings()
 
@@ -146,7 +152,15 @@ class PagePluginsSelect(WizardPage):
         filtered = total - showing
         self.ui.filterCount.setText(self.tr("Filtered: {}, Showing: {}, Total: {}").format(filtered, showing, total))
 
+    def modelLoadingStarted(self):
+        self.ui.progressFrame.setVisible(True)
+        self.ui.progressBar.setValue(self.PROGRESS_OFFSET)
+
+    def modelLoadingProgress(self, value) -> None:
+        self.ui.progressBar.setValue(value + self.PROGRESS_OFFSET)
+
     def modelLoadingCompleted(self) -> None:
+        self.ui.progressFrame.setVisible(False)
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()

@@ -142,6 +142,23 @@ class Ui_PagePluginsSelect(object):
         self.buttonLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.toggleMergeButton)
         self.verticalLayout.addLayout(self.buttonLayout)
         self.verticalLayout_3.addWidget(self.splitter)
+        self.progressFrame = QtWidgets.QFrame(PagePluginsSelect)
+        self.progressFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.progressFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.progressFrame.setObjectName("progressFrame")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.progressFrame)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.progressLayout = QtWidgets.QFormLayout()
+        self.progressLayout.setObjectName("progressLayout")
+        self.progressLabel = QtWidgets.QLabel(self.progressFrame)
+        self.progressLabel.setObjectName("progressLabel")
+        self.progressLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.progressLabel)
+        self.progressBar = QtWidgets.QProgressBar(self.progressFrame)
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName("progressBar")
+        self.progressLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.progressBar)
+        self.horizontalLayout.addLayout(self.progressLayout)
+        self.verticalLayout_3.addWidget(self.progressFrame)
 
         self.retranslateUi(PagePluginsSelect)
         QtCore.QMetaObject.connectSlotsByName(PagePluginsSelect)
@@ -163,6 +180,7 @@ class Ui_PagePluginsSelect(object):
         self.toggleBulkButton.setText(_translate("PagePluginsSelect", "..."))
         self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Load plugin selection from merge"))
         self.toggleMergeButton.setText(_translate("PagePluginsSelect", "..."))
+        self.progressLabel.setText(_translate("PagePluginsSelect", "Loading:"))
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeSelectWidget import MergeSelectWidget
 from mergewizard.widgets.PluginFilterBox import PluginFilterBox

@@ -31,7 +31,7 @@ class PluginTool(mobase.IPluginTool):
 
     def display(self):
         wizard = Wizard(self.__organizer, self._parentWidget())
-        wizard.exec()
+        wizard.open()
 
     def icon(self):
         return QIcon(Icon.MERGEWIZARD)

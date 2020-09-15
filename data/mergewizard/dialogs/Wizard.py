@@ -11,8 +11,6 @@ from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.domain.SavedPluginsFile import SavedPluginsFile
-from mergewizard.models.MergeModel import MergeModel
-from mergewizard.models.PluginModel import PluginModel
 from mergewizard.views.PluginViewFactory import PluginViewFactory
 from mergewizard.constants import Icon, Setting
 

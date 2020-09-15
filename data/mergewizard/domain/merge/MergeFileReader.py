@@ -1,11 +1,14 @@
 from typing import Set, List, Callable
 from os import path
 from glob import glob
-from PyQt5.QtCore import qWarning
+from PyQt5.QtCore import qWarning, QObject
 from mergewizard.domain.merge import MergeFile as Merge
 
 
-class MergeFileReader:
+class MergeFileReader(QObject):
+    def __init__():
+        super().__init__()
+
     @staticmethod
     def loadMergeFromFile(filepath):
         with open(filepath, "r", encoding="utf8") as f:
@@ -18,10 +21,11 @@ class MergeFileReader:
         merges: Set[Merge] = set()
         files = glob(modDir + "/*/*/merge.json")
         count = 0
+        totalFileCount = len(files)
         for file in files:
             count = count + 1
             if progress_callback:
-                progress_callback.emit(count * 100 / len(files))
+                progress_callback.emit(count * 100 / totalFileCount)
             try:
                 merge = MergeFileReader.loadMergeFromFile(file)
                 merge.mergePath = file
