@@ -151,6 +151,8 @@ class Ui_PagePluginsSelect(object):
         self.progressLayout = QtWidgets.QFormLayout()
         self.progressLayout.setObjectName("progressLayout")
         self.progressLabel = QtWidgets.QLabel(self.progressFrame)
+        self.progressLabel.setMinimumSize(QtCore.QSize(81, 21))
+        self.progressLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.progressLabel.setObjectName("progressLabel")
         self.progressLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.progressLabel)
         self.progressBar = QtWidgets.QProgressBar(self.progressFrame)
@@ -180,7 +182,7 @@ class Ui_PagePluginsSelect(object):
         self.toggleBulkButton.setText(_translate("PagePluginsSelect", "..."))
         self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Load plugin selection from merge"))
         self.toggleMergeButton.setText(_translate("PagePluginsSelect", "..."))
-        self.progressLabel.setText(_translate("PagePluginsSelect", "Loading:"))
+        self.progressLabel.setText(_translate("PagePluginsSelect", "Loading data:"))
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeSelectWidget import MergeSelectWidget
 from mergewizard.widgets.PluginFilterBox import PluginFilterBox

@@ -83,6 +83,8 @@ class PagePluginsSelect(WizardPage):
         context.dataCache.dataLoadingCompleted.connect(self.modelLoadingCompleted)
         self.restoreSettings()
 
+        # context.dataCache.loadData()
+
     def initializePage(self) -> None:
         """ If QWizard is not set to 'independent' pages then this method is called
         everytime the wizard switches from the previous page. Otherwize it is called only
@@ -157,14 +159,17 @@ class PagePluginsSelect(WizardPage):
         self.ui.filterCount.setText(self.tr("Filtered: {}, Showing: {}, Total: {}").format(filtered, showing, total))
 
     def modelLoadingStarted(self):
+        self.ui.progressLabel.setText(self.tr("Loading data:"))
         self.ui.progressFrame.setVisible(True)
-        self.ui.progressBar.setValue(0)
 
     def modelLoadingProgress(self, value) -> None:
         self.ui.progressBar.setValue(value)
+        if value == 100 - self.PROGRESS_OFFSET:
+            self.ui.progressLabel.setText(self.tr("Loading views:"))
 
     def modelLoadingCompleted(self) -> None:
         self.ui.progressFrame.setVisible(False)
+        self.ui.progressBar.setValue(0)
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()
