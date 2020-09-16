@@ -14,7 +14,10 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 
 class PagePluginsSelect(WizardPage):
-    PROGRESS_OFFSET = 0
+    # The data loading takes about 5 sec total, 3 of which is qt
+    # pushing the data to the tables (in bulk).  Here we try to keep
+    # the progress bar from showing 100% while qt is working on the gui
+    PROGRESS_OFFSET = 1
 
     # Left panel stack widget
     class AllPageId(IntEnum):
@@ -75,9 +78,9 @@ class PagePluginsSelect(WizardPage):
 
         # progress bar
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
-        context.dataCache.dataCacheLoadingStarted.connect(self.modelLoadingStarted)
-        context.dataCache.dataCacheLoadingProgress.connect(self.modelLoadingProgress)
-        context.dataCache.dataCacheLoadingCompleted.connect(self.modelLoadingCompleted)
+        context.dataCache.dataLoadingStarted.connect(self.modelLoadingStarted)
+        context.dataCache.dataLoadingProgress.connect(self.modelLoadingProgress)
+        context.dataCache.dataLoadingCompleted.connect(self.modelLoadingCompleted)
         self.restoreSettings()
 
     def initializePage(self) -> None:
@@ -155,10 +158,10 @@ class PagePluginsSelect(WizardPage):
 
     def modelLoadingStarted(self):
         self.ui.progressFrame.setVisible(True)
-        self.ui.progressBar.setValue(self.PROGRESS_OFFSET)
+        self.ui.progressBar.setValue(0)
 
     def modelLoadingProgress(self, value) -> None:
-        self.ui.progressBar.setValue(value + self.PROGRESS_OFFSET)
+        self.ui.progressBar.setValue(value)
 
     def modelLoadingCompleted(self) -> None:
         self.ui.progressFrame.setVisible(False)

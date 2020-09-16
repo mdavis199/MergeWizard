@@ -86,7 +86,6 @@ class DataLoader(QThread):
                 moWarn('Failed to open merge file "{}": {}'.format(file, ex.strerror))
             except ValueError as ex:
                 moWarn('Failed to read merge file "{}": {}'.format(file, ex))
-            # Now we add the merge info to the plugins
         self._merges = merges
 
     def loadMergeFromFile(self, filepath) -> MergeFile:
@@ -103,7 +102,7 @@ class DataLoader(QThread):
             plugin = self._plugins.get(pfd.filename, False)
             plugin.isMerged = True
             if not plugin.modName:
-                plugin.modName = mergeFile.modName
+                plugin.modName = pfd.modName
 
     def emitProgress(self):
         self._count = self._count + 1

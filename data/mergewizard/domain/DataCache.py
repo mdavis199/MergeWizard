@@ -1,11 +1,9 @@
 from copy import deepcopy
-from typing import List, Callable
 from time import perf_counter
-from PyQt5.QtCore import pyqtSignal, QObject, qInfo
+from PyQt5.QtCore import pyqtSignal, QObject
 
 from mobase import IOrganizer
-from mergewizard.domain.plugin import Plugins, PluginLoader
-from mergewizard.domain.merge import MergeFile as Merge, MergeFileReader
+from mergewizard.domain.plugin import Plugins
 from mergewizard.domain.DataLoader import DataLoader
 from mergewizard.domain.MOLog import moPerf, moTime
 from mergewizard.models.PluginModel import PluginModel
@@ -14,9 +12,9 @@ from mergewizard.models.MergeModel import MergeModel
 
 class DataCache(QObject):
 
-    dataCacheLoadingStarted = pyqtSignal()
-    dataCacheLoadingProgress = pyqtSignal(int)
-    dataCacheLoadingCompleted = pyqtSignal()
+    dataLoadingStarted = pyqtSignal()
+    dataLoadingProgress = pyqtSignal(int)
+    dataLoadingCompleted = pyqtSignal()
 
     def __init__(self, organizer: IOrganizer):
         super().__init__()
@@ -61,9 +59,9 @@ class DataCache(QObject):
         self._dataLoader = DataLoader(self._organizer)
         self._dataLoader.finished.connect(self._finishedLoadingData)
         self._dataLoader.result.connect(self._setData)
-        self._dataLoader.started.connect(self.dataCacheLoadingStarted)
-        self._dataLoader.finished.connect(self.dataCacheLoadingCompleted)
-        self._dataLoader.progress.connect(self.dataCacheLoadingProgress)
+        self._dataLoader.started.connect(self.dataLoadingStarted)
+        self._dataLoader.finished.connect(self.dataLoadingCompleted)
+        self._dataLoader.progress.connect(self.dataLoadingProgress)
 
         self._dataLoadingStartTime = perf_counter()
         moTime(self._dataLoadingStartTime, "Data loading - started")
