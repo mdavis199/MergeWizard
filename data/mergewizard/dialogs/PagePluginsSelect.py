@@ -175,7 +175,7 @@ class PagePluginsSelect(WizardPage):
         self.showPluginInfo()
 
     def setUpViewsAfterModelReload(self):
-        wdth = self.ui.pluginInfoWidget.ui.infoView.viewport().width()
+        width = self.ui.pluginInfoWidget.ui.infoView.viewport().width()
         self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width / 2)
 
     def resizeSplitter(self):
