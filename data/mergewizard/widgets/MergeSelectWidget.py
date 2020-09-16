@@ -28,11 +28,11 @@ class MergeSelectWidget(QWidget):
         return self.ui.selectedMerge.text()
 
     def selectionChanged(self):
-        indexes = self.ui.mergeView.selectionModel().selectedRows(0)
+        indexes = self.ui.mergeView.selectionModel().selectedRows(Column.Name)
         self.selectIndex(indexes[0] if indexes else QModelIndex())
 
     def selectIndex(self, idx: QModelIndex = QModelIndex()):
-        name = self.ui.mergeView.model().data(idx)
+        name = self.ui.mergeView.model().data(idx.siblingAtColumn(Column.Name))
         self.ui.selectedMerge.setText(name if name else "")
         self.ui.selectMergeButton.setEnabled(bool(name))
         self.ui.mergeView.model().setSelectedMerge(idx)
