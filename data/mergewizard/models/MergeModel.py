@@ -6,6 +6,7 @@ from PyQt5.QtCore import (
     QAbstractItemModel,
     QModelIndex,
     QObject,
+    QSize,
     QSortFilterProxyModel,
     Qt,
 )
@@ -21,7 +22,8 @@ class Role(IntEnum):
 
 
 class Column(IntEnum):
-    Name = 0
+    Active = 0
+    Name = auto()
     PluginCount = auto()
 
 
@@ -50,7 +52,7 @@ class MergeModel(QAbstractItemModel):
         self.__selectedMerge = index.row()
 
     def selectedMerge(self) -> QModelIndex:
-        return self.index(self.__selectedMerge, 0)
+        return self.index(self.__selectedMerge, 1)
 
     def selectedMergePluginNames(self) -> List[str]:
         if self.__selectedMerge < 0:
@@ -76,7 +78,7 @@ class MergeModel(QAbstractItemModel):
         return 0
 
     def columnCount(self, parent: QModelIndex = QModelIndex()):
-        return 2
+        return len(Column)
 
     def index(self, row: int, col: int, parent: QModelIndex = QModelIndex()):
         if self.hasIndex(row, col, parent):
@@ -115,11 +117,11 @@ class MergeModel(QAbstractItemModel):
                     font.setBold(True)
                     return font
             elif role == Qt.DecorationRole:
-                if idx.column() == Column.Name and idx.row() > 0:
+                if idx.column() == Column.Active and idx.row() > 0:
                     if not self.__merges[idx.row()].modIsActive:
                         return QIcon(Icon.INACTIVE)
 
-        if depth == Id.Depth.D1 and idx.column() == 0:
+        if depth == Id.Depth.D1 and idx.column() == Column.Name:
             if role == Role.Data:
                 return self.__merges[idx.parent().row()]
             if role == Qt.DisplayRole:
@@ -134,11 +136,14 @@ class MergeModel(QAbstractItemModel):
                     return self.tr("Mod Name")
                 if section == Column.PluginCount:
                     return self.tr("Plugin Count")
+            if role == Qt.TextAlignmentRole:
+                if section == Column.Active:
+                    return Qt.AlignRight
 
     def flags(self, idx: QModelIndex):
         depth = Id.depth(idx)
         if depth == Id.Depth.D0:
-            if idx.column() == Column.Name:
+            if idx.column() == Column.Active:
                 return Qt.ItemIsEnabled | Qt.ItemIsSelectable
             else:
                 return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemNeverHasChildren

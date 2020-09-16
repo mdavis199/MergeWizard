@@ -25,6 +25,7 @@ class Ui_MergeSelectWidget(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.mergeView = QtWidgets.QTreeView(self.groupBox)
         self.mergeView.setObjectName("mergeView")
+        self.mergeView.header().setMinimumSectionSize(26)
         self.verticalLayout.addWidget(self.mergeView)
         self.progressFrame = QtWidgets.QFrame(self.groupBox)
         self.progressFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)

@@ -1,7 +1,8 @@
 from PyQt5.QtCore import QItemSelectionModel, QModelIndex
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
-from mergewizard.models.MergeModel import MergeSortModel, MergeModel
+from mergewizard.models.MergeModel import MergeSortModel, MergeModel, Column
+from mergewizard.widgets.HeaderStyle import HeaderStyle
 from .ui.MergeSelectWidget import Ui_MergeSelectWidget
 
 
@@ -15,7 +16,9 @@ class MergeSelectWidget(QWidget):
         mergeSortModel = MergeSortModel()
         mergeSortModel.setSourceModel(mergeModel)
         self.ui.mergeView.setModel(mergeSortModel)
-        self.ui.mergeView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.mergeView.header().resizeSection(Column.Active, 43)
+        # self.ui.mergeView.header().setSectionResizeMode(Column.Active, QHeaderView.ResizeToContents)
+        self.ui.mergeView.header().setSectionResizeMode(Column.Name, QHeaderView.ResizeToContents)
         self.ui.mergeView.clicked.connect(self.itemClicked)
         self.ui.mergeView.selectionModel().selectionChanged.connect(lambda: self.selectionChanged())
         self.ui.sortByPriority.clicked.connect(mergeSortModel.sortByPriority)

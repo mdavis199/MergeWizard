@@ -36,7 +36,11 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTreeView" name="mergeView"/>
+       <widget class="QTreeView" name="mergeView">
+        <attribute name="headerMinimumSectionSize">
+         <number>26</number>
+        </attribute>
+       </widget>
       </item>
       <item>
        <widget class="QFrame" name="progressFrame">
