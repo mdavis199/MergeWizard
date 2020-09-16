@@ -124,7 +124,7 @@ class PluginStyleModel(QIdentityProxyModel):
             if section == Column.IsInactive:
                 return self.tr("Plugins not activated in MO2 profile")
             if section == Column.IsMaster:
-                return self.tr("Plugin tagged as a 'Master' library")
+                return self.tr("Plugin tagged as a master library")
             if section == Column.IsMerge:
                 return self.tr("Plugins that were created by a merge")
             if section == Column.IsMerged:

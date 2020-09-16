@@ -37,7 +37,7 @@ class PluginFilterBox(QListWidget):
 
         item = QListWidgetItem(self.tr("Plugin Masters"))
         item.setIcon(QIcon(Icon.MASTER))
-        item.setToolTip(self.tr("Plugins tagged as a 'master' library."))
+        item.setToolTip(self.tr("Plugins tagged as a master library."))
         item.setData(Qt.UserRole, Filter.Masters)
         item.setData(Qt.UserRole + 1, 2)
         item.setFlags(defaultFlags)
