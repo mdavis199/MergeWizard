@@ -173,9 +173,13 @@ class DataCache(QObject):
         self._pluginLoader.start()
 
     def _finishedLoadingMerges(self) -> None:
+        self._mergeLoader.disconnect()
+        self._mergeLoader = None
         moPerf(self._mergeStartTime, perf_counter(), "Finished loading merges")
 
     def _finishedLoadingPlugins(self) -> None:
+        self._pluginLoader.disconnect()
+        self._pluginLoader = None
         moPerf(self._pluginStartTime, perf_counter(), "Finished loading plugins")
 
     # ------------------------------------------------

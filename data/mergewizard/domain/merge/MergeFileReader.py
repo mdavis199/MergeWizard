@@ -49,7 +49,7 @@ class MergeFileReader(QThread):
             return merge
 
     def emitProgress(self):
-        QThread.usleep(1)
+        # QThread.usleep(1)
         self._count = self._count + 1
         v = int(self._count * 100 / self._total)
         if v != self._progress:
