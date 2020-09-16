@@ -2,7 +2,7 @@ from typing import Set
 from os import path
 from glob import glob
 from PyQt5.QtCore import QThread, pyqtSignal
-from mobase import IOrganizer, PluginState
+from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.plugin.Plugin import Plugin
 from mergewizard.domain.plugin.Plugins import Plugins
 from mergewizard.domain.merge.MergeFile import MergeFile
@@ -12,6 +12,7 @@ from mergewizard.domain.MOLog import moWarn
 class DataLoader(QThread):
     """ Loads all plugins that MO2 knows about. """
 
+    MOD_ACTIVE = int(ModState.ACTIVE)
     progress = pyqtSignal(int)
     result = pyqtSignal(object)
 
@@ -80,6 +81,9 @@ class DataLoader(QThread):
                 merge = self.loadMergeFromFile(file)
                 merge.mergePath = file
                 merge.modName = path.basename(path.dirname(path.dirname(file)))
+                state: ModState = self.__organizer.modList().state(merge.modName)
+
+                merge.modIsActive = (state & self.MOD_ACTIVE) == self.MOD_ACTIVE
                 merges.add(merge)
                 self.addMergeToPlugins(merge)
             except OSError as ex:

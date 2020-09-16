@@ -9,9 +9,10 @@ from PyQt5.QtCore import (
     QSortFilterProxyModel,
     Qt,
 )
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor, QFont, QIcon
 
 from mergewizard.domain.merge import MergeFile as Merge
+from mergewizard.constants import Icon
 import mergewizard.models.ItemId as Id
 
 
@@ -113,6 +114,10 @@ class MergeModel(QAbstractItemModel):
                     font = QFont()
                     font.setBold(True)
                     return font
+            elif role == Qt.DecorationRole:
+                if idx.column() == Column.Name and idx.row() > 0:
+                    if not self.__merges[idx.row()].modIsActive:
+                        return QIcon(Icon.INACTIVE)
 
         if depth == Id.Depth.D1 and idx.column() == 0:
             if role == Role.Data:
