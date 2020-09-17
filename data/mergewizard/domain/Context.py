@@ -1,10 +1,14 @@
 from typing import Any
-from PyQt5.QtCore import QVariant
+from PyQt5.QtCore import QVariant, qInfo
 from mobase import IOrganizer
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.constants import INTERNAL_PLUGIN_NAME
+
+# NOTE: getSetting does not stick until MO closes and reopens.
+# If this plugin sets a value in 'organizer.persistent', it will
+# continue to pull the old value until MO relaunches.
 
 
 class Context:
@@ -35,7 +39,7 @@ class Context:
 
     def setSetting(self, name: str, value: Any) -> None:
         # self.organizer.setPersistent(INTERNAL_PLUGIN_NAME, name, QVariant(value))
-        self.organizer.setPersistent(INTERNAL_PLUGIN_NAME, name, value)
+        self.organizer.setPersistent(INTERNAL_PLUGIN_NAME, name, value, True)
 
     def getSetting(self, name: str, variantType: int, default: Any) -> QVariant:
         # TODO: This always seems to return a string
@@ -45,9 +49,9 @@ class Context:
             return default
         try:
             if variantType == QVariant.Bool:
-                if variant == "false":
+                if variant == "false" or (isinstance(variant, bool) and not variant):
                     return False
-                if variant == "true":
+                if variant == "true" or (isinstance(variant, bool) and variant):
                     return True
                 return default
 
