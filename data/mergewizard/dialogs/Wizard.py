@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint, QVariant
+from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint, QVariant, qInfo
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QWizard
 
