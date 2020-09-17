@@ -89,11 +89,21 @@ class Ui_PagePluginsSelect(object):
         self.pluginInfoWidget = PluginInfoWidget()
         self.pluginInfoWidget.setObjectName("pluginInfoWidget")
         self.allStacked.addWidget(self.pluginInfoWidget)
+        self.mergeInfoWidget = MergeInfoWidget()
+        self.mergeInfoWidget.setObjectName("mergeInfoWidget")
+        self.allStacked.addWidget(self.mergeInfoWidget)
         self.verticalLayout_2.addWidget(self.allPluginsSplitter)
-        self.toggleInfoButton = QtWidgets.QToolButton(self.pluginGroup)
-        self.toggleInfoButton.setCheckable(True)
-        self.toggleInfoButton.setObjectName("toggleInfoButton")
-        self.verticalLayout_2.addWidget(self.toggleInfoButton)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.togglePluginInfoButton = QtWidgets.QToolButton(self.pluginGroup)
+        self.togglePluginInfoButton.setCheckable(True)
+        self.togglePluginInfoButton.setObjectName("togglePluginInfoButton")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.togglePluginInfoButton)
+        self.toggleMergeInfoButton = QtWidgets.QToolButton(self.pluginGroup)
+        self.toggleMergeInfoButton.setCheckable(True)
+        self.toggleMergeInfoButton.setObjectName("toggleMergeInfoButton")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.toggleMergeInfoButton)
+        self.verticalLayout_2.addLayout(self.formLayout)
         self.pluginSelectionGroup = QtWidgets.QGroupBox(self.splitter)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -107,7 +117,9 @@ class Ui_PagePluginsSelect(object):
         self.selectedPluginsSplitter.setOrientation(QtCore.Qt.Vertical)
         self.selectedPluginsSplitter.setObjectName("selectedPluginsSplitter")
         self.selectedPluginsList = PluginView(self.selectedPluginsSplitter)
-        self.selectedPluginsList.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked|QtWidgets.QAbstractItemView.EditKeyPressed)
+        self.selectedPluginsList.setEditTriggers(
+            QtWidgets.QAbstractItemView.DoubleClicked | QtWidgets.QAbstractItemView.EditKeyPressed
+        )
         self.selectedPluginsList.setDragEnabled(True)
         self.selectedPluginsList.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.selectedPluginsList.setDefaultDropAction(QtCore.Qt.MoveAction)
@@ -152,7 +164,7 @@ class Ui_PagePluginsSelect(object):
         self.progressLayout.setObjectName("progressLayout")
         self.progressLabel = QtWidgets.QLabel(self.progressFrame)
         self.progressLabel.setMinimumSize(QtCore.QSize(81, 21))
-        self.progressLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.progressLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.progressLabel.setObjectName("progressLabel")
         self.progressLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.progressLabel)
         self.progressBar = QtWidgets.QProgressBar(self.progressFrame)
@@ -169,21 +181,27 @@ class Ui_PagePluginsSelect(object):
         _translate = QtCore.QCoreApplication.translate
         PagePluginsSelect.setWindowTitle(_translate("PagePluginsSelect", "WizardPage"))
         PagePluginsSelect.setTitle(_translate("PagePluginsSelect", "Plugin Selection"))
-        PagePluginsSelect.setSubTitle(_translate("PagePluginsSelect", "Create an ordered list of plugins to include in the merge."))
+        PagePluginsSelect.setSubTitle(
+            _translate("PagePluginsSelect", "Create an ordered list of plugins to include in the merge.")
+        )
         self.pluginGroup.setTitle(_translate("PagePluginsSelect", "Plugin List"))
         self.toggleFilterButton.setToolTip(_translate("PagePluginsSelect", "Hide plugins by type"))
         self.toggleFilterButton.setText(_translate("PagePluginsSelect", "..."))
         self.filterEdit.setPlaceholderText(_translate("PagePluginsSelect", "Filter plugins by name ..."))
         self.filterCount.setText(_translate("PagePluginsSelect", "Filtering: 0/0"))
-        self.toggleInfoButton.setToolTip(_translate("PagePluginsSelect", "View plugin relationships"))
-        self.toggleInfoButton.setText(_translate("PagePluginsSelect", "..."))
+        self.togglePluginInfoButton.setToolTip(_translate("PagePluginsSelect", "View plugin relationships"))
+        self.togglePluginInfoButton.setText(_translate("PagePluginsSelect", "..."))
+        self.toggleMergeInfoButton.setText(_translate("PagePluginsSelect", "..."))
         self.pluginSelectionGroup.setTitle(_translate("PagePluginsSelect", "Plugins Selected for Merge"))
         self.toggleBulkButton.setToolTip(_translate("PagePluginsSelect", "Select plugins by entering names"))
         self.toggleBulkButton.setText(_translate("PagePluginsSelect", "..."))
         self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Load plugin selection from merge"))
         self.toggleMergeButton.setText(_translate("PagePluginsSelect", "..."))
         self.progressLabel.setText(_translate("PagePluginsSelect", "Loading data:"))
+
+
 from mergewizard.views.PluginView import PluginView
+from mergewizard.widgets.MergeInfoWidget import MergeInfoWidget
 from mergewizard.widgets.MergeSelectWidget import MergeSelectWidget
 from mergewizard.widgets.PluginFilterBox import PluginFilterBox
 from mergewizard.widgets.PluginInfoWidget import PluginInfoWidget

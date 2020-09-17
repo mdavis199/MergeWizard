@@ -4,12 +4,14 @@ from collections.abc import Mapping
 from mergewizard.thirdparty.sortedcontainers import SortedDict
 from mergewizard.domain.plugin import Plugin
 from mergewizard.domain.plugin.Relationships import Relationships, Requirements, Dependents
+from mergewizard.domain.plugin.MergeRelationships import MergeRelationships
 
 
 class Plugins(Mapping):
     def __init__(self):
         self.__plugins: SortedDict[str, Plugin] = SortedDict(lambda x: x.lower())
         self.__relationships: Relationships = Relationships()
+        self.__mergeRelationships: MergeRelationships = MergeRelationships()
 
     def __len__(self):
         return self.__plugins.__len__()
@@ -95,6 +97,10 @@ class Plugins(Mapping):
             return -1
         return idx
 
+    # ----
+    # ---- Methods related to plugin Relationships
+    # ----
+
     def addRequirement(self, plugin, requiredPlugin) -> List[Plugin]:
         """ Creates a direct association between *plugin* and its *requiredPlugin*.
         """
@@ -135,6 +141,21 @@ class Plugins(Mapping):
 
     def dependents(self, plugin: Union[str, Plugin]) -> Dependents:
         return self.associations(plugin)[1]
+
+    # ----
+    # ---- Methods relation to merge relationships
+    # ----
+
+    def addMergeRelationship(self, merge: Plugin, plugin: Plugin) -> List[Plugin]:
+        """
+        """
+        return self.__mergeRelationships.addMerge(merge, plugin)
+
+    def pluginsForMerge(self, merge: Plugin) -> List[Plugin]:
+        return self.__mergeRelationships.pluginsFor(merge)
+
+    def mergesForPlugin(self, plugin: Plugin) -> List[Plugin]:
+        return self.__mergeRelationships.mergedFor(plugin)
 
     # -------------------------------------------------------------------
     def relationships(self):

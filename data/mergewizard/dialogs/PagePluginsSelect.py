@@ -21,7 +21,8 @@ class PagePluginsSelect(WizardPage):
 
     # Left panel stack widget
     class AllPageId(IntEnum):
-        InfoPanel = 0
+        PluginInfoPanel = 0
+        MergeInfoPanel = 1
 
     # Right panel stack widget
     class SelectedPageId(IntEnum):
@@ -47,9 +48,10 @@ class PagePluginsSelect(WizardPage):
 
         # views/models for the bottom panels
         self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
+        self.ui.mergeInfoWidget.setPluginModel(context.pluginModel)
         self.ui.bulkAddWidget.setPluginModel(context.pluginModel)
         self.ui.mergeSelectWidget.setMergeModel(context.mergeModel)
-        self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
+        self.ui.pluginInfoWidget.doubleClicked.connect(self.onPluginInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
         self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
@@ -68,12 +70,16 @@ class PagePluginsSelect(WizardPage):
         # toggle buttons
         self.ui.toggleMergeButton.setIcon(QIcon(Icon.MERGE))
         self.ui.toggleBulkButton.setIcon(QIcon(Icon.EDIT))
-        self.ui.toggleInfoButton.setIcon(QIcon(Icon.INFO))
+        self.ui.togglePluginInfoButton.setIcon(QIcon(Icon.INFO))
+        self.ui.toggleMergeInfoButton.setIcon(QIcon(Icon.MERGE))
         self.ui.toggleFilterButton.setIcon(QIcon(Icon.FILTER))
 
         self.ui.toggleBulkButton.clicked.connect(lambda: self.openTextPanel(not self.isTextPanelOpen()))
         self.ui.toggleMergeButton.clicked.connect(lambda: self.openMergePanel(not self.isMergePanelOpen()))
-        self.ui.toggleInfoButton.clicked.connect(lambda: self.openInfoPanel(not self.isInfoPanelOpen()))
+        self.ui.togglePluginInfoButton.clicked.connect(
+            lambda: self.openPluginInfoPanel(not self.isPluginInfoPanelOpen())
+        )
+        self.ui.toggleMergeInfoButton.clicked.connect(lambda: self.openMergeInfoPanel(not self.isMergeInfoPanelOpen()))
         self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
 
         # progress bar
@@ -95,14 +101,14 @@ class PagePluginsSelect(WizardPage):
         self.saveSettings()
 
     def saveSettings(self) -> None:
-        self.context.setSetting("InfoPanelVisible", self.isInfoPanelOpen())
+        self.context.setSetting("InfoPanelVisible", self.isPluginInfoPanelOpen())
         self.context.setSetting("TextPanelVisible", self.isTextPanelOpen())
         self.context.setSetting("FilterPanelVisible", self.isFilterPanelOpen())
         self.context.setSetting("PluginFilters", self.ui.pluginsList.filters())
 
     def restoreSettings(self) -> None:
         visible = self.context.getSetting("InfoPanelVisible", QVariant.Bool, False)
-        self.openInfoPanel(visible)
+        self.openPluginInfoPanel(visible)
         visible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
         self.openTextPanel(visible)
         self.openFilterPanel(False)
@@ -110,8 +116,11 @@ class PagePluginsSelect(WizardPage):
         if filters:
             self.ui.pluginFilterWidget.enableFilters(filters)
 
-    def isInfoPanelOpen(self) -> bool:
-        return self.ui.allStacked.currentIndex() == self.AllPageId.InfoPanel and self.ui.allStacked.isVisible()
+    def isPluginInfoPanelOpen(self) -> bool:
+        return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisible()
+
+    def isMergeInfoPanelOpen(self) -> bool:
+        return self.ui.allStacked.currentIndex() == self.AllPageId.MergeInfoPanel and self.ui.allStacked.isVisible()
 
     def isFilterPanelOpen(self) -> bool:
         return self.ui.pluginFilterWidget.isVisibleTo(self)
@@ -132,11 +141,19 @@ class PagePluginsSelect(WizardPage):
         self.ui.pluginFilterWidget.setVisible(visible)
         self.ui.toggleFilterButton.setChecked(visible)
 
-    def openInfoPanel(self, visible: bool = True) -> None:
+    def openPluginInfoPanel(self, visible: bool = True) -> None:
         if visible:
-            self.ui.allStacked.setCurrentIndex(self.AllPageId.InfoPanel)
+            self.ui.allStacked.setCurrentIndex(self.AllPageId.PluginInfoPanel)
         self.ui.allStacked.setVisible(visible)
-        self.ui.toggleInfoButton.setChecked(visible)
+        self.ui.togglePluginInfoButton.setChecked(visible)
+        self.ui.toggleMergeInfoButton.setChecked(False)
+
+    def openMergeInfoPanel(self, visible: bool = True) -> None:
+        if visible:
+            self.ui.allStacked.setCurrentIndex(self.AllPageId.MergeInfoPanel)
+        self.ui.allStacked.setVisible(visible)
+        self.ui.toggleMergeInfoButton.setChecked(visible)
+        self.ui.togglePluginInfoButton.setChecked(False)
 
     def openTextPanel(self, visible: bool = True) -> None:
         if visible:
@@ -175,8 +192,11 @@ class PagePluginsSelect(WizardPage):
         self.showPluginInfo()
 
     def setUpViewsAfterModelReload(self):
-        width = self.ui.pluginInfoWidget.ui.infoView.viewport().width() - 10
-        self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width / 2)
+        if self.ui.pluginInfoWidget.isVisible():
+            width = self.ui.pluginInfoWidget.ui.infoView.viewport().width() / 2 - 7
+        else:
+            width = self.ui.pluginsList.header().sectionSize(self.ui.pluginsList.sectionForColumn(Column.PluginName))
+        self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width)
 
     def resizeSplitter(self):
         # the Selected Plugin view has fewer columns than the plugin view
@@ -208,14 +228,17 @@ class PagePluginsSelect(WizardPage):
         if viewIndex.isValid():
             idx = PluginModelCollection.indexForModel(viewIndex, self.ui.pluginsList.models().pluginModel)
             self.ui.pluginInfoWidget.setRootIndex(idx)
+            self.ui.mergeInfoWidget.setRootIndex(idx)
         else:
             idx = PluginModelCollection.indexForModel(
                 self.ui.pluginsList.currentIndex(), self.ui.pluginsList.models().pluginModel
             )
             self.ui.pluginInfoWidget.setRootIndex(idx)
             self.ui.pluginInfoWidget.ui.infoView.scrollToTop()
+            self.ui.mergeInfoWidget.setRootIndex(idx)
+            self.ui.mergeInfoWidget.ui.infoView.scrollToTop()
 
-    def onInfoWidgetDoubleClicked(self, pluginName: str):
+    def onPluginInfoWidgetDoubleClicked(self, pluginName: str):
         model = self.ui.pluginsList.model()
         indexes = model.match(
             model.index(0, model.sourceColumnToProxy(Column.PluginName)),

@@ -71,26 +71,26 @@ class DataLoader(QThread):
         return plugin
 
     def loadMergeFiles(self):
-        merges: Set[MergeFile] = set()
+        mergeFiles: Set[MergeFile] = set()
 
         for file in self._mergeFiles:
             if self._stopped:
                 return
             self.emitProgress()
             try:
-                merge = self.loadMergeFromFile(file)
-                merge.mergePath = file
-                merge.modName = path.basename(path.dirname(path.dirname(file)))
-                state: ModState = self.__organizer.modList().state(merge.modName)
+                mergeFile = self.loadMergeFromFile(file)
+                mergeFile.mergeFilePath = file
+                mergeFile.modName = path.basename(path.dirname(path.dirname(file)))
+                state: ModState = self.__organizer.modList().state(mergeFile.modName)
 
-                merge.modIsActive = (state & self.MOD_ACTIVE) == self.MOD_ACTIVE
-                merges.add(merge)
-                self.addMergeToPlugins(merge)
+                mergeFile.modIsActive = (state & self.MOD_ACTIVE) == self.MOD_ACTIVE
+                mergeFiles.add(mergeFile)
+                self.addMergeToPlugins(mergeFile)
             except OSError as ex:
-                moWarn('Failed to open merge file "{}": {}'.format(file, ex.strerror))
+                moWarn('Failed to open mergeFile file "{}": {}'.format(file, ex.strerror))
             except ValueError as ex:
-                moWarn('Failed to read merge file "{}": {}'.format(file, ex))
-        self._merges = merges
+                moWarn('Failed to read mergeFile file "{}": {}'.format(file, ex))
+        self._mergeFiles = mergeFiles
 
     def loadMergeFromFile(self, filepath) -> MergeFile:
         with open(filepath, "r", encoding="utf8") as f:
@@ -98,15 +98,16 @@ class DataLoader(QThread):
             return merge
 
     def addMergeToPlugins(self, mergeFile):
-        plugin = self._plugins.get(mergeFile.filename, False)
-        plugin.isMerge = True
-        if not plugin.modName:
-            plugin.modName = mergeFile.modName
+        merge = self._plugins.get(mergeFile.filename, False)
+        merge.isMerge = True
+        if not merge.modName:
+            merge.modName = mergeFile.modName
         for pfd in mergeFile.plugins:
             plugin = self._plugins.get(pfd.filename, False)
             plugin.isMerged = True
             if not plugin.modName:
                 plugin.modName = pfd.modName
+            self._plugins.addMergeRelationship(merge, plugin)
 
     def emitProgress(self):
         self._count = self._count + 1
