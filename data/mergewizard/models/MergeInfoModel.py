@@ -1,10 +1,9 @@
 from enum import IntEnum, auto
-from typing import List, Union, Tuple
-from PyQt5.QtCore import QIdentityProxyModel, QModelIndex, Qt, QObject, QSortFilterProxyModel, qInfo
+from typing import Union, Tuple
+from PyQt5.QtCore import QIdentityProxyModel, QModelIndex, Qt, QObject, QSortFilterProxyModel
 from PyQt5.QtGui import QFont, QColor
 import mergewizard.models.ItemId as Id
 from mergewizard.domain.plugin.Plugin import Plugin
-from mergewizard.domain.plugin.Plugins import Plugins
 from mergewizard.models.PluginModelBase import PluginModelBase, Role, Column as PluginColumn
 
 
@@ -20,6 +19,7 @@ class Row(IntEnum):
     ZEditOptions = auto()
 
 
+# Maps MergeFile attributes to their display text
 MERGE_OPTIONS = [
     ("method", "Merge method:"),
     ("archiveAction", "Archive action:"),

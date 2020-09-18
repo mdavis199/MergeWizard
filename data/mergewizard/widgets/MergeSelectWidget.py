@@ -2,7 +2,6 @@ from PyQt5.QtCore import QItemSelectionModel, QModelIndex
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from mergewizard.models.MergeModel import MergeSortModel, MergeModel, Column
-from mergewizard.widgets.HeaderStyle import HeaderStyle
 from .ui.MergeSelectWidget import Ui_MergeSelectWidget
 
 
