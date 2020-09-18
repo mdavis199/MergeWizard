@@ -191,12 +191,18 @@ class MergeInfoBaseModel(QIdentityProxyModel):
                     return plugin.mergeFile.dateBuilt
 
         if depth == Id.Depth.D2:
-            if idx.parent().row() == Row.MergedBy and idx.column() == 1:
-                plugins, merges = self.data(idx, Role.MergeAssociations)
-                return merges[idx.row()].pluginName
-            if idx.parent().row() == Row.MergedPlugins and idx.column() == 1:
-                plugins, merges = self.data(idx, Role.MergeAssociations)
-                return plugins[idx.row()].pluginName
+            if idx.parent().row() == Row.MergedBy:
+                if idx.column() == 0:
+                    return "{}".format(idx.row() + 1)
+                if idx.column() == 1:
+                    plugins, merges = self.data(idx, Role.MergeAssociations)
+                    return merges[idx.row()].pluginName
+            if idx.parent().row() == Row.MergedPlugins:
+                if idx.column() == 0:
+                    return "{}".format(idx.row() + 1)
+                if idx.column() == 1:
+                    plugins, merges = self.data(idx, Role.MergeAssociations)
+                    return plugins[idx.row()].pluginName
             if idx.parent().row() == Row.ZEditOptions:
                 if idx.column() == 0:
                     return MERGE_OPTIONS[idx.row()][1]
@@ -215,7 +221,15 @@ class MergeInfoBaseModel(QIdentityProxyModel):
         if role == Qt.ForegroundRole:
             if idx.column() == 1 and Id.depth(idx) == Id.Depth.D1:
                 if idx.row() == Row.MergedPlugins or idx.row() == Row.MergedBy or idx.row() == Row.ZEditOptions:
-                    return QColor(Qt.lightGray).darker()
+                    return QColor(Qt.lightGray)
+            if idx.column() == 0 and Id.depth(idx) == Id.Depth.D2:
+                if idx.parent().row() == Row.MergedPlugins or idx.parent().row() == Row.MergedBy:
+                    return QColor(Qt.lightGray)
+
+        if role == Qt.TextAlignmentRole:
+            if idx.column() == 0 and Id.depth(idx) == Id.Depth.D2:
+                if idx.parent().row() == Row.MergedPlugins:
+                    return Qt.AlignRight
 
 
 class MergeInfoModel(QSortFilterProxyModel):
