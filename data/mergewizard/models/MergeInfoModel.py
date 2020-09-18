@@ -176,7 +176,7 @@ class MergeInfoBaseModel(QIdentityProxyModel):
                 if idx.row() == Row.WhenBuilt:
                     return self.tr("Built On: ")
                 if idx.row() == Row.ZEditOptions:
-                    return self.tr("ZEdit Options: ")
+                    return self.tr("zMerge Options: ")
 
             if idx.column() == Column.Value:
                 plugin = self.data(idx, Role.Data)

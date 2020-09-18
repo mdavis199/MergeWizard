@@ -24,6 +24,7 @@ class MergeInfoWidget(QWidget):
         self.ui.infoView.expanded.connect(self.onExpanded)
         self.ui.infoView.collapsed.connect(self.onCollapsed)
         self.ui.infoView.doubleClicked.connect(self.onViewDoubleClicked)
+        self.ui.infoView.setHeaderHidden(True)
 
     def setPluginModel(self, model: PluginModel):
         self.infoModel().setSourceModel(model)
@@ -41,7 +42,7 @@ class MergeInfoWidget(QWidget):
             self.ui.groupBox.setTitle(self.tr("Merge Info"))
         else:
             title = self.infoModel().data(infoIdx.siblingAtColumn(1), Role.Cell)
-            self.ui.groupBox.setTitle(title)
+            self.ui.groupBox.setTitle(self.tr("Merge Info:  ") + title)
             self.expandRowsFor(infoIdx)
 
     # ----

@@ -52,7 +52,7 @@ class PluginInfoWidget(QWidget):
         infoIdx = self.infoModel().index(idx.row(), Column.PluginName)
         self.ui.infoView.setRootIndex(infoIdx)
         title = self.infoModel().data(infoIdx) if idx.isValid() else self.tr("Plugin Info")
-        self.ui.groupBox.setTitle(title)
+        self.ui.groupBox.setTitle(self.tr("Plugin Info:  ") + title)
 
     def onViewDoubleClicked(self, idx: QModelIndex):
         name = self.model().data(idx)
