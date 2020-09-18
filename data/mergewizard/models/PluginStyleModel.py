@@ -47,7 +47,6 @@ class PluginStyleModel(QIdentityProxyModel):
             if idx.column() == Column.IsMerged:
                 return QIcon(Icon.MERGED) if v else None
             return None
-            return None
         elif role == Qt.ForegroundRole:
             missing = super().data(idx.siblingAtColumn(Column.IsMissing), Role.Cell)
             inactive = super().data(idx.siblingAtColumn(Column.IsInactive), Role.Cell)

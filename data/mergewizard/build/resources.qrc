@@ -9,6 +9,7 @@
     <file alias="icon_master">resources/crown.svg</file>
     <file alias="icon_merge">resources/developer_board-steelblue.svg</file>
     <file alias="icon_mergable">resources/piechart-orange.svg</file>
+    <file alias="icon_hollow_mergable">resources/piechart-orange.svg</file>
     <file alias="icon_selected">resources/check_box_green.svg</file>
     <file alias="icon_selected_as_master">resources/check_box_purple.svg</file>
     <file alias="icon_info">resources/info-black.svg</file>

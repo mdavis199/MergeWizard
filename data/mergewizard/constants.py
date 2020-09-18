@@ -11,8 +11,9 @@ class Icon:
     MISSING = ":/mergewizard/icon_missing"
     MASTER = ":/mergewizard/icon_master"
     MERGE = ":/mergewizard/icon_merge"
-    MERGE2 = ":/mergewizard/icon_merge2"
     MERGED = ":/mergewizard/icon_mergable"
+    MERGED_FROM_SELECTED = ":/mergewizard/icon_hollow_mergable"
+
     SELECTED = ":/mergewizard/icon_selected"
     SELECTED_AS_MASTER = ":/mergewizard/icon_selected_as_master"
 
