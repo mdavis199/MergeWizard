@@ -100,6 +100,7 @@ class DataLoader(QThread):
     def addMergeToPlugins(self, mergeFile):
         merge = self._plugins.get(mergeFile.filename, False)
         merge.isMerge = True
+        merge.mergeFile = mergeFile
         if not merge.modName:
             merge.modName = mergeFile.modName
         for pfd in mergeFile.plugins:

@@ -1,5 +1,5 @@
 from typing import Any
-from PyQt5.QtCore import QVariant, qInfo
+from PyQt5.QtCore import QVariant
 from mobase import IOrganizer
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel

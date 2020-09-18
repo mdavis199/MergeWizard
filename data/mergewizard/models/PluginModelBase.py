@@ -23,6 +23,7 @@ class Role(IntEnum):
     Cell = Qt.UserRole  # value represented by column
     Data = Qt.UserRole + 1  # plugin represented by row
     Associations = Qt.UserRole + 2  # used by the info model
+    MergeAssociations = Qt.UserRole + 3
 
 
 # The columns are ordered to reduce the number of emits.
@@ -337,6 +338,8 @@ class PluginModelBase(QAbstractItemModel):
             return self._plugins[idx.row()]
         elif role == Role.Associations:
             return self._plugins.associations(self._plugins[idx.row()])
+        elif role == Role.MergeAssociations:
+            return self._plugins.mergeAssociations(self._plugins[idx.row()])
 
     # TODO: add setting master from here maybe
     def setData(self, idx: QModelIndex, value, role: int = Qt.EditRole):

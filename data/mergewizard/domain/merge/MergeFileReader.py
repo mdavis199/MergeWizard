@@ -1,7 +1,7 @@
 from typing import Set
 from os import path
 from glob import glob
-from PyQt5.QtCore import QThread, pyqtSignal, qInfo
+from PyQt5.QtCore import QThread, pyqtSignal
 from mergewizard.domain.merge import MergeFile
 from mergewizard.domain.MOLog import moWarn
 

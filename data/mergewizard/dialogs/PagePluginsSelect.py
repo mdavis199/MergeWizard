@@ -1,5 +1,5 @@
 from enum import IntEnum
-from PyQt5.QtCore import Qt, QModelIndex, QVariant
+from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget
 
@@ -51,7 +51,8 @@ class PagePluginsSelect(WizardPage):
         self.ui.mergeInfoWidget.setPluginModel(context.pluginModel)
         self.ui.bulkAddWidget.setPluginModel(context.pluginModel)
         self.ui.mergeSelectWidget.setMergeModel(context.mergeModel)
-        self.ui.pluginInfoWidget.doubleClicked.connect(self.onPluginInfoWidgetDoubleClicked)
+        self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
+        self.ui.mergeInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
         self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
@@ -101,20 +102,36 @@ class PagePluginsSelect(WizardPage):
         self.saveSettings()
 
     def saveSettings(self) -> None:
-        self.context.setSetting("InfoPanelVisible", self.isPluginInfoPanelOpen())
+        self.context.setSetting("PluginInfoPanelVisible", self.isPluginInfoPanelOpen())
+        self.context.setSetting("MergeInfoPanelVisible", self.isMergeInfoPanelOpen())
         self.context.setSetting("TextPanelVisible", self.isTextPanelOpen())
+        self.context.setSetting("MergePanelVisible", self.isMergePanelOpen())
         self.context.setSetting("FilterPanelVisible", self.isFilterPanelOpen())
         self.context.setSetting("PluginFilters", self.ui.pluginsList.filters())
+        self.context.setSetting("PluginListState", self.ui.mergeInfoWidget.getExpandedStates())
 
     def restoreSettings(self) -> None:
-        visible = self.context.getSetting("InfoPanelVisible", QVariant.Bool, False)
-        self.openPluginInfoPanel(visible)
-        visible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
-        self.openTextPanel(visible)
-        self.openFilterPanel(False)
+        piVisible = self.context.getSetting("PluginInfoPanelVisible", QVariant.Bool, False)
+        miVisible = self.context.getSetting("MergeInfoPanelVisible", QVariant.Bool, False)
+        tVisible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
+        mVisible = self.context.getSetting("MergePanelVisible", QVariant.Bool, False)
+        fVisible = self.context.getSetting("FilterPanelVisible", QVariant.Bool, False)
+
+        if piVisible:
+            self.openPluginInfoPanel(piVisible)
+        else:
+            self.openMergeInfoPanel(miVisible)
+        if tVisible:
+            self.openTextPanel(tVisible)
+        else:
+            self.openMergePanel(mVisible)
+
+        self.openFilterPanel(fVisible)
         filters = self.context.getSetting("PluginFilters", QVariant.Int, 0)
         if filters:
             self.ui.pluginFilterWidget.enableFilters(filters)
+
+        self.ui.mergeInfoWidget.setExpandedStates(self.context.getSetting("PluginListState", QVariant.Int, None))
 
     def isPluginInfoPanelOpen(self) -> bool:
         return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisible()
@@ -230,15 +247,18 @@ class PagePluginsSelect(WizardPage):
             self.ui.pluginInfoWidget.setRootIndex(idx)
             self.ui.mergeInfoWidget.setRootIndex(idx)
         else:
-            idx = PluginModelCollection.indexForModel(
-                self.ui.pluginsList.currentIndex(), self.ui.pluginsList.models().pluginModel
-            )
-            self.ui.pluginInfoWidget.setRootIndex(idx)
-            self.ui.pluginInfoWidget.ui.infoView.scrollToTop()
-            self.ui.mergeInfoWidget.setRootIndex(idx)
-            self.ui.mergeInfoWidget.ui.infoView.scrollToTop()
+            idx = self.ui.pluginsList.currentIndex()
+            if not idx.isValid():
+                idx = self.ui.pluginsList.indexAt(QPoint(0, 0))
+            if not idx.isValid():
+                self.ui.pluginInfoWidget.setRootIndex(idx)
+                self.ui.mergeInfoWidget.setRootIndex(idx)
+            else:
+                self.ui.pluginsList.selectionModel().setCurrentIndex(
+                    idx, QItemSelectionModel.SelectCurrent | QItemSelectionModel.Rows
+                )
 
-    def onPluginInfoWidgetDoubleClicked(self, pluginName: str):
+    def onInfoWidgetDoubleClicked(self, pluginName: str):
         model = self.ui.pluginsList.model()
         indexes = model.match(
             model.index(0, model.sourceColumnToProxy(Column.PluginName)),

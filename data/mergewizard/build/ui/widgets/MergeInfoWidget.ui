@@ -21,16 +21,10 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" colspan="2">
-       <widget class="QTableView" name="infoView">
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
+       <widget class="QTreeView" name="infoView">
+        <property name="uniformRowHeights">
          <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderDefaultSectionSize">
-         <number>23</number>
-        </attribute>
+        </property>
        </widget>
       </item>
      </layout>

@@ -21,11 +21,9 @@ class Ui_MergeInfoWidget(object):
         self.groupBox.setObjectName("groupBox")
         self.gridLayout = QtWidgets.QGridLayout(self.groupBox)
         self.gridLayout.setObjectName("gridLayout")
-        self.infoView = QtWidgets.QTableView(self.groupBox)
-        self.infoView.setWordWrap(False)
+        self.infoView = QtWidgets.QTreeView(self.groupBox)
+        self.infoView.setUniformRowHeights(True)
         self.infoView.setObjectName("infoView")
-        self.infoView.horizontalHeader().setStretchLastSection(True)
-        self.infoView.verticalHeader().setDefaultSectionSize(23)
         self.gridLayout.addWidget(self.infoView, 0, 0, 1, 2)
         self.verticalLayout.addWidget(self.groupBox)
 

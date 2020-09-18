@@ -117,9 +117,7 @@ class Ui_PagePluginsSelect(object):
         self.selectedPluginsSplitter.setOrientation(QtCore.Qt.Vertical)
         self.selectedPluginsSplitter.setObjectName("selectedPluginsSplitter")
         self.selectedPluginsList = PluginView(self.selectedPluginsSplitter)
-        self.selectedPluginsList.setEditTriggers(
-            QtWidgets.QAbstractItemView.DoubleClicked | QtWidgets.QAbstractItemView.EditKeyPressed
-        )
+        self.selectedPluginsList.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked|QtWidgets.QAbstractItemView.EditKeyPressed)
         self.selectedPluginsList.setDragEnabled(True)
         self.selectedPluginsList.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.selectedPluginsList.setDefaultDropAction(QtCore.Qt.MoveAction)
@@ -164,7 +162,7 @@ class Ui_PagePluginsSelect(object):
         self.progressLayout.setObjectName("progressLayout")
         self.progressLabel = QtWidgets.QLabel(self.progressFrame)
         self.progressLabel.setMinimumSize(QtCore.QSize(81, 21))
-        self.progressLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.progressLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.progressLabel.setObjectName("progressLabel")
         self.progressLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.progressLabel)
         self.progressBar = QtWidgets.QProgressBar(self.progressFrame)
@@ -181,9 +179,7 @@ class Ui_PagePluginsSelect(object):
         _translate = QtCore.QCoreApplication.translate
         PagePluginsSelect.setWindowTitle(_translate("PagePluginsSelect", "WizardPage"))
         PagePluginsSelect.setTitle(_translate("PagePluginsSelect", "Plugin Selection"))
-        PagePluginsSelect.setSubTitle(
-            _translate("PagePluginsSelect", "Create an ordered list of plugins to include in the merge.")
-        )
+        PagePluginsSelect.setSubTitle(_translate("PagePluginsSelect", "Create an ordered list of plugins to include in the merge."))
         self.pluginGroup.setTitle(_translate("PagePluginsSelect", "Plugin List"))
         self.toggleFilterButton.setToolTip(_translate("PagePluginsSelect", "Hide plugins by type"))
         self.toggleFilterButton.setText(_translate("PagePluginsSelect", "..."))
@@ -198,8 +194,6 @@ class Ui_PagePluginsSelect(object):
         self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Load plugin selection from merge"))
         self.toggleMergeButton.setText(_translate("PagePluginsSelect", "..."))
         self.progressLabel.setText(_translate("PagePluginsSelect", "Loading data:"))
-
-
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeInfoWidget import MergeInfoWidget
 from mergewizard.widgets.MergeSelectWidget import MergeSelectWidget

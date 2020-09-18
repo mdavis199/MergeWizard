@@ -52,7 +52,6 @@ def depth(idx: QtCore.QModelIndex):
     return Depth.D2
 
 
-"""
 def asStr(id):
     if isinstance(id, int):
         return "id {} I:[row: {} col: {}] P:[row: {} col:{}]".format(
@@ -64,4 +63,4 @@ def asStr(id):
 
 def hexStr(id):
     return "{0:#0{1}x}".format(id, 18)
-"""
+

@@ -1,4 +1,5 @@
 from typing import Optional
+from mergewizard.domain.merge import MergeFile
 
 
 class Plugin:
@@ -56,6 +57,7 @@ class Plugin:
         self.mergedCount: int = 0
         self.pluginOrder: int = Plugin.NOT_SELECTED
         self.masterOrder: int = Plugin.NOT_SELECTED
+        self.mergeFile: MergeFile = None
 
     @property
     def key(self):

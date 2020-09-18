@@ -1,5 +1,5 @@
 from typing import List
-from PyQt5.QtCore import pyqtSignal, QModelIndex, QPoint, Qt, qInfo
+from PyQt5.QtCore import pyqtSignal, QModelIndex, QPoint, Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QAction
 from mergewizard.models.PluginModel import PluginModel
@@ -60,7 +60,6 @@ class PluginInfoWidget(QWidget):
             self.doubleClicked.emit(name)
 
     def copy(self, indexes: List[QModelIndex]):
-        qInfo("copy called")
         if indexes:
             QApplication.clipboard().setMimeData(self.ui.infoView.model().mimeData(indexes))
 

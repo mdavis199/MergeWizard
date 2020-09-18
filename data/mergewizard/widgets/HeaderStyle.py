@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRect, Qt, qInfo
+from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QWidget, QProxyStyle, QStyle, QStyleOption
 

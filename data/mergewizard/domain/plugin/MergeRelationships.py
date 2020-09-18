@@ -20,10 +20,10 @@ class Associations(Sequence):
 
     def addPlugin(self, plugin: Plugin) -> bool:
         idx = bisect(self.__associations, plugin)
-        if idx > 0 and self.__associations[idx - 1] != plugin:
-            self.__associations.insert(idx, plugin)
-            return True
-        return False
+        if idx > 0 and self.__associations[idx - 1] == plugin:
+            return False
+        self.__associations.insert(idx, plugin)
+        return True
 
     def removePlugin(self, plugin: Plugin) -> bool:
         idx = next((i for i in range(len(self.__associations)) if self.__associations[i] == plugin), -1)

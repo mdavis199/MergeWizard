@@ -120,7 +120,7 @@ class Plugins(Mapping):
         """
 
         if isinstance(plugin, str):
-            return self.__relationships.get(self.get(plugin))
+            return self.__relationships.get(self.get(plugin, False))
         else:
             return self.__relationships.get(plugin)
 
@@ -150,6 +150,12 @@ class Plugins(Mapping):
         """
         """
         return self.__mergeRelationships.addMerge(merge, plugin)
+
+    def mergeAssociations(self, plugin: Union[str, Plugin]):
+        if isinstance(plugin, str):
+            return self.__mergeRelationships.get(self.get(plugin, False))
+        else:
+            return self.__mergeRelationships.get(plugin)
 
     def pluginsForMerge(self, merge: Plugin) -> List[Plugin]:
         return self.__mergeRelationships.pluginsFor(merge)
