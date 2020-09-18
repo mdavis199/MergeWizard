@@ -75,7 +75,7 @@ class MergeInfoBaseModel(QIdentityProxyModel):
         return 0
 
     def columnCount(self, parent: QModelIndex = QModelIndex()):
-        return len(Column)
+        return 3
 
     def index(self, row: int, col: int, parent: QModelIndex = QModelIndex()):
         if self.hasIndex(row, col, parent):
@@ -191,10 +191,10 @@ class MergeInfoBaseModel(QIdentityProxyModel):
                     return plugin.mergeFile.dateBuilt
 
         if depth == Id.Depth.D2:
-            if idx.parent().row() == Row.MergedBy and idx.column() == 0:
+            if idx.parent().row() == Row.MergedBy and idx.column() == 1:
                 plugins, merges = self.data(idx, Role.MergeAssociations)
                 return merges[idx.row()].pluginName
-            if idx.parent().row() == Row.MergedPlugins and idx.column() == 0:
+            if idx.parent().row() == Row.MergedPlugins and idx.column() == 1:
                 plugins, merges = self.data(idx, Role.MergeAssociations)
                 return plugins[idx.row()].pluginName
             if idx.parent().row() == Row.ZEditOptions:

@@ -19,7 +19,7 @@ class MergeInfoWidget(QWidget):
         self.expandedRows: List[bool] = [True for i in Row]
 
         self.ui.infoView.setModel(MergeInfoModel())
-        self.ui.infoView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.infoView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         self.ui.infoView.expanded.connect(self.onExpanded)
         self.ui.infoView.collapsed.connect(self.onCollapsed)
@@ -86,6 +86,6 @@ class MergeInfoWidget(QWidget):
         idx = self.infoModel().mapToSource(idx)
         if Id.depth(idx) == Id.Depth.D2:
             if idx.parent().row() == Row.MergedBy or idx.parent().row() == Row.MergedPlugins:
-                name = self.infoModel().sourceModel().data(idx.siblingAtColumn(0))
+                name = self.infoModel().sourceModel().data(idx.siblingAtColumn(1))
                 if name:
                     self.doubleClicked.emit(name)
