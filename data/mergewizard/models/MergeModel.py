@@ -6,7 +6,6 @@ from PyQt5.QtCore import (
     QAbstractItemModel,
     QModelIndex,
     QObject,
-    QSize,
     QSortFilterProxyModel,
     Qt,
 )
@@ -104,7 +103,7 @@ class MergeModel(QAbstractItemModel):
             if role == Qt.DisplayRole:
                 if idx.column() == Column.Name:
                     if idx.row() == 0:
-                        return self.tr("-- Create NEW Merge --")
+                        return self.tr("-- New Merge --")
                     return self.__merges[idx.row()].name
                 elif idx.column() == Column.PluginCount:
                     return self.rowCount(idx)

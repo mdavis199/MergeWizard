@@ -1,7 +1,7 @@
 from typing import Set
 from os import path
 from glob import glob
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, qInfo
 from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.plugin.Plugin import Plugin
 from mergewizard.domain.plugin.Plugins import Plugins
@@ -21,7 +21,6 @@ class DataLoader(QThread):
         self.__organizer = organizer
         self._stopped = False
         self._plugins = None
-        self._merges = None
         self._pluginNames = None
         self._mergeFiles = None
 
@@ -40,7 +39,7 @@ class DataLoader(QThread):
 
         self.loadPlugins()
         self.loadMergeFiles()
-        self.result.emit((self._plugins, self._merges))
+        self.result.emit((self._plugins, self._mergeFiles))
 
     def loadPlugins(self):
         plugins = Plugins()

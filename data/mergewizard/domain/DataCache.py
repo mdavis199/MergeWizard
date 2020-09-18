@@ -1,6 +1,6 @@
 from copy import deepcopy
 from time import perf_counter
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 
 from mobase import IOrganizer
 from mergewizard.domain.plugin import Plugins
@@ -75,6 +75,11 @@ class DataCache(QObject):
     # ------------------------------------------------
     # Combine the info from the merge model into the
     # plugin model
+    #
+    # NOTE: We probably do not need the MergeModel now. We can use the
+    # PluginModel with the MergeRelationships.  For now, keeping it.  If we have
+    # to reload the plugins, we would not need to reload the mergeFiles.  Let's
+    # wait and see how it works out.
     # ------------------------------------------------
 
     def _setData(self, data):
