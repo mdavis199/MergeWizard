@@ -116,7 +116,7 @@ class MergeInfoBaseModel(QIdentityProxyModel):
                 return self.tr("Value")
 
     def flags(self, idx: QModelIndex):
-        DEFAULT_FLAGS = Qt.ItemIsEnabled
+        DEFAULT_FLAGS = Qt.ItemIsEnabled | Qt.ItemIsSelectable
         if not idx.isValid():
             return Qt.NoItemFlags
         depth = Id.depth(idx)

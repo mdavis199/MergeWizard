@@ -1,7 +1,7 @@
 from enum import IntEnum
 from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QWidget, QAction
 
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
@@ -68,33 +68,20 @@ class PagePluginsSelect(WizardPage):
         self.didResizeSplitters = False
         self.resizeSplitter()
 
-        # toggle buttons
-        self.ui.toggleMergeButton.setIcon(QIcon(Icon.MERGE))
-        self.ui.toggleBulkButton.setIcon(QIcon(Icon.EDIT))
-        self.ui.togglePluginInfoButton.setIcon(QIcon(Icon.INFO))
-        self.ui.toggleMergeInfoButton.setIcon(QIcon(Icon.MERGE))
-        self.ui.toggleFilterButton.setIcon(QIcon(Icon.FILTER))
-
-        self.ui.toggleBulkButton.clicked.connect(lambda: self.openTextPanel(not self.isTextPanelOpen()))
-        self.ui.toggleMergeButton.clicked.connect(lambda: self.openMergePanel(not self.isMergePanelOpen()))
-        self.ui.togglePluginInfoButton.clicked.connect(
-            lambda: self.openPluginInfoPanel(not self.isPluginInfoPanelOpen())
-        )
-        self.ui.toggleMergeInfoButton.clicked.connect(lambda: self.openMergeInfoPanel(not self.isMergeInfoPanelOpen()))
-        self.ui.toggleFilterButton.clicked.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen()))
-
         # progress bar
         self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
         context.dataCache.dataLoadingStarted.connect(self.modelLoadingStarted)
         context.dataCache.dataLoadingProgress.connect(self.modelLoadingProgress)
         context.dataCache.dataLoadingCompleted.connect(self.modelLoadingCompleted)
-        self.restoreSettings()
 
-        # context.dataCache.loadData()
+        # Buttons and other actions
+        self.installActions()
+        # restore window settings
+        self.restoreSettings()
 
     def initializePage(self) -> None:
         """ If QWizard is not set to 'independent' pages then this method is called
-        everytime the wizard switches from the previous page. Otherwize it is called only
+        everytime the wizard switches from the previous page. Otherwise it is called only
         the first time it switches to this page """
         pass
 
@@ -154,34 +141,44 @@ class PagePluginsSelect(WizardPage):
             and self.ui.selectedStacked.isVisible()
         )
 
-    def openFilterPanel(self, visible: bool = True) -> None:
+    def openFilterPanel(self, visible: bool = True, withFocus: bool = True) -> None:
         self.ui.pluginFilterWidget.setVisible(visible)
         self.ui.toggleFilterButton.setChecked(visible)
+        if visible and withFocus:
+            self.ui.pluginFilterWidget.setFocus(True)
 
-    def openPluginInfoPanel(self, visible: bool = True) -> None:
+    def openPluginInfoPanel(self, visible: bool = True, withFocus: bool = True) -> None:
         if visible:
             self.ui.allStacked.setCurrentIndex(self.AllPageId.PluginInfoPanel)
+            if withFocus:
+                self.ui.pluginInfoWidget.ui.infoView.setFocus()
         self.ui.allStacked.setVisible(visible)
         self.ui.togglePluginInfoButton.setChecked(visible)
         self.ui.toggleMergeInfoButton.setChecked(False)
 
-    def openMergeInfoPanel(self, visible: bool = True) -> None:
+    def openMergeInfoPanel(self, visible: bool = True, withFocus: bool = True) -> None:
         if visible:
             self.ui.allStacked.setCurrentIndex(self.AllPageId.MergeInfoPanel)
+            if withFocus:
+                self.ui.mergeInfoWidget.ui.infoView.setFocus()
         self.ui.allStacked.setVisible(visible)
         self.ui.toggleMergeInfoButton.setChecked(visible)
         self.ui.togglePluginInfoButton.setChecked(False)
 
-    def openTextPanel(self, visible: bool = True) -> None:
+    def openTextPanel(self, visible: bool = True, withFocus: bool = True) -> None:
         if visible:
             self.ui.selectedStacked.setCurrentIndex(self.SelectedPageId.TextPanel)
+            if withFocus:
+                self.ui.bulkAddWidget.ui.edit.setFocus()
         self.ui.selectedStacked.setVisible(visible)
         self.ui.toggleBulkButton.setChecked(visible)
         self.ui.toggleMergeButton.setChecked(False)
 
-    def openMergePanel(self, visible: bool = True) -> None:
+    def openMergePanel(self, visible: bool = True, withFocus: bool = True) -> None:
         if visible:
             self.ui.selectedStacked.setCurrentIndex(self.SelectedPageId.MergePanel)
+            if withFocus:
+                self.ui.mergeSelectWidget.ui.mergeView.setFocus()
         self.ui.selectedStacked.setVisible(visible)
         self.ui.toggleMergeButton.setChecked(visible)
         self.ui.toggleBulkButton.setChecked(False)
@@ -270,7 +267,7 @@ class PagePluginsSelect(WizardPage):
         if indexes:
             self.ui.pluginsList.setCurrentIndex(indexes[0])
 
-    # ----
+    # ----☺
     # ---- Methods related to the Merge Panel
     # ----
 
@@ -286,3 +283,50 @@ class PagePluginsSelect(WizardPage):
             self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected For Merge"))
             self.context.pluginModel.resetPluginSelection()
 
+    def togglePluginPanelFocus(self):
+        if self.ui.pluginsList.hasFocus():
+            self.ui.selectedPluginsList.setFocus()
+        else:
+            self.ui.pluginsList.setFocus()
+
+    def installActions(self):
+        a = QAction(self)
+        a.setShortcut(Qt.ALT + Qt.Key_0)
+        a.triggered.connect(lambda: self.togglePluginPanelFocus())
+
+        self.addAction(a)
+        a = QAction(self)
+        a.setToolTip(self.tr("Toggle Filter Panel (Alt+1)"))
+        a.setIcon(QIcon(Icon.FILTER))
+        a.setCheckable(True)
+        a.setShortcut(Qt.ALT + Qt.Key_1)
+        a.triggered.connect(lambda: self.openFilterPanel(not self.isFilterPanelOpen(), True))
+        self.ui.toggleFilterButton.setDefaultAction(a)
+        a = QAction(self)
+        a.setText(self.tr("Toggle Plugin Info (Alt+2)"))
+        a.setIcon(QIcon(Icon.INFO))
+        a.setCheckable(True)
+        a.setShortcut(Qt.ALT + Qt.Key_2)
+        a.triggered.connect(lambda: self.openPluginInfoPanel(not self.isPluginInfoPanelOpen(), True))
+        self.ui.togglePluginInfoButton.setDefaultAction(a)
+        a = QAction(self)
+        a.setText(self.tr("Toggle Merge Info (Alt+3)"))
+        a.setIcon(QIcon(Icon.MERGE))
+        a.setCheckable(True)
+        a.setShortcut(Qt.ALT + Qt.Key_3)
+        a.triggered.connect(lambda: self.openMergeInfoPanel(not self.isMergeInfoPanelOpen(), True))
+        self.ui.toggleMergeInfoButton.setDefaultAction(a)
+        a = QAction(self)
+        a.setText(self.tr("Toggle Text Entry Panel (Alt+4)"))
+        a.setIcon(QIcon(Icon.EDIT))
+        a.setCheckable(True)
+        a.setShortcut(Qt.ALT + Qt.Key_4)
+        a.triggered.connect(lambda: self.openTextPanel(not self.isTextPanelOpen(), True))
+        self.ui.toggleBulkButton.setDefaultAction(a)
+        a = QAction(self)
+        a.setText(self.tr("Toggle Merge Selection Panel (Alt+5)"))
+        a.setIcon(QIcon(Icon.MERGE))
+        a.setCheckable(True)
+        a.setShortcut(Qt.ALT + Qt.Key_5)
+        a.triggered.connect(lambda: self.openMergePanel(not self.isMergePanelOpen(), True))
+        self.ui.toggleMergeButton.setDefaultAction(a)

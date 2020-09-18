@@ -15,7 +15,7 @@ class PluginFilterBox(QListWidget):
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
 
-        defaultFlags = Qt.ItemIsUserCheckable | Qt.ItemIsEnabled
+        defaultFlags = Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
         item = QListWidgetItem(self.tr("Inactive Plugins"))
         item.setIcon(QIcon(Icon.INACTIVE))

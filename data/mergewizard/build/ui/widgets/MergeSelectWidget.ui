@@ -173,6 +173,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mergeView</tabstop>
+  <tabstop>sortByPriority</tabstop>
+  <tabstop>selectedMerge</tabstop>
+  <tabstop>selectMergeButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

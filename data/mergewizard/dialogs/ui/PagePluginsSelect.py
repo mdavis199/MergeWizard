@@ -166,7 +166,7 @@ class Ui_PagePluginsSelect(object):
         self.progressLabel.setObjectName("progressLabel")
         self.progressLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.progressLabel)
         self.progressBar = QtWidgets.QProgressBar(self.progressFrame)
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
         self.progressLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.progressBar)
         self.horizontalLayout.addLayout(self.progressLayout)
@@ -174,6 +174,13 @@ class Ui_PagePluginsSelect(object):
 
         self.retranslateUi(PagePluginsSelect)
         QtCore.QMetaObject.connectSlotsByName(PagePluginsSelect)
+        PagePluginsSelect.setTabOrder(self.pluginsList, self.selectedPluginsList)
+        PagePluginsSelect.setTabOrder(self.selectedPluginsList, self.toggleFilterButton)
+        PagePluginsSelect.setTabOrder(self.toggleFilterButton, self.filterEdit)
+        PagePluginsSelect.setTabOrder(self.filterEdit, self.togglePluginInfoButton)
+        PagePluginsSelect.setTabOrder(self.togglePluginInfoButton, self.toggleMergeInfoButton)
+        PagePluginsSelect.setTabOrder(self.toggleMergeInfoButton, self.toggleBulkButton)
+        PagePluginsSelect.setTabOrder(self.toggleBulkButton, self.toggleMergeButton)
 
     def retranslateUi(self, PagePluginsSelect):
         _translate = QtCore.QCoreApplication.translate
@@ -183,16 +190,22 @@ class Ui_PagePluginsSelect(object):
         self.pluginGroup.setTitle(_translate("PagePluginsSelect", "Plugin List"))
         self.toggleFilterButton.setToolTip(_translate("PagePluginsSelect", "Hide plugins by type"))
         self.toggleFilterButton.setText(_translate("PagePluginsSelect", "..."))
+        self.toggleFilterButton.setShortcut(_translate("PagePluginsSelect", "Alt+1"))
         self.filterEdit.setPlaceholderText(_translate("PagePluginsSelect", "Filter plugins by name ..."))
         self.filterCount.setText(_translate("PagePluginsSelect", "Filtering: 0/0"))
-        self.togglePluginInfoButton.setToolTip(_translate("PagePluginsSelect", "View plugin relationships"))
+        self.togglePluginInfoButton.setToolTip(_translate("PagePluginsSelect", "Toggle plugin info panel."))
         self.togglePluginInfoButton.setText(_translate("PagePluginsSelect", "..."))
+        self.togglePluginInfoButton.setShortcut(_translate("PagePluginsSelect", "Alt+2"))
+        self.toggleMergeInfoButton.setToolTip(_translate("PagePluginsSelect", "Toggle merge info panel."))
         self.toggleMergeInfoButton.setText(_translate("PagePluginsSelect", "..."))
+        self.toggleMergeInfoButton.setShortcut(_translate("PagePluginsSelect", "Alt+3"))
         self.pluginSelectionGroup.setTitle(_translate("PagePluginsSelect", "Plugins Selected for Merge"))
-        self.toggleBulkButton.setToolTip(_translate("PagePluginsSelect", "Select plugins by entering names"))
+        self.toggleBulkButton.setToolTip(_translate("PagePluginsSelect", "Toggle text entry panel."))
         self.toggleBulkButton.setText(_translate("PagePluginsSelect", "..."))
-        self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Load plugin selection from merge"))
+        self.toggleBulkButton.setShortcut(_translate("PagePluginsSelect", "Alt+4"))
+        self.toggleMergeButton.setToolTip(_translate("PagePluginsSelect", "Toggle merge selection panel."))
         self.toggleMergeButton.setText(_translate("PagePluginsSelect", "..."))
+        self.toggleMergeButton.setShortcut(_translate("PagePluginsSelect", "Alt+5"))
         self.progressLabel.setText(_translate("PagePluginsSelect", "Loading data:"))
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeInfoWidget import MergeInfoWidget

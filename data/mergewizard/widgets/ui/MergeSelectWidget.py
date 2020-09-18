@@ -77,6 +77,9 @@ class Ui_MergeSelectWidget(object):
 
         self.retranslateUi(MergeSelectWidget)
         QtCore.QMetaObject.connectSlotsByName(MergeSelectWidget)
+        MergeSelectWidget.setTabOrder(self.mergeView, self.sortByPriority)
+        MergeSelectWidget.setTabOrder(self.sortByPriority, self.selectedMerge)
+        MergeSelectWidget.setTabOrder(self.selectedMerge, self.selectMergeButton)
 
     def retranslateUi(self, MergeSelectWidget):
         _translate = QtCore.QCoreApplication.translate
