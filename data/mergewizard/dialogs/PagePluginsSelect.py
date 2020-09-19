@@ -14,9 +14,10 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 
 class PagePluginsSelect(WizardPage):
-    # The data loading takes about 5 sec total, 3 of which is qt
-    # pushing the data to the tables (in bulk).  Here we try to keep
-    # the progress bar from showing 100% while qt is working on the gui
+
+    # On my system, loading 675 plugins takes about 2 sec to load the data from MO and zEdit files.
+    # It takes another 3 seconds for pyQt to display it in the views (when the rows are added in bulk).
+    # Here we prevent the progress bar from showing 100% while qt is working on the gui.
     PROGRESS_OFFSET = 1
 
     # Left panel stack widget
@@ -183,6 +184,12 @@ class PagePluginsSelect(WizardPage):
         self.ui.toggleMergeButton.setChecked(visible)
         self.ui.toggleBulkButton.setChecked(False)
 
+    def togglePluginPanelFocus(self):
+        if self.ui.pluginsList.hasFocus():
+            self.ui.selectedPluginsList.setFocus()
+        else:
+            self.ui.pluginsList.setFocus()
+
     def updateFilterCount(self) -> None:
         showing = self.ui.pluginsList.model().rowCount()
         total = self.context.pluginModel.rowCount()
@@ -267,7 +274,7 @@ class PagePluginsSelect(WizardPage):
         if indexes:
             self.ui.pluginsList.setCurrentIndex(indexes[0])
 
-    # ----☺
+    # ----
     # ---- Methods related to the Merge Panel
     # ----
 
@@ -283,11 +290,9 @@ class PagePluginsSelect(WizardPage):
             self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected For Merge"))
             self.context.pluginModel.resetPluginSelection()
 
-    def togglePluginPanelFocus(self):
-        if self.ui.pluginsList.hasFocus():
-            self.ui.selectedPluginsList.setFocus()
-        else:
-            self.ui.pluginsList.setFocus()
+    # ----
+    # ---- Methods related to actions
+    # ----
 
     def installActions(self):
         a = QAction(self)
