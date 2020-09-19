@@ -167,6 +167,14 @@ class PluginModelBase(QAbstractItemModel):
         return [self._plugins[row].pluginName for row in self._selected]
 
     # ------------------------------------------------
+    # --- Find index for plugin name
+    # ------------------------------------------------
+    def indexForPluginName(self, name: str) -> QModelIndex:
+        key = name.lower()
+        row = next((i for i in range(len(self._plugins)) if self._plugins[i].key == key), -1)
+        return self.index(row, Column.PluginName)
+
+    # ------------------------------------------------
     # ---- Methods related to plugin order and selection
     # ------------------------------------------------
 

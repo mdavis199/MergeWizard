@@ -1,35 +1,40 @@
-from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QWidget, QDialog
+from PyQt5.QtCore import qInfo
 from mergewizard.domain.Context import Context
 from mergewizard.constants import Setting
 from .ui.SettingsDialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):
-    settingsChanged = pyqtSignal(list)  # list of names of settings that changed.
-
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
-        self.loadZMerge = True
-        self.savePluginList = True
 
     def loadSettings(self, context: Context):
-        self.loadZMerge = bool(context.getUserSetting(Setting.LOAD_ZMERGE, True))
-        self.ui.loadZMerge.setChecked(self.loadZMerge)
-        self.savePluginList = bool(context.getUserSetting(Setting.SAVE_PLUGIN_LIST, True))
-        self.ui.savePluginList.setChecked(self.savePluginList)
+        # set ui widget values
+        self.ui.enableHiding.setChecked(context.enableHidingPlugins)
+        qInfo("enableHiding? {}".format(self.ui.enableHiding.isChecked()))
+        hidingMethod = context.hidingMethod
+        if hidingMethod == "mohidden":
+            self.ui.hideMethod.setChecked(True)
+        elif hidingMethod == "optional":
+            self.ui.optionalMethod.setChecked(True)
+        else:
+            self.ui.disableMethod.setChecked(True)
+        self.ui.zeditPathEdit.setText(context.zMergeFolder)
+        self.ui.modNameTemplate.setText(context.modNameTemplate)
+        self.ui.profileNameTemplate.setText(context.profileNameTemplate)
 
     def storeSettings(self, context: Context):
-        changedSettings = []
-        newLoadZMerge = self.ui.loadZMerge.isChecked()
-        if self.loadZMerge != newLoadZMerge:
-            context.setUserSetting(Setting.LOAD_ZMERGE, newLoadZMerge)
-            changedSettings.append(Setting.LOAD_ZMERGE)
-        newSavePluginList = self.ui.savePluginList.isChecked()
-        if self.savePluginList != newSavePluginList:
-            context.setUserSetting(Setting.SAVE_PLUGIN_LIST, newSavePluginList)
-            changedSettings.append(Setting.SAVE_PLUGIN_LIST)
-        if changedSettings:
-            self.settingsChanged.emit(changedSettings)
+        context.storeUserSetting(Setting.ENABLE_HIDING_PLUGINS, self.ui.enableHiding.isChecked())
+        if self.ui.hideMethod.isChecked():
+            context.storeUserSetting(Setting.HIDING_METHOD, "mohidden")
+        if self.ui.optionalMethod.isChecked():
+            context.storeUserSetting(Setting.HIDING_METHOD, "optional")
+        if self.ui.disableMethod.isChecked():
+            context.storeUserSetting(Setting.HIDING_METHOD, "disable")
+        context.storeUserSetting(Setting.ZMERGE_FOLDER, self.ui.zeditPathEdit.text())
+        context.storeUserSetting(Setting.MODNAME_TEMPLATE, self.ui.modNameTemplate.text())
+        context.storeUserSetting(Setting.PROFILENAME_TEMPLATE, self.ui.profileNameTemplate.text())
+

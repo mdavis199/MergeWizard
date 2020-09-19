@@ -31,7 +31,16 @@ class Icon:
     SETTINGS = ":/mergewizard/icon_settings"
 
 
+"""
+These are keys and user descriptions shown in MO's
+user-facing settings dialog.
+"""
+
+
 class Setting:
-    LOAD_ZMERGE = "Load zMerge files"
-    SAVE_PLUGIN_LIST = "Save selected plugins list"
+    ENABLE_HIDING_PLUGINS = "Enable hiding plugins"
+    HIDING_METHOD = "Method for hiding plugins: mohidden, optional, disable"
+    ZMERGE_FOLDER = "zMerge Installation Folder"
+    MODNAME_TEMPLATE = "Default template for new mod names"
+    PROFILENAME_TEMPLATE = "Default template for new mod names"
 

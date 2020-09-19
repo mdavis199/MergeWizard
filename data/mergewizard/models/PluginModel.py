@@ -244,6 +244,11 @@ class PluginModel(PluginModelBase):
     def onPluginMoved(self, name, old, new):
         qInfo("OnPluginMoved")
         self.log.emit("Plugin {}: load order moved from {} to {}".format(name, old, new), LogStatus.Info)
+        idxName = self.indexForPluginName(name)
+        idx = idxName.siblingAtColumn(Column.Priority)
+        qInfo("...before idx: r:{}, c:{}, name: {}, val: {}".format(idx.row(), idx.column(), self.data(idxName), self.data(idx)))
+        self.setData(idx, new)
+        qInfo("...after idx: r:{}, c:{}, val: {}".format(idx.row(), idx.column(), self.data(idx)))
 
     def onPluginStateChanged(self, name, state):
         qInfo("onPluginStateChanged")

@@ -22,8 +22,6 @@ class PageId(IntEnum):
 
 class Wizard(QWizard):
 
-    settingsChanged = pyqtSignal(list)
-
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
         self.__context = Context(organizer)
@@ -42,9 +40,10 @@ class Wizard(QWizard):
         self.setOptions(self.NoBackButtonOnStartPage)
         self.button(self.CustomButton1).setIcon(QIcon(Icon.SETTINGS))
         self.button(self.CustomButton1).setToolTip(self.tr("Set options for MergeWizard"))
-        self.button(self.CustomButton1).setVisible(False)  # no setting at this time
+        self.button(self.CustomButton1).setVisible(True)  # no setting at this time
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         self.customButtonClicked.connect(self.handleCustomButton)
+        self.context().loadUserSetting()
         self.addWizardPages()
         self.restoreSize()
 
@@ -52,13 +51,10 @@ class Wizard(QWizard):
         return self.__context
 
     def addWizardPages(self):
-        loadZMerge = self.context().getUserSetting(Setting.LOAD_ZMERGE, True)
-        PluginViewFactory.excludeMergeColumns = not loadZMerge
-
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
         for pageId in self.pageIds():
-            self.settingsChanged.connect(self.page(pageId).settingsChanged)
+            self.context().settingChanged.connect(self.page(pageId).settingChanged)
 
     def handleCustomButton(self, which: int):
         if which == QWizard.CustomButton1:
@@ -67,7 +63,6 @@ class Wizard(QWizard):
     def showSettingsDialog(self):
         settingsDialog = SettingsDialog(self)
         settingsDialog.loadSettings(self.context())
-        settingsDialog.settingsChanged.connect(self.settingsChanged)
         if settingsDialog.exec() == SettingsDialog.Accepted:
             settingsDialog.storeSettings(self.context())
 
