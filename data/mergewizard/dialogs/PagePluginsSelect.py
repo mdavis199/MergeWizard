@@ -55,8 +55,16 @@ class PagePluginsSelect(WizardPage):
         self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.mergeInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
-        self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
+        self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
+
+        # This speeds up data loading quite a bit.  Will restore everything after loading
+        self.ui.pluginFilterWidget.enableAll()
+        self.openFilterPanel(False)
+        self.openMergeInfoPanel(False)
+        self.openMergePanel(False)
+        self.openPluginInfoPanel(False)
+        self.openTextPanel(False)
 
         # splitters
         Splitter.decorate(self.ui.splitter)
@@ -77,8 +85,6 @@ class PagePluginsSelect(WizardPage):
 
         # Buttons and other actions
         self.installActions()
-        # restore window settings
-        self.restoreSettings()
 
     def initializePage(self) -> None:
         """ If QWizard is not set to 'independent' pages then this method is called
@@ -103,8 +109,6 @@ class PagePluginsSelect(WizardPage):
         miVisible = self.context.getSetting("MergeInfoPanelVisible", QVariant.Bool, False)
         tVisible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
         mVisible = self.context.getSetting("MergePanelVisible", QVariant.Bool, False)
-        fVisible = self.context.getSetting("FilterPanelVisible", QVariant.Bool, False)
-
         if piVisible:
             self.openPluginInfoPanel(piVisible)
         else:
@@ -113,13 +117,14 @@ class PagePluginsSelect(WizardPage):
             self.openTextPanel(tVisible)
         else:
             self.openMergePanel(mVisible)
+        self.openFilterPanel(False)
+        self.ui.mergeInfoWidget.setExpandedStates(self.context.getSetting("PluginListState", QVariant.Int, None))
 
+    def restoreFilterSettings(self):
+        fVisible = self.context.getSetting("FilterPanelVisible", QVariant.Bool, False)
         self.openFilterPanel(fVisible)
         filters = self.context.getSetting("PluginFilters", QVariant.Int, 0)
-        if filters:
-            self.ui.pluginFilterWidget.enableFilters(filters)
-
-        self.ui.mergeInfoWidget.setExpandedStates(self.context.getSetting("PluginListState", QVariant.Int, None))
+        self.ui.pluginFilterWidget.setFilters(filters)
 
     def isPluginInfoPanelOpen(self) -> bool:
         return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisible()
@@ -208,6 +213,8 @@ class PagePluginsSelect(WizardPage):
     def modelLoadingCompleted(self) -> None:
         self.ui.progressFrame.setVisible(False)
         self.ui.progressBar.setValue(0)
+        self.restoreSettings()
+        self.restoreFilterSettings()
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()

@@ -118,6 +118,11 @@ class PluginFilterBox(QListWidget):
                 if isChecked != enable:
                     self.item(i).setCheckState(Qt.Checked if enable else Qt.Unchecked)
 
+    def setFilters(self, filter_: Filter):
+        for i in range(self.count()):
+            enable = bool(filter_ & self.item(i).data(Qt.UserRole))
+            self.item(i).setCheckState(Qt.Checked if enable else Qt.Unchecked)
+
     def showContextMenu(self, pos: QPoint):
         menu = QMenu()
         menu.addActions(self.actions())
