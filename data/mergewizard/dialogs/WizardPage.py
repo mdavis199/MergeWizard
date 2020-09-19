@@ -13,6 +13,6 @@ class WizardPage(QWizardPage):
     def deinitializePage(self) -> None:
         pass
 
-    @pyqtSlot(str)
-    def settingChanged(self, setting: str) -> None:
+    @pyqtSlot(int)
+    def settingChanged(self, setting: int) -> None:
         pass

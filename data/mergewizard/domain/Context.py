@@ -1,6 +1,6 @@
 from typing import Any, Union, List
 from os import path
-from PyQt5.QtCore import QVariant, QObject, pyqtSignal, qInfo
+from PyQt5.QtCore import QVariant, QObject, pyqtSignal
 from mobase import IOrganizer
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
@@ -8,9 +8,7 @@ from mergewizard.models.PluginModel import PluginModel
 from mergewizard.constants import INTERNAL_PLUGIN_NAME, Setting
 
 
-# NOTE: getSetting does not stick until MO closes and reopens.
-# If this plugin sets a value in 'organizer.persistent', it will
-# continue to pull the old value until MO relaunches.
+# NOTE: Must be a one-to-one mapping with constants.Setting enumeration.
 
 
 class Context(QObject):
@@ -18,9 +16,7 @@ class Context(QObject):
     Context contains data and convenience methods passed between the different WizardPages
     """
 
-    settingChanged = pyqtSignal(str)
-
-    DEORDERS_PLUGIN = "Merge Plugins Hide"
+    settingChanged = pyqtSignal(int)
 
     def __init__(self, organizer: IOrganizer):
         super().__init__()
@@ -101,89 +97,74 @@ class Context(QObject):
     # ---- Public settings stored in MO's user interface
     # ----
 
-    def setUserSetting(self, name: str, value: Any, pluginName=None) -> Any:
-        self.organizer.setPluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, name, value)
+    # NOTE: This must have a one-to-one mapping with constants.Setting enum
+    Settings = [
+        ("_enableHidingPlugins", "enable-hiding"),
+        ("_hidingMethod", "hide-type"),
+        ("_zMergeFolder", "zedit-folder"),
+        ("_modNameTemplate", "mod-name-template"),
+        ("_profileNameTemplate", "profile-name-template"),
+    ]
 
-    def getUserSetting(self, name: str, default: Any, pluginName=None) -> Any:
-        value = self.organizer.pluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, name)
+    def setUserSetting(self, setting: Union[Setting, str], value: Any, pluginName=None) -> Any:
+        key = self.Settings[setting][1] if isinstance(setting, Setting) else setting
+        self.organizer.setPluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, key, value)
+
+    def getUserSetting(self, setting: Union[Setting, str], default=None, pluginName=None) -> Any:
+        key = self.Settings[setting][1] if isinstance(setting, Setting) else setting
+        value = self.organizer.pluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, key)
         return value if value is not None else default
 
-    def loadUserSetting(self, name: str = None):
-        qInfo("context.loadUserSetting: {}".format(name))
-        if not name:
-            qInfo("Loading all user settings")
-            for setting in Setting.__dict__:
-                if not setting.startswith("_"):
-                    self.loadUserSetting(Setting.__dict__[setting])
-            return
-        if name == Setting.ENABLE_HIDING_PLUGINS:
-            self._enableHidingPlugins = self.validateUserSetting(name, self.getUserSetting(name, True))
-            qInfo("set enableHidingPlugins: {}".format(self._enableHidingPlugins))
-        if name == Setting.HIDING_METHOD:
-            self._hidingMethod = self.validateUserSetting(
-                name, self.getUserSetting(name, self.getUserSetting(name, None, self.DEORDERS_PLUGIN))
-            )
-        if name == Setting.ZMERGE_FOLDER:
-            self._zMergeFolder = self.validateUserSetting(name, self.getUserSetting(name, ""))
-        if name == Setting.MODNAME_TEMPLATE:
-            self._modNameTemplate = self.validateUserSetting(name, self.getUserSetting(name, ""))
-        if name == Setting.PROFILENAME_TEMPLATE:
-            self._profileNameTemplate = self.validateUserSetting(name, self.getUserSetting(name, ""))
+    # ----
 
-    def validateUserSetting(self, name: str, value: Any) -> Any:
-        if name == Setting.ENABLE_HIDING_PLUGINS:
+    def loadUserSetting(self, setting: Setting = None):
+        if setting is None:
+            for s in Setting:
+                self.loadUserSetting(s)
+            return
+        attr = self.Settings[setting][0]
+        setattr(self, attr, self.validateUserSetting(setting, self.getUserSetting(setting)))
+
+    def validateUserSetting(self, setting: Setting, value: Any) -> Any:
+        if setting == Setting.ENABLE_HIDING_PLUGINS:
             if isinstance(value, bool):
-                qInfo("{}: value {}".format(name, value))
                 return value
-            qInfo("{}: default: True".format(name))
             return True
-        if name == Setting.HIDING_METHOD:
+        if setting == Setting.ZMERGE_FOLDER:
+            if value and path.exists(value + "/zedit.exe"):
+                return value
+            return ""
+        if setting == Setting.MODNAME_TEMPLATE:
+            return value if value is not None else ""
+        if setting == Setting.PROFILENAME_TEMPLATE:
+            return value if value is not None else ""
+        if setting == Setting.HIDING_METHOD:
             VALUES = ["mohidden", "optional", "disable"]
             if value:
                 value = value.lower()
                 if value in VALUES:
                     return value
+            DEORDERS_PLUGIN = "Merge Plugins Hide"
+            DEORDERS_KEY = "hide-type"
+            value = self.getUserSetting(DEORDERS_KEY, None, DEORDERS_PLUGIN)
+            if value:
+                value = value.lower()
+                if value in VALUES:
+                    return value
             return "mohidden"
-        if name == Setting.ZMERGE_FOLDER:
-            if value and path.exists(value + "/zedit.exe"):
-                return value
-            return ""
-        if name == Setting.MODNAME_TEMPLATE:
-            return value if value is not None else ""
-        if name == Setting.PROFILENAME_TEMPLATE:
-            return value if value is not None else ""
 
-    def storeUserSetting(self, name: Union[str, List[str]], value: Any) -> None:
+    def storeUserSetting(self, setting: Union[Setting, List[Setting]], value: Any) -> None:
         # if name is a list, value must be a list of the same size
-        if isinstance(name, list):
-            for i in range(len(name)):
-                self.storeUserSetting[name[i], value[i]]
+        if isinstance(setting, list):
+            for i in range(len(setting)):
+                self.storeUserSetting[setting[i], value[i]]
             return
 
-        v = self.validateUserSetting(name, value)
-        if name == Setting.ENABLE_HIDING_PLUGINS:
-            qInfo("Storing {} value: {}".format(name, value))
-            if v != self.enableHidingPlugins:
-                self.setUserSetting(name, v)
-                self._enableHidingPlugins = v
-                self.settingChanged.emit(name)
-        if name == Setting.HIDING_METHOD:
-            if v != self.enableHidingPlugins:
-                self.setUserSetting(name, v)
-                self._hidingMethod = v
-                self.settingChanged.emit(name)
-        if name == Setting.ZMERGE_FOLDER:
-            if v != self.enableHidingPlugins:
-                self.setUserSetting(name, v)
-                self._zMergeFolder = v
-                self.settingChanged.emit(name)
-        if name == Setting.MODNAME_TEMPLATE:
-            if v != self.enableHidingPlugins:
-                self.setUserSetting(name, v)
-                self._modNameTemplate = v
-                self.settingChanged.emit(name)
-        if name == Setting.PROFILENAME_TEMPLATE:
-            if v != self.enableHidingPlugins:
-                self.setUserSetting(name, v)
-                self._profileNameTemplate = v
-                self.settingChanged.emit(name)
+        v = self.validateUserSetting(setting, value)
+        attr = self.Settings[setting][0]
+        if v != getattr(self, attr):
+            key = self.Settings[setting][1]
+            self.setUserSetting(key, v)
+            setattr(self, attr, v)
+            self.settingChanged.emit(setting)
+

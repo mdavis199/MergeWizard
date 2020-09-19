@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QWidget, QDialog
-from PyQt5.QtCore import qInfo
 from mergewizard.domain.Context import Context
 from mergewizard.constants import Setting
 from .ui.SettingsDialog import Ui_SettingsDialog
@@ -14,7 +13,6 @@ class SettingsDialog(QDialog):
     def loadSettings(self, context: Context):
         # set ui widget values
         self.ui.enableHiding.setChecked(context.enableHidingPlugins)
-        qInfo("enableHiding? {}".format(self.ui.enableHiding.isChecked()))
         hidingMethod = context.hidingMethod
         if hidingMethod == "mohidden":
             self.ui.hideMethod.setChecked(True)

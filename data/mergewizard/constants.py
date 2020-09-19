@@ -1,3 +1,5 @@
+from enum import IntEnum, auto
+
 # key used set/get persistent plugin settings from MO
 INTERNAL_PLUGIN_NAME = "MergeWizard"
 
@@ -37,6 +39,15 @@ user-facing settings dialog.
 """
 
 
+class Setting(IntEnum):
+    ENABLE_HIDING_PLUGINS = 0
+    HIDING_METHOD = auto()
+    ZMERGE_FOLDER = auto()
+    MODNAME_TEMPLATE = auto()
+    PROFILENAME_TEMPLATE = auto()
+
+"""
+
 class Setting:
     ENABLE_HIDING_PLUGINS = "Enable hiding plugins"
     HIDING_METHOD = "Method for hiding plugins: mohidden, optional, disable"
@@ -44,3 +55,5 @@ class Setting:
     MODNAME_TEMPLATE = "Default template for new mod names"
     PROFILENAME_TEMPLATE = "Default template for new mod names"
 
+
+"""
