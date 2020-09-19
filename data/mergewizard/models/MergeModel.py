@@ -1,14 +1,7 @@
 from enum import IntEnum, auto
 from typing import List
 
-from PyQt5.QtCore import (
-    pyqtSlot,
-    QAbstractItemModel,
-    QModelIndex,
-    QObject,
-    QSortFilterProxyModel,
-    Qt,
-)
+from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt
 from PyQt5.QtGui import QColor, QFont, QIcon
 
 from mergewizard.domain.merge import MergeFile as Merge
@@ -160,7 +153,10 @@ class MergeSortModel(QSortFilterProxyModel):
         depth = Id.depth(left)
         if depth == Id.Depth.D0:
             return left.row() < right.row()
-        return self.sourceModel().data(left).lower() < self.sourceModel().data(right).lower()
+        return (
+            self.sourceModel().data(left.siblingAtColumn(Column.Name)).lower()
+            < self.sourceModel().data(right.siblingAtColumn(Column.Name)).lower()
+        )
 
     @pyqtSlot(bool)
     def sortByPriority(self, sortByPriority: bool):
