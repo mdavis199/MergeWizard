@@ -1,7 +1,7 @@
 from enum import IntEnum
 from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QWidget, QAction
+from PyQt5.QtWidgets import QWidget, QAction, QHeaderView
 
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
@@ -220,6 +220,12 @@ class PagePluginsSelect(WizardPage):
         self.showPluginInfo()
 
     def setUpViewsAfterModelReload(self):
+        section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
+        if self.ui.pluginsList.model().rowCount() > 0:
+            self.ui.pluginsList.resizeColumnToContents(section)
+        else:
+            self.ui.pluginsList.setColumnWidth(section, self.ui.pluginsList.viewport().width() / 2)
+
         if self.ui.pluginInfoWidget.isVisible():
             width = self.ui.pluginInfoWidget.ui.infoView.viewport().width() / 2 - 7
         else:
