@@ -1,8 +1,20 @@
-from typing import List, Tuple, Dict, Set, Union
+from typing import List, Tuple, Dict, Set, Union, Callable
 from bisect import bisect
 from collections.abc import Sequence
 from mergewizard.domain.plugin import Plugin
-from mergewizard.domain.merge import MergeFile
+
+"""
+class KeyedList:
+    def __init__(self, inner: List, key: Callable):
+        self._inner = inner
+        self._key = key
+
+    def __len__(self) -> int:
+        return len(self._inner)
+
+    def __getitem__(self, k):
+        return self._key(self._inner[k])
+"""
 
 
 class Associations(Sequence):
@@ -19,11 +31,10 @@ class Associations(Sequence):
         return len(self.__associations)
 
     def addPlugin(self, plugin: Plugin) -> bool:
-        idx = bisect(self.__associations, plugin)
-        if idx > 0 and self.__associations[idx - 1] == plugin:
-            return False
-        self.__associations.insert(idx, plugin)
-        return True
+        if not self.hasPlugin(plugin):
+            self.__associations.append(plugin)
+            return True
+        return False
 
     def removePlugin(self, plugin: Plugin) -> bool:
         idx = next((i for i in range(len(self.__associations)) if self.__associations[i] == plugin), -1)
@@ -33,7 +44,7 @@ class Associations(Sequence):
         return False
 
     def hasPlugin(self, plugin: Plugin) -> bool:
-        return self.index(plugin) >= 0
+        return next((i for i in range(len(self.__associations)) if self.__associations[i] == plugin), -1) >= 0
 
 
 PluginsFor = Associations  # Plugins merged by a specified plugin
@@ -90,4 +101,3 @@ class MergeRelationships:
             self.pluginsFor(plugin).remove(merge)
         changed.append(merge)
         return list(changed)
-
