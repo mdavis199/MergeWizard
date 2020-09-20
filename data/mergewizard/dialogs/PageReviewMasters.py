@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import QDir, QFile, QFileInfo, QDirIterator
 
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
@@ -13,6 +14,8 @@ class PageReviewMasters(WizardPage):
         self.ui = Ui_PageReviewMasters()
         self.ui.setupUi(self)
         self.context = context
+        self.profilesDir = None
+        self.profiles = []
 
         PluginViewFactory.configureView(ViewType.Masters, self.ui.masterPlugins, context.pluginModel)
         PluginViewFactory.configureView(ViewType.SelectedNoEdit, self.ui.selectedPlugins, context.pluginModel)
@@ -29,8 +32,17 @@ class PageReviewMasters(WizardPage):
     def isOkToExit(self):
         return True
 
-    def buildProfileList(self):
-        return []
-
     def currentProfile(self):
         return self.context.organizer.profileName()
+
+    def buildProfileList(self):
+        # There doesn't seem to be a way to retrieve the list of profiles from MO
+        # or even the profile directory.
+        if self.profiles:
+            return self.profiles
+        currentPath = QFileInfo(self.context.organizer.profile().absolutePath())
+        self.profilesDir = currentPath.dir().absolutePath()
+        infos = QDir(currentPath.absolutePath(), "", QDir.IgnoreCase, QDir.NoDotAndDotDot | QDir.Dirs).entryInfoList()
+        for info in infos:
+            self.profiles.append(info.baseName())
+        return self.profiles

@@ -113,9 +113,8 @@ class ActionWidget(QWidget):
         if idx > -1:
             profiles.pop(idx)
         self.ui.profileBox.clear()
-        self.profiles = [self.tr("(Current) {}".format(self.currentProfile))]
+        self.profiles = [self.tr("(Current) {}".format(self.currentProfile)), self.tr("Create new profile ...")]
         self.profiles.extend(profiles)
-        self.profiles.append(self.tr("Create new profile ..."))
         self.ui.profileBox.addItems(self.profiles)
         self.ui.profileBox.setItemData(0, self.ProfileType.Current)
         self.ui.profileBox.setItemData(self.ui.profileBox.count() - 1, self.ProfileType.New)
@@ -131,13 +130,13 @@ class ActionWidget(QWidget):
         idx = self.ui.profileBox.currentIndex()
         if idx == 0:
             return self.currentProfile
-        if idx == self.ui.profileBox.count() - 1:
+        if idx == 1:
             return self.ui.profileName.text()
         return self.ui.profileBox.currentText()
 
     def onProfileSelectionChanged(self, index):
         idx = self.ui.profileBox.currentIndex()
-        self.ui.profileName.setEnabled(idx == self.ui.profileBox.count() - 1)
+        self.ui.profileName.setEnabled(idx == 1)
         self.validatePanel()
 
     def onNewProfileName(self):
@@ -154,7 +153,6 @@ class ActionWidget(QWidget):
         bad = (
             not self.selectedProfileName()
             or self.actionModel().isNoneEnabled()
-            or self.ui.profileError.isVisible()
             or self.pluginModel.selectedCount() == 0
         )
         self.ui.applyButton.setDisabled(bad)
