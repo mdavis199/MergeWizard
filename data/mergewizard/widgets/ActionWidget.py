@@ -1,6 +1,7 @@
 from typing import List
 from enum import Enum, auto
-from PyQt5.QtCore import Qt, QSize, qInfo
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from mergewizard.models.PluginModel import PluginModel
@@ -8,6 +9,7 @@ from mergewizard.models.ActionModel import ActionModel
 from mergewizard.models.LogModel import LogModel, LogFilterModel
 from mergewizard.widgets.Splitter import Splitter
 from mergewizard.widgets.CheckableHeader import CheckableHeader
+from mergewizard.constants import Icon
 from .ui.ActionWidget import Ui_ActionWidget
 
 
@@ -31,6 +33,7 @@ class ActionWidget(QWidget):
         self.ui.splitter.setSizes([500, 500])
 
         # error indicators
+        self.ui.warningIcon.setPixmap(QPixmap(Icon.MISSING))
         self.ui.warningFrame.setVisible(False)
         self.ui.errorFrame.setVisible(False)
         self.ui.profileError.setVisible(False)
