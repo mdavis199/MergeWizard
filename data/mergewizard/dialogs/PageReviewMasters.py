@@ -23,5 +23,14 @@ class PageReviewMasters(WizardPage):
         self.ui.verticalSplitter.setStretchFactor(1, 1)
         self.ui.actionWidget.setPluginModel(context.pluginModel)
 
+    def initializePage(self):
+        self.ui.actionWidget.initialize(self.currentProfile(), self.buildProfileList())
+
     def isOkToExit(self):
         return True
+
+    def buildProfileList(self):
+        return []
+
+    def currentProfile(self):
+        return self.context.organizer.profileName()

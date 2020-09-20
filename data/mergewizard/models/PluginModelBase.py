@@ -112,37 +112,6 @@ class PluginModelBase(QAbstractItemModel):
         self._originalSelected = self._selected
         self.modelLoadingCompleted.emit()
 
-    def addMergeInfo(self, merges) -> None:
-        for merge in merges:
-            self.addPlugin(merge.filename, modName=merge.modName, isMerge=True)
-            for pluginFileDesc in merge.plugins:
-                self.addPlugin(pluginFileDesc.filename, modName=pluginFileDesc.modName, isMerged=True)
-
-    def addPlugin(self, name: str, modName: str = "", isMerge=None, isMerged=None) -> Plugin:
-        row = self._plugins.index(name)
-        if row >= 0:
-            plugin = self._plugins[row]
-            if isMerge:
-                plugin.isMerge = True
-            if isMerged:
-                plugin.isMerged = True
-            if modName:
-                plugin.modName = modName
-            row = self._plugins.index(name)
-            self.dataChanged.emit(self.index(row, Column.IsMerge), self.index(row, Column.IsMerged))
-            return plugin
-        row = self._plugins.insertionIndex(name)
-        self.beginInsertRows(QModelIndex(), row, row)
-        plugin = self._plugins.get(name, False)
-        if isMerge:
-            plugin.isMerge = True
-        if isMerged:
-            plugin.isMerged = True
-        if modName:
-            plugin.modName = modName
-        self.endInsertRows()
-        return plugin
-
     # ------------------------------------------------
     # --- Methods for detecting plugin selection changes
     # ------------------------------------------------
@@ -173,6 +142,22 @@ class PluginModelBase(QAbstractItemModel):
         key = name.lower()
         row = next((i for i in range(len(self._plugins)) if self._plugins[i].key == key), -1)
         return self.index(row, Column.PluginName)
+
+    # -------------------------------------------------
+    # --- General queries
+    # -------------------------------------------------
+
+    def missingPluginsAreSelected(self) -> bool:
+        for row in self._selected:
+            if self._plugins[row].isMissing:
+                return True
+        for row in self._masters:
+            if self._plugins[row].isMissing:
+                return True
+        return False
+
+    def selectedCount(self) -> int:
+        return len(self._selected)
 
     # ------------------------------------------------
     # ---- Methods related to plugin order and selection

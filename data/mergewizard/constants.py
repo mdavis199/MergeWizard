@@ -32,6 +32,8 @@ class Icon:
     INFO = ":/mergewizard/icon_info"
     SETTINGS = ":/mergewizard/icon_settings"
 
+    ERROR = ":/mergewizard/icon_error"
+
 
 """
 These are keys and user descriptions shown in MO's
@@ -45,6 +47,7 @@ class Setting(IntEnum):
     ZMERGE_FOLDER = auto()
     MODNAME_TEMPLATE = auto()
     PROFILENAME_TEMPLATE = auto()
+
 
 """
 
