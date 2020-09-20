@@ -1,6 +1,6 @@
 from typing import List
 from enum import Enum, auto
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, qInfo
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from mergewizard.models.PluginModel import PluginModel
@@ -33,7 +33,7 @@ class ActionWidget(QWidget):
         # error indicators
         self.ui.warningFrame.setVisible(False)
         self.ui.errorFrame.setVisible(False)
-        self.ui.profileError.setText("")
+        self.ui.profileError.setVisible(False)
 
         # set up the log panel
         logModel = LogModel()
@@ -101,6 +101,8 @@ class ActionWidget(QWidget):
         self.setCurrentProfile(currentProfile)
         self.setProfileList(profiles)
         self.conditionallyShowWarningFrame()
+        self.ui.profileName.clear()
+        self.ui.profileError.setVisible(False)
         self.validatePanel()
 
     def setProfileList(self, profiles: List[str]):
@@ -114,7 +116,7 @@ class ActionWidget(QWidget):
         self.ui.profileBox.addItems(self.profiles)
         self.ui.profileBox.setItemData(0, self.ProfileType.Current)
         self.ui.profileBox.setItemData(self.ui.profileBox.count() - 1, self.ProfileType.New)
-        self.ui.profileName.setDisabled(True)
+        self.ui.profileName.setEnabled(False)
 
     def setCurrentProfile(self, profile: str):
         self.currentProfile = profile
