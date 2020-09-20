@@ -18,7 +18,9 @@ class MergeInfoWidget(QWidget):
         self.ui.setupUi(self)
         self.expandedRows: List[bool] = [True for i in Row]
 
-        self.ui.infoView.setModel(MergeInfoModel())
+        self._emptyModel = MergeInfoModel()
+        self._infoModel = MergeInfoModel()
+        self.ui.infoView.setModel(self._infoModel)
         self.ui.infoView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         self.ui.infoView.expanded.connect(self.onExpanded)
@@ -36,14 +38,18 @@ class MergeInfoWidget(QWidget):
         return self.ui.infoView.rootIndex()
 
     def setRootIndex(self, idx: QModelIndex = QModelIndex()):
-        infoIdx = self.infoModel().index(idx.row(), 0)
-        self.ui.infoView.setRootIndex(infoIdx)
-        if not infoIdx.isValid():
-            self.ui.groupBox.setTitle(self.tr("Merge Info"))
-        else:
+        if idx.isValid():
+            if self.infoModel() is self._emptyModel:
+                self.ui.infoView.setModel(self._infoModel)
+            infoIdx = self.infoModel().index(idx.row(), 0)
+            self.ui.infoView.setRootIndex(infoIdx)
             title = self.infoModel().data(infoIdx.siblingAtColumn(1), Role.Cell)
             self.ui.groupBox.setTitle(self.tr("Merge Info:  ") + title)
             self.expandRowsFor(infoIdx)
+        else:
+            if self.infoModel() is not self._emptyModel:
+                self.ui.infoView.setModel(self._emptyModel)
+            self.ui.groupBox.setTitle(self.tr("Merge Info"))
 
     # ----
     # ---- Related to expanding/collapsing rows

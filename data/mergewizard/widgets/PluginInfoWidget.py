@@ -16,14 +16,14 @@ class PluginInfoWidget(QWidget):
         super().__init__(parent)
         self.ui = Ui_PluginInfoWidget()
         self.ui.setupUi(self)
+        self._emptyModel = PluginInfoModel()
+        self._infoModel = PluginInfoModel()
+        self.ui.infoView.setModel(self._infoModel)
 
     def setPluginModel(self, model: PluginModel):
-        if self.ui.infoView.model():
-            raise RuntimeError("Replacing plugin model is not supported")
-        infoModel = PluginInfoModel(model)
-        infoModel.includeIndirect(self.ui.indirectCheckBox.isChecked())
-        infoModel.sortByPriority(self.ui.sortCheckBox.isChecked())
-        self.ui.infoView.setModel(infoModel)
+        self.infoModel().includeIndirect(self.ui.indirectCheckBox.isChecked())
+        self.infoModel().sortByPriority(self.ui.sortCheckBox.isChecked())
+        self.infoModel().setSourceModel(model)
         self.ui.infoView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.infoView.customContextMenuRequested.connect(self.showContextMenu)
         self.ui.infoView.doubleClicked.connect(self.onViewDoubleClicked)
@@ -33,11 +33,8 @@ class PluginInfoWidget(QWidget):
         )
         self.addInfoViewActions()
 
-    def model(self):
-        return self.ui.infoView.model()
-
     def infoModel(self):
-        return self.model()
+        return self.ui.infoView.model()
 
     def pluginModel(self):
         return self.infoModel().sourceModel()
@@ -49,19 +46,26 @@ class PluginInfoWidget(QWidget):
     # and the plugin model.
     # The index here may be from either model, as only the row is used.
     def setRootIndex(self, idx: QModelIndex = QModelIndex()):
-        infoIdx = self.infoModel().index(idx.row(), Column.PluginName)
-        self.ui.infoView.setRootIndex(infoIdx)
-        title = self.infoModel().data(infoIdx) if idx.isValid() else self.tr("Plugin Info")
-        self.ui.groupBox.setTitle(self.tr("Plugin Info:  ") + title)
+        if idx.isValid():
+            if self.infoModel() is self._emptyModel:
+                self.ui.infoView.setModel(self._infoModel)
+            infoIdx = self.infoModel().index(idx.row(), Column.PluginName)
+            self.ui.infoView.setRootIndex(infoIdx)
+            title = self.infoModel().data(infoIdx)
+            self.ui.groupBox.setTitle(self.tr("Plugin Info:  ") + title)
+        else:
+            if self.infoModel is not self._emptyModel:
+                self.ui.infoView.setModel(self._emptyModel)
+            self.ui.groupBox.setTitle(self.tr("Plugin Info"))
 
     def onViewDoubleClicked(self, idx: QModelIndex):
-        name = self.model().data(idx)
+        name = self.infoModel().data(idx)
         if name:
             self.doubleClicked.emit(name)
 
     def copy(self, indexes: List[QModelIndex]):
         if indexes:
-            QApplication.clipboard().setMimeData(self.ui.infoView.model().mimeData(indexes))
+            QApplication.clipboard().setMimeData(self.infoModel().mimeData(indexes))
 
     def addInfoViewActions(self):
         a = QAction(self.tr("Copy"), self.ui.infoView)

@@ -52,7 +52,7 @@ class DataType(IntEnum):
 
 
 class ReqColumnModel(QIdentityProxyModel):
-    def __init__(self, dataType: DataType, pluginModel: PluginModel, parent: QObject = None):
+    def __init__(self, dataType: DataType, pluginModel: PluginModel = None, parent: QObject = None):
         super().__init__(parent)
         self._dataType: DataType = dataType
         self.setSourceModel(pluginModel)
@@ -153,7 +153,7 @@ class ReqColumnModel(QIdentityProxyModel):
 
 
 class ReqSortFilterModel(QSortFilterProxyModel):
-    def __init__(self, model: ReqColumnModel, parent: QObject = None):
+    def __init__(self, model: ReqColumnModel = None, parent: QObject = None):
         super().__init__(parent)
         self.setRecursiveFilteringEnabled(True)
         self._includeIndirect = True
@@ -206,26 +206,26 @@ class ReqSortFilterModel(QSortFilterProxyModel):
         return isDirect
 
 
-class PluginInfoModel(QAbstractProxyModel):
+class PluginInfoModel(QIdentityProxyModel):
     DEFAULT_MIME_FORMAT = "application/x-qabstractitemmodeldatalist"
 
-    def __init__(self, model: PluginModel, parent: QObject = None):
+    def __init__(self, model=None, parent: QObject = None):
         super().__init__(parent)
         self.setSourceModel(model)
 
     def setSourceModel(self, model: PluginModel):
-        self.pluginModel = model
+        super().setSourceModel(model)
         self.requiresModel = ReqSortFilterModel(ReqColumnModel(DataType.Requires, model))
         self.requiredByModel = ReqSortFilterModel(ReqColumnModel(DataType.RequiredBy, model))
-        model.dataChanged.connect(self.sourceDataChanged)
-
-    def sourceModel(self):
-        return self.pluginModel
+        if model:
+            model.dataChanged.connect(self.sourceDataChanged)
 
     def rowCount(self, parent: QModelIndex = QModelIndex()):
+        if not self.sourceModel():
+            return 0
         depth = Id.depth(parent)
         if depth == Id.Depth.Invalid:
-            return self.pluginModel.rowCount()
+            return self.sourceModel().rowCount()
         if depth != Id.Depth.D0:
             return 0
         requiresParentIdx = self.requiresModel.index(parent.row(), 0)
@@ -253,7 +253,7 @@ class PluginInfoModel(QAbstractProxyModel):
         if depth == Id.Depth.Invalid:
             return QModelIndex()
         if depth == Id.Depth.D0:
-            return self.pluginModel.index(proxyIdx.row(), PluginColumn.PluginName)
+            return self.sourceModel().index(proxyIdx.row(), PluginColumn.PluginName)
         return QModelIndex()
 
     def mapFromSource(self, sourceIdx: QModelIndex = QModelIndex()):
