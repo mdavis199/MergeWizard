@@ -105,9 +105,8 @@ class Context(QObject):
     """
     To add a new setting,
     1. add a key to the constants.Setting file
-    2. add an attribute and a property to the top of the class
-    3. add a tuple in the Settings below for (attribute name, string name for mo) in the same
-       order as in the constants setting file
+    3. add a tuple in the constants.USER_SETTINGS in the same order as in the constants setting file
+    2. add a matching attribute and a property to the top of the class
     4. add a test in the validateUserSetting method below that provides default values
        when a test fails
     """
