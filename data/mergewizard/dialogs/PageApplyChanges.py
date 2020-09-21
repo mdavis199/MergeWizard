@@ -5,13 +5,13 @@ from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
 from mergewizard.views.PluginViewFactory import PluginViewFactory, ViewType
 from mergewizard.widgets.Splitter import Splitter
-from .ui.PageReviewMasters import Ui_PageReviewMasters
+from .ui.PageApplyChanges import Ui_PageApplyChanges
 
 
-class PageReviewMasters(WizardPage):
+class PageApplyChanges(WizardPage):
     def __init__(self, context: Context, parent: QWidget = None):
         super().__init__(parent)
-        self.ui = Ui_PageReviewMasters()
+        self.ui = Ui_PageApplyChanges()
         self.ui.setupUi(self)
         self.context = context
         self.profilesDir = None

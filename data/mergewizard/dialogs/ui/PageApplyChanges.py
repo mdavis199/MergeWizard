@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'G:\ModTools\ModOrganizer\plugins\data\mergewizard\build\ui\dialogs\PageReviewMasters.ui'
+# Form implementation generated from reading ui file 'G:\ModTools\ModOrganizer\plugins\data\mergewizard\build\ui\dialogs\PageApplyChanges.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -11,13 +11,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_PageReviewMasters(object):
-    def setupUi(self, PageReviewMasters):
-        PageReviewMasters.setObjectName("PageReviewMasters")
-        PageReviewMasters.resize(610, 429)
-        self.verticalLayout = QtWidgets.QVBoxLayout(PageReviewMasters)
+class Ui_PageApplyChanges(object):
+    def setupUi(self, PageApplyChanges):
+        PageApplyChanges.setObjectName("PageApplyChanges")
+        PageApplyChanges.resize(610, 429)
+        self.verticalLayout = QtWidgets.QVBoxLayout(PageApplyChanges)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.verticalSplitter = QtWidgets.QSplitter(PageReviewMasters)
+        self.verticalSplitter = QtWidgets.QSplitter(PageApplyChanges)
         self.verticalSplitter.setOrientation(QtCore.Qt.Vertical)
         self.verticalSplitter.setObjectName("verticalSplitter")
         self.topSplitter = QtWidgets.QSplitter(self.verticalSplitter)
@@ -41,15 +41,22 @@ class Ui_PageReviewMasters(object):
         self.actionWidget.setObjectName("actionWidget")
         self.verticalLayout.addWidget(self.verticalSplitter)
 
-        self.retranslateUi(PageReviewMasters)
-        QtCore.QMetaObject.connectSlotsByName(PageReviewMasters)
+        self.retranslateUi(PageApplyChanges)
+        QtCore.QMetaObject.connectSlotsByName(PageApplyChanges)
 
-    def retranslateUi(self, PageReviewMasters):
+    def retranslateUi(self, PageApplyChanges):
         _translate = QtCore.QCoreApplication.translate
-        PageReviewMasters.setWindowTitle(_translate("PageReviewMasters", "WizardPage"))
-        PageReviewMasters.setTitle(_translate("PageReviewMasters", "Apply Changes"))
-        PageReviewMasters.setSubTitle(_translate("PageReviewMasters", "Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods."))
-        self.masterGroup.setTitle(_translate("PageReviewMasters", "Plugin Masters"))
-        self.selectedGroup.setTitle(_translate("PageReviewMasters", "Selected Plugins"))
+        PageApplyChanges.setWindowTitle(_translate("PageApplyChanges", "WizardPage"))
+        PageApplyChanges.setTitle(_translate("PageApplyChanges", "Apply Changes"))
+        PageApplyChanges.setSubTitle(
+            _translate(
+                "PageApplyChanges",
+                "Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods.",
+            )
+        )
+        self.masterGroup.setTitle(_translate("PageApplyChanges", "Plugin Masters"))
+        self.selectedGroup.setTitle(_translate("PageApplyChanges", "Selected Plugins"))
+
+
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.ActionWidget import ActionWidget

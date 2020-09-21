@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget, QWizard
 from mobase import IOrganizer
 
 from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
-from mergewizard.dialogs.PageReviewMasters import PageReviewMasters
+from mergewizard.dialogs.PageApplyChanges import PageApplyChanges
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.domain.SavedPluginsFile import SavedPluginsFile
@@ -17,11 +17,10 @@ from mergewizard.constants import Icon, Setting
 
 class PageId(IntEnum):
     PagePluginsSelect = 0
-    PageReviewMasters = 1
+    PageApplyChanges = 1
 
 
 class Wizard(QWizard):
-
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
         self.__context = Context(organizer)
@@ -52,7 +51,7 @@ class Wizard(QWizard):
 
     def addWizardPages(self):
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
-        self.setPage(PageId.PageReviewMasters, PageReviewMasters(self.context(), self))
+        self.setPage(PageId.PageApplyChanges, PageApplyChanges(self.context(), self))
         for pageId in self.pageIds():
             self.context().settingChanged.connect(self.page(pageId).settingChanged)
 
