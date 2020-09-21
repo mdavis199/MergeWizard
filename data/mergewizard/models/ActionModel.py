@@ -232,5 +232,6 @@ class ActionModel(QAbstractItemModel):
         for i in range(len(Action)):
             if i < Action.UpdatePluginStates and self._status[i] != Status.Skipped:
                 return self._pluginModel.updatePluginStates()
-        return Status.Skipped
+        self.log.emit("No actions were taken. Not updating plugin states.", LogStatus.Info)
+        return self._pluginModel.ActionStatus.Skipped
 

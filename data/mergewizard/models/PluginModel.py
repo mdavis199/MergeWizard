@@ -100,11 +100,11 @@ class PluginModel(PluginModelBase):
     def disableMods(self, names: List[str]):
         self._organizer.modList().setActive(names, False)
 
-    def updateStates(self):
+    def updatePluginStates(self):
         for row in range(len(self._plugins)):
-            self.updateState(row)
+            self.updatePluginState(row)
 
-    def updateState(self, row: int):
+    def updatePluginState(self, row: int):
         plugin = self._plugins[row]
         priority = self._organizer.pluginList().priority(plugin.pluginName)
         state = self._organizer.pluginList().state(plugin.pluginName)
@@ -222,7 +222,7 @@ class PluginModel(PluginModelBase):
                 needToMove.append(row)
             priority = priority - 1
         if missing:
-            self.log.emit("Not moving {} missing plugins.".format(missing))
+            self.log.emit("Not moving {} missing plugins.".format(missing), LogStatus.Info)
         if not needToMove:
             self.log.emit("No plugins require moving.", LogStatus.Info)
             return self.ActionStatus.Skipped
@@ -253,10 +253,6 @@ class PluginModel(PluginModelBase):
             return self.ActionStatus.Skipped
         self.log.emit("Deactivating {} mods.".format(len(modsToRemove)), LogStatus.Info)
         self.disableMods(list(modsToRemove))
-        return self.ActionStatus.Completed
-
-    def updatePluginStates(self):
-        self.updateStates()
         return self.ActionStatus.Completed
 
     # ------------------------------------------------
