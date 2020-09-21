@@ -127,30 +127,26 @@ class PagePluginsSelect(WizardPage):
         self.ui.pluginFilterWidget.setFilters(filters)
 
     def isPluginInfoPanelOpen(self) -> bool:
-        return (
-            self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel
-            and self.ui.allStacked.isVisibleTo(self)
+        return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisibleTo(
+            self
         )
 
     def isMergeInfoPanelOpen(self) -> bool:
-        return (
-            self.ui.allStacked.currentIndex() == self.AllPageId.MergeInfoPanel
-            and self.ui.allStacked.isVisible(self)
+        return self.ui.allStacked.currentIndex() == self.AllPageId.MergeInfoPanel and self.ui.allStacked.isVisibleTo(
+            self
         )
 
     def isFilterPanelOpen(self) -> bool:
         return self.ui.pluginFilterWidget.isVisibleTo(self)
 
     def isTextPanelOpen(self) -> bool:
-        return (
-            self.ui.selectedStacked.currentIndex() == self.SelectedPageId.TextPanel
-            and self.ui.selectedStacked.isVisibleTo(self)
+        return self.ui.selectedStacked.currentIndex() == self.SelectedPageId.TextPanel and self.ui.selectedStacked.isVisibleTo(
+            self
         )
 
     def isMergePanelOpen(self) -> bool:
-        return (
-            self.ui.selectedStacked.currentIndex() == self.SelectedPageId.MergePanel
-            and self.ui.selectedStacked.isVisibleTo(self)
+        return self.ui.selectedStacked.currentIndex() == self.SelectedPageId.MergePanel and self.ui.selectedStacked.isVisibleTo(
+            self
         )
 
     def openFilterPanel(self, visible: bool = True, withFocus: bool = True) -> None:
