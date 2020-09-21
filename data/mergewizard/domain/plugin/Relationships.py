@@ -26,8 +26,8 @@ class Association:
 
     def __lt__(self, other: [Plugin, "Association"]):
         if isinstance(self, Plugin):
-            return self.plugin.priority_lt(other)
-        return self.plugin.priority_lt(other.plugin)
+            return self.plugin < other
+        return self.plugin < other.plugin
 
     def __repr__(self) -> str:
         return "    {}: {}".format("D" if self.direct else "I", self.plugin.pluginName)
@@ -58,9 +58,6 @@ class Associations(Sequence):
             - if direct/indirect relationships are the same, no change is made.
             - if the new association is indirect, no change is made
             - if the new association is direct, the association is updated.
-
-    NOTE: The associations are sorted by priority because it makes sorting them
-    in the Model Views much easier.
     """
 
     # ===========================================================

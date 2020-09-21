@@ -21,9 +21,9 @@ class PluginInfoWidget(QWidget):
         self.ui.infoView.setModel(self._infoModel)
 
     def setPluginModel(self, model: PluginModel):
+        self.infoModel().setSourceModel(model)
         self.infoModel().includeIndirect(self.ui.indirectCheckBox.isChecked())
         self.infoModel().sortByPriority(self.ui.sortCheckBox.isChecked())
-        self.infoModel().setSourceModel(model)
         self.ui.infoView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.infoView.customContextMenuRequested.connect(self.showContextMenu)
         self.ui.infoView.doubleClicked.connect(self.onViewDoubleClicked)

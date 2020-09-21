@@ -11,6 +11,34 @@ from mergewizard.domain.ILogger import Status as LogStatus
 from mergewizard.models.PluginModelBase import PluginModelBase, Column
 
 
+"""
+NOTE: Impact of changing plugin states (presently MO is not signaling changes in states)
+
+-- Enabling/Disabling plugin changes:
+    -- isActive for the specific plugin
+    -- priority for all plugins with lower priority
+-- Moving plugins:
+    -- changes priority of basically all plugins
+-- Deactivating mod:
+    -- changes priority of basically all plugins
+    -- changes isMissing, UNLESS an enabled mod with higher priority has a
+       plugin of the same name. (WILL HAVE QUERY or REBUILD THE DATA)
+    -- plugin relationhips will NOT change
+-- Deactivating a mod that has a merge.json file:  (in addition to above)
+    -- will need to remove all plugins in that mod from the merge relationships
+-- Hiding/Unhiding plugins:
+    -- Similarly to deactivating a plugin, could change isMissing and could reveal a plugin of the same name
+    -- Changes priority of plugins
+
+
+
+
+NOTE:  Presently, Plugin relationships are ordered by priority.
+This makes it easier to display but impossible to maintain, because everywhere above
+that says priority changes, means the Plugin Relationships change.
+"""
+
+
 class PluginModel(PluginModelBase):
     """
         This class builds on the base model by adding functionality
