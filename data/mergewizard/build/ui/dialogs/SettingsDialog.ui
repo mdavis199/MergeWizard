@@ -138,6 +138,28 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="errorIndicator">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Path does not include &quot;zedit.exe&quot;.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
