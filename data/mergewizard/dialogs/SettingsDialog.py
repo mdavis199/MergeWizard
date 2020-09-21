@@ -23,7 +23,8 @@ class SettingsDialog(QDialog):
             self.ui.optionalMethod.setChecked(True)
         else:
             self.ui.disableMethod.setChecked(True)
-        self.ui.zeditPathEdit.setText(context.zMergeFolder)
+        self.ui.excludeInactiveMods.setChecked(context.excludeInactiveMods)
+        self.ui.zeditPathEdit.setText(context.zEditFolder)
         self.ui.modNameTemplate.setText(context.modNameTemplate)
         self.ui.profileNameTemplate.setText(context.profileNameTemplate)
 
@@ -35,7 +36,8 @@ class SettingsDialog(QDialog):
             context.storeUserSetting(Setting.HIDING_METHOD, "optional")
         if self.ui.disableMethod.isChecked():
             context.storeUserSetting(Setting.HIDING_METHOD, "disable")
-        context.storeUserSetting(Setting.ZMERGE_FOLDER, self.ui.zeditPathEdit.text())
+        context.storeUserSetting(Setting.EXCLUDE_INACTIVE_MODS, self.ui.excludeInactiveMods.isChecked())
+        context.storeUserSetting(Setting.ZEDIT_FOLDER, self.ui.zeditPathEdit.text())
         context.storeUserSetting(Setting.MODNAME_TEMPLATE, self.ui.modNameTemplate.text())
         context.storeUserSetting(Setting.PROFILENAME_TEMPLATE, self.ui.profileNameTemplate.text())
 

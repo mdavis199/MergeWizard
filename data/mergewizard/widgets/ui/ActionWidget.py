@@ -61,7 +61,6 @@ class Ui_ActionWidget(object):
         self.formLayout.setObjectName("formLayout")
         self.warningIcon = QtWidgets.QLabel(self.warningFrame)
         self.warningIcon.setText("")
-        self.warningIcon.setPixmap(QtGui.QPixmap("G:\\ModTools\\ModOrganizer\\plugins\\data\\mergewizard\\build\\ui\\widgets\\../../resources/warning-red.svg"))
         self.warningIcon.setObjectName("warningIcon")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.warningIcon)
         self.warningLabel = QtWidgets.QLabel(self.warningFrame)

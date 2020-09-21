@@ -48,15 +48,8 @@ class Ui_PageApplyChanges(object):
         _translate = QtCore.QCoreApplication.translate
         PageApplyChanges.setWindowTitle(_translate("PageApplyChanges", "WizardPage"))
         PageApplyChanges.setTitle(_translate("PageApplyChanges", "Apply Changes"))
-        PageApplyChanges.setSubTitle(
-            _translate(
-                "PageApplyChanges",
-                "Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods.",
-            )
-        )
+        PageApplyChanges.setSubTitle(_translate("PageApplyChanges", "Apply changes to enable the selected and required plugins, to disable unselected plugins, to reorder selected plugins, and to remove unnecessary mods."))
         self.masterGroup.setTitle(_translate("PageApplyChanges", "Plugin Masters"))
         self.selectedGroup.setTitle(_translate("PageApplyChanges", "Selected Plugins"))
-
-
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.ActionWidget import ActionWidget

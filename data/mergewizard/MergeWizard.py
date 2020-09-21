@@ -4,7 +4,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 
 from mergewizard.dialogs.Wizard import Wizard
-from mergewizard.constants import INTERNAL_PLUGIN_NAME, Icon
+from mergewizard.constants import INTERNAL_PLUGIN_NAME, USER_SETTINGS, Icon
 import mergewizard.resources
 
 
@@ -27,7 +27,10 @@ class PluginTool(mobase.IPluginTool):
         return bool(self.__organizer.pluginSetting(INTERNAL_PLUGIN_NAME, "enabled"))
 
     def settings(self):
-        return [mobase.PluginSetting("enabled", self.__tr("Enable this plugin"), True)]
+        settings = [mobase.PluginSetting("enabled", self.__tr("Enable this plugin"), True)]
+        for s in USER_SETTINGS:
+            settings.append(mobase.PluginSetting(s[1], s[2], s[3]))
+        return settings
 
     def display(self):
         wizard = Wizard(self.__organizer, self._parentWidget())

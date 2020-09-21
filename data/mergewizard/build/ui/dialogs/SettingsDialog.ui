@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>533</width>
-    <height>277</height>
+    <height>333</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,13 +22,13 @@
   <property name="minimumSize">
    <size>
     <width>533</width>
-    <height>277</height>
+    <height>333</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>656</width>
-    <height>277</height>
+    <width>533</width>
+    <height>333</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,9 @@
       </property>
       <item row="0" column="0">
        <widget class="QRadioButton" name="hideMethod">
+        <property name="toolTip">
+         <string>Renames the plugin by appending the extension '.mohidden'.</string>
+        </property>
         <property name="text">
          <string>Hide plugin</string>
         </property>
@@ -65,6 +68,9 @@
       </item>
       <item row="1" column="0">
        <widget class="QRadioButton" name="optionalMethod">
+        <property name="toolTip">
+         <string>Moves the plugin to the 'optional' folder.</string>
+        </property>
         <property name="text">
          <string>Move to &quot;Optional&quot; folder</string>
         </property>
@@ -72,6 +78,9 @@
       </item>
       <item row="2" column="0">
        <widget class="QRadioButton" name="disableMethod">
+        <property name="toolTip">
+         <string>Disables the plugin.</string>
+        </property>
         <property name="text">
          <string>Disable plugin</string>
         </property>
@@ -91,9 +100,28 @@
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Loading zMerge JSON Files</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="excludeInactiveMods">
+        <property name="toolTip">
+         <string>Excludes loading zMerge files from deactivated mods.</string>
+        </property>
+        <property name="text">
+         <string>Do not import file information from deactivated mods.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>zMerge Installation Directory</string>
+      <string>zEdit Installation Directory</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -113,7 +141,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Default Merge and Mod Names</string>

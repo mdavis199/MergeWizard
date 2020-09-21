@@ -5,7 +5,7 @@ from mobase import IOrganizer
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
-from mergewizard.constants import INTERNAL_PLUGIN_NAME, Setting
+from mergewizard.constants import INTERNAL_PLUGIN_NAME, USER_SETTINGS, Setting
 
 
 # NOTE: Must be a one-to-one mapping with constants.Setting enumeration.
@@ -23,9 +23,10 @@ class Context(QObject):
         self.__dataCache: DataCache = DataCache(organizer)
         self._enableHidingPlugins = False
         self._hidingMethod = ""
-        self._zMergeFolder = ""
+        self._zEditFolder = ""
         self._modNameTemplate = ""
         self._profileNameTemplate = ""
+        self._excludeInactiveMods = False
 
     @property
     def dataCache(self) -> DataCache:
@@ -52,8 +53,8 @@ class Context(QObject):
         return self._hidingMethod
 
     @property
-    def zMergeFolder(self) -> str:
-        return self._zMergeFolder
+    def zEditFolder(self) -> str:
+        return self._zEditFolder
 
     @property
     def modNameTemplate(self) -> str:
@@ -62,6 +63,10 @@ class Context(QObject):
     @property
     def profileNameTemplate(self) -> str:
         return self._profileNameTemplate
+
+    @property
+    def excludeInactiveMods(self) -> str:
+        return self._excludeInactiveMods
 
     # ----
     # ---- Semi-private settings stored in modorganizer.ini
@@ -97,40 +102,65 @@ class Context(QObject):
     # ---- Public settings stored in MO's user interface
     # ----
 
+    """
+    To add a new setting,
+    1. add a key to the constants.Setting file
+    2. add an attribute and a property to the top of the class
+    3. add a tuple in the Settings below for (attribute name, string name for mo) in the same
+       order as in the constants setting file
+    4. add a test in the validateUserSetting method below that provides default values
+       when a test fails
+    """
+
     # NOTE: This must have a one-to-one mapping with constants.Setting enum
-    Settings = [
-        ("_enableHidingPlugins", "enable-hiding"),
-        ("_hidingMethod", "hide-type"),
-        ("_zMergeFolder", "zedit-folder"),
-        ("_modNameTemplate", "mod-name-template"),
-        ("_profileNameTemplate", "profile-name-template"),
-    ]
+
+    def settings(self, setting: Setting):
+        if setting > len(Setting) - 1:
+            raise ValueError("Invalid key for Settings")
+        return USER_SETTINGS[setting]
+
+    def settingAttr(self, setting: Setting):
+        return self.settings(setting)[0]
+
+    def settingValue(self, setting: Setting, default=None):
+        return getattr(self, self.settingAttr(setting), default)
+
+    def settingName(self, setting: Setting):
+        return self.settings(setting)[1]
+
+    # ----
 
     def setUserSetting(self, setting: Union[Setting, str], value: Any, pluginName=None) -> Any:
-        key = self.Settings[setting][1] if isinstance(setting, Setting) else setting
+        key = self.settingName(setting) if isinstance(setting, Setting) else setting
         self.organizer.setPluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, key, value)
 
     def getUserSetting(self, setting: Union[Setting, str], default=None, pluginName=None) -> Any:
-        key = self.Settings[setting][1] if isinstance(setting, Setting) else setting
+        key = self.settingName(setting) if isinstance(setting, Setting) else setting
         value = self.organizer.pluginSetting(INTERNAL_PLUGIN_NAME if not pluginName else pluginName, key)
         return value if value is not None else default
 
     # ----
 
     def loadUserSetting(self, setting: Setting = None):
+        """ Fills in this class's attributes with MO settings """
         if setting is None:
             for s in Setting:
                 self.loadUserSetting(s)
             return
-        attr = self.Settings[setting][0]
+        attr = self.settingAttr(setting)
         setattr(self, attr, self.validateUserSetting(setting, self.getUserSetting(setting)))
 
     def validateUserSetting(self, setting: Setting, value: Any) -> Any:
+        """ Returns either the value, if it is valid for the setting, or a default"""
         if setting == Setting.ENABLE_HIDING_PLUGINS:
             if isinstance(value, bool):
                 return value
             return True
-        if setting == Setting.ZMERGE_FOLDER:
+        if setting == Setting.EXCLUDE_INACTIVE_MODS:
+            if isinstance(value, bool):
+                return value
+            return False
+        if setting == Setting.ZEDIT_FOLDER:
             if value and path.exists(value + "/zedit.exe"):
                 return value
             return ""
@@ -154,16 +184,19 @@ class Context(QObject):
             return "mohidden"
 
     def storeUserSetting(self, setting: Union[Setting, List[Setting]], value: Any) -> None:
-        # if name is a list, value must be a list of the same size
+        """ Stores the value with MO and emits a change signal if the value changed """
         if isinstance(setting, list):
+            if not isinstance(value, list) or len(setting) != len(value):
+                raise ValueError("Attempting to store a list of settings with different size value list")
             for i in range(len(setting)):
                 self.storeUserSetting[setting[i], value[i]]
             return
 
         v = self.validateUserSetting(setting, value)
-        attr = self.Settings[setting][0]
+        attr = self.settingAttr(setting)
+
         if v != getattr(self, attr):
-            key = self.Settings[setting][1]
+            key = self.settingName(setting)
             self.setUserSetting(key, v)
             setattr(self, attr, v)
             self.settingChanged.emit(setting)

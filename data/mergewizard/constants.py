@@ -40,27 +40,35 @@ class Icon:
 
 
 """
-These are keys and user descriptions shown in MO's
-user-facing settings dialog.
+These are keys used by the application to access user-facing
+settings stored by MO.
 """
 
 
 class Setting(IntEnum):
     ENABLE_HIDING_PLUGINS = 0
     HIDING_METHOD = auto()
-    ZMERGE_FOLDER = auto()
+    EXCLUDE_INACTIVE_MODS = auto()
+    ZEDIT_FOLDER = auto()
     MODNAME_TEMPLATE = auto()
     PROFILENAME_TEMPLATE = auto()
 
 
 """
-
-class Setting:
-    ENABLE_HIDING_PLUGINS = "Enable hiding plugins"
-    HIDING_METHOD = "Method for hiding plugins: mohidden, optional, disable"
-    ZMERGE_FOLDER = "zMerge Installation Folder"
-    MODNAME_TEMPLATE = "Default template for new mod names"
-    PROFILENAME_TEMPLATE = "Default template for new mod names"
-
-
+These is the settings information passed to MO when the plugin starts and
+that allows our user-facing settings to be stored and retrieved by MO.
+There must be a one-to-one mapping with the Setting enum above.
 """
+
+
+# list of context's attribute, mo-name, tooltip and default value
+# NOTE: our tooltips are provided on the UI.  Can consider adding here if we
+# include translation methods.
+USER_SETTINGS = [
+    ("_enableHidingPlugins", "enable-plugin-hiding", "", True),
+    ("_hidingMethod", "hide-method", "", "mohidden"),
+    ("_excludeInactiveMods", "exclude-deactivated-mods", "", False),
+    ("_zEditFolder", "zedit-folder", "", ""),
+    ("_modNameTemplate", "mod-name-template", "", ""),
+    ("_profileNameTemplate", "profile-name-template", "", ""),
+]
