@@ -16,6 +16,7 @@
     <file alias="icon_selected_as_master">resources/check_box_purple.svg</file>
     <file alias="icon_info">resources/info-black.svg</file>
     <file alias="icon_folder">resources/folder-black.svg</file>
+    <file alias="icon_plugin">resources/puzzle_cyan.svg</file>
 
     <file alias="icon_filled_square_gray">resources/filled_square_gray.svg</file>
     <file alias="icon_filled_square_green">resources/filled_square_green.svg</file>

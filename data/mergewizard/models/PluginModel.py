@@ -87,7 +87,6 @@ class PluginModel(PluginModelBase):
             self.setData(idx, True)
         return plugin.isInactive
 
-    # TODO: refresh list
     def movePlugins(self, rows: List[str]):
         priority = self.maxPriority()
         qInfo("Moving {} plugins, max priority is : {}".format(len(rows), priority))
@@ -100,6 +99,22 @@ class PluginModel(PluginModelBase):
     # TODO: refresh list
     def disableMods(self, names: List[str]):
         self._organizer.modList().setActive(names, False)
+
+    def updateStates(self):
+        for row in range(len(self._plugins)):
+            self.updateState(row)
+
+    def updateState(self, row: int):
+        plugin = self._plugins[row]
+        priority = self._organizer.pluginList().priority(plugin.pluginName)
+        state = self._organizer.pluginList().state(plugin.pluginName)
+        isMissing = state == PluginState.MISSING
+        isInactive = not isMissing and state != PluginState.ACTIVE
+        if plugin.isInactive != isInactive or plugin.isMissing != isMissing or plugin.priority != priority:
+            plugin.isInactive = isInactive
+            plugin.isMissing = isMissing
+            plugin.priority = priority
+            self.dataChanged.emit(self.index(row, Column.Priority), self.index(row, Column.IsInactive))
 
     # ------------------------------------------------
     # ---- In case we want to allow activating/deactivating by context menu
@@ -197,20 +212,21 @@ class PluginModel(PluginModelBase):
         if not self._selected:
             self.log.emit("Not moving plugins. No plugins are selected.", LogStatus.Info)
             return self.ActionStatus.Skipped
-        rowsToMove = []
-        rowsMissing = []
-        for row in self._selected:
+        priority = self.maxPriority()
+        needToMove = []
+        missing = 0
+        for row in reversed(self._selected):
             if self._plugins[row].isMissing:
-                rowsMissing.append(row)
-            else:
-                rowsToMove.append(row)
-        if rowsMissing:
-            self.log.emit("Not moving {} missing plugin(s).".format(len(rowsMissing)), LogStatus.Warn)
-        if not rowsToMove:
-            self.log.emit("There are no plugins to move.", LogStatus.Info)
+                missing = missing + 1
+            elif self._plugins[row].priority != priority:
+                needToMove.append(row)
+            priority = priority - 1
+        if missing:
+            self.log.emit("Not moving {} missing plugins.".format(missing))
+        if not needToMove:
+            self.log.emit("No plugins require moving.", LogStatus.Info)
             return self.ActionStatus.Skipped
-        self.log.emit("Adjusting priority of {} selected plugin(s).".format(len(rowsToMove)), LogStatus.Info)
-        self.movePlugins(rowsToMove)
+        self.log.emit("Adjusting priority of {} selected plugin(s).".format(len(needToMove)), LogStatus.Info)
         return self.ActionStatus.Completed
 
     def maxPriority(self):
@@ -237,6 +253,10 @@ class PluginModel(PluginModelBase):
             return self.ActionStatus.Skipped
         self.log.emit("Deactivating {} mods.".format(len(modsToRemove)), LogStatus.Info)
         self.disableMods(list(modsToRemove))
+        return self.ActionStatus.Completed
+
+    def updatePluginStates(self):
+        self.updateStates()
         return self.ActionStatus.Completed
 
     # ------------------------------------------------

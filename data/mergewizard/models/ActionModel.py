@@ -26,8 +26,9 @@ class Action(IntEnum):
     EnableSelected = 0
     EnableMasters = auto()
     DisableOthers = auto()
-    DeactivateMods = auto()
     MoveSelected = auto()
+    DeactivateMods = auto()
+    UpdatePluginStates = auto()
 
 
 class ActionModel(QAbstractItemModel):
@@ -37,11 +38,12 @@ class ActionModel(QAbstractItemModel):
         'Enable plugins in the "Selected Plugins" list.',
         'Enable plugins in the "Plugin Masters" list.',
         "Disable plugins that are not in either list.",
-        "Deactivate mods that do not contain enabled plugins.",
         'Move the "Selected Plugins" to the lowest priority.',
+        "Deactivate mods that do not contain enabled plugins.",
+        "Update plugin states."
     ]
 
-    actionNames = ["enable selected", "enable masters", "disable others", "move selected", "deactivate mods"]
+    actionNames = ["enable selected", "enable masters", "disable others", "move selected", "deactivate mods", "update plugins"]
 
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
@@ -75,7 +77,7 @@ class ActionModel(QAbstractItemModel):
         if idx.column() == Column.Action:
             if role == Qt.DisplayRole:
                 return self.tr(self.actionText[idx.row()])
-            if role == Qt.CheckStateRole:
+            if role == Qt.CheckStateRole and idx.row() != Action.UpdatePluginStates:
                 return Qt.Checked if self._enabled[idx.row()] else Qt.Unchecked
 
         if idx.column() == Column.Status:
@@ -100,7 +102,10 @@ class ActionModel(QAbstractItemModel):
         defaults = Qt.ItemIsEnabled | Qt.ItemNeverHasChildren | Qt.ItemIsSelectable
         if idx.isValid():
             if idx.column() == Column.Action:
-                return defaults | Qt.ItemIsUserCheckable
+                if idx.row() == Action.UpdatePluginStates:
+                    return defaults
+                else:
+                    return defaults | Qt.ItemIsUserCheckable
             if idx.column() == Column.Status:
                 return defaults
 
@@ -109,7 +114,7 @@ class ActionModel(QAbstractItemModel):
             return False
 
         if idx.column() == Column.Action:
-            if role == Qt.CheckStateRole:
+            if role == Qt.CheckStateRole and idx.row() != Action.UpdatePluginStates:
                 enable = value == Qt.Checked
                 if self.isActionEnabled(idx.row()) != enable:
                     self._enabled[idx.row()] = value == Qt.Checked
@@ -159,8 +164,9 @@ class ActionModel(QAbstractItemModel):
         self._pluginActions[Action.EnableSelected] = model.enableSelected
         self._pluginActions[Action.EnableMasters] = model.enableMasters
         self._pluginActions[Action.DisableOthers] = model.disableOthers
-        self._pluginActions[Action.MoveSelected] = model.moveSelected
         self._pluginActions[Action.DeactivateMods] = model.deactivateUnneededMods
+        self._pluginActions[Action.MoveSelected] = model.moveSelected
+        self._pluginActions[Action.UpdatePluginStates] = self.updatePluginStates
 
     def hasEnabledActions(self):
         for isEnabled in self._enabled:
@@ -220,3 +226,11 @@ class ActionModel(QAbstractItemModel):
             qInfo("Completed action: {}".format(name))
         if status == Status.Skipped:
             qInfo("Skipped action: {}".format(name))
+
+    def updatePluginStates(self):
+        # we only need to do this if a previous action was performed
+        for i in range(len(Action)):
+            if i < Action.UpdatePluginStates and self._status[i] != Status.Skipped:
+                return self._pluginModel.updatePluginStates()
+        return Status.Skipped
+
