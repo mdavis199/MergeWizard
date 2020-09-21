@@ -8,6 +8,7 @@ from mobase import IOrganizer
 
 from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageApplyChanges import PageApplyChanges
+from mergewizard.dialogs.PageZMerge import PageZMerge
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
 from mergewizard.domain.Context import Context
 from mergewizard.domain.SavedPluginsFile import SavedPluginsFile
@@ -18,6 +19,7 @@ from mergewizard.constants import Icon, Setting
 class PageId(IntEnum):
     PagePluginsSelect = 0
     PageApplyChanges = 1
+    PageZMerge = 2
 
 
 class Wizard(QWizard):
@@ -52,6 +54,7 @@ class Wizard(QWizard):
     def addWizardPages(self):
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
         self.setPage(PageId.PageApplyChanges, PageApplyChanges(self.context(), self))
+        self.setPage(PageId.PageZMerge, PageZMerge(self.context(), self))
         for pageId in self.pageIds():
             self.context().settingChanged.connect(self.page(pageId).settingChanged)
 

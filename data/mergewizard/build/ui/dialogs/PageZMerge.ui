@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0" connectslotsbyname="false">
+ <class>PageZMerge</class>
+ <widget class="QWizardPage" name="PageZMerge">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>990</width>
+    <height>698</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>WizardPage</string>
+  </property>
+  <property name="title">
+   <string>zMerge Configuration</string>
+  </property>
+  <property name="subTitle">
+   <string>Create or modify a zMerge configuration for the selected plugins.</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
