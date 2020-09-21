@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QDialog
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QDialog, QFileDialog
 from mergewizard.domain.Context import Context
-from mergewizard.constants import Setting
+from mergewizard.constants import Setting, Icon
 from .ui.SettingsDialog import Ui_SettingsDialog
 
 
@@ -9,6 +10,8 @@ class SettingsDialog(QDialog):
         super().__init__(parent)
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
+        self.ui.zeditPathButton.setIcon(QIcon(Icon.FOLDER))
+        self.ui.zeditPathButton.clicked.connect(lambda: self.showFileDialog())
 
     def loadSettings(self, context: Context):
         # set ui widget values
@@ -35,4 +38,11 @@ class SettingsDialog(QDialog):
         context.storeUserSetting(Setting.ZMERGE_FOLDER, self.ui.zeditPathEdit.text())
         context.storeUserSetting(Setting.MODNAME_TEMPLATE, self.ui.modNameTemplate.text())
         context.storeUserSetting(Setting.PROFILENAME_TEMPLATE, self.ui.profileNameTemplate.text())
+
+    def showFileDialog(self):
+        dirName = QFileDialog.getExistingDirectory(
+            self, self.tr("zEdit Directory"), self.ui.zeditPathEdit.text(), QFileDialog.ShowDirsOnly
+        )
+        if dirName:
+            self.ui.zeditPathEdit.setText(dirName)
 

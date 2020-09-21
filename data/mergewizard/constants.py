@@ -8,7 +8,7 @@ class Icon:
     # Used by the window
     MERGEWIZARD = ":/mergewizard/icon_mergewizard"
 
-    # used in plugin views
+    # used mainly in plugin views
     INACTIVE = ":/mergewizard/icon_inactive"
     MISSING = ":/mergewizard/icon_missing"
     MASTER = ":/mergewizard/icon_master"
@@ -32,7 +32,11 @@ class Icon:
     INFO = ":/mergewizard/icon_info"
     SETTINGS = ":/mergewizard/icon_settings"
 
+    # shown in action panel
     ERROR = ":/mergewizard/icon_error"
+
+    # shown in settings dialog
+    FOLDER = ":/mergewizard/icon_folder"
 
 
 """
