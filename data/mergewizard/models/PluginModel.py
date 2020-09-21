@@ -30,28 +30,6 @@ class PluginModel(PluginModelBase):
         organizer.modList().onModStateChanged(self.onModStateChanged)
 
     # ------------------------------------------------
-    # ---- Adding info from MergeModel
-    # ------------------------------------------------
-    """
-    def addMergeInfo(self, merges: List[Merge]):
-        missingMerges = []
-        missingMerged = []
-        for merge in merges:
-            mergeName = merge.lower()
-            row = next((i for i in range(len(self._plugins)) if mergeName == self._plugins[i].pluginName), -1)
-            if row >= 0:
-                self.setData(self.index(row, Column.IsMerge), True, Qt.EditRole)
-            else:
-                missingMerges.append(merge.name)
-            for plug in merge.plugins:
-                plugName = plug.lower()
-                row2 = next((j for j in range(len(self._plugins)) if plugName == self.__plugins[j].pluginName), -1)
-                if row2 >= 0:
-                    self.setData(self.index(row2.Column.IsMerged), True, Qt.EditRole)
-                else:
-                    missingMerged.append(plug)
-    """
-    # ------------------------------------------------
     # ---- MO Interactions
     # ------------------------------------------------
 
@@ -246,7 +224,11 @@ class PluginModel(PluginModelBase):
         self.log.emit("Plugin {}: load order moved from {} to {}".format(name, old, new), LogStatus.Info)
         idxName = self.indexForPluginName(name)
         idx = idxName.siblingAtColumn(Column.Priority)
-        qInfo("...before idx: r:{}, c:{}, name: {}, val: {}".format(idx.row(), idx.column(), self.data(idxName), self.data(idx)))
+        qInfo(
+            "...before idx: r:{}, c:{}, name: {}, val: {}".format(
+                idx.row(), idx.column(), self.data(idxName), self.data(idx)
+            )
+        )
         self.setData(idx, new)
         qInfo("...after idx: r:{}, c:{}, val: {}".format(idx.row(), idx.column(), self.data(idx)))
 
