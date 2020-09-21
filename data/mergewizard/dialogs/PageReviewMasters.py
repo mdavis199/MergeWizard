@@ -36,10 +36,7 @@ class PageReviewMasters(WizardPage):
         return self.context.organizer.profileName()
 
     def buildProfileList(self):
-        # There doesn't seem to be a way to retrieve the list of profiles from MO
-        # or even the profile directory.
-        if self.profiles:
-            return self.profiles
+        self.profiles.clear()
         currentPath = QFileInfo(self.context.organizer.profile().absolutePath())
         self.profilesDir = currentPath.dir().absolutePath()
         infos = QDir(currentPath.absolutePath(), "", QDir.IgnoreCase, QDir.NoDotAndDotDot | QDir.Dirs).entryInfoList()

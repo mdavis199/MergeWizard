@@ -98,14 +98,17 @@ class ActionWidget(QWidget):
     def createLogContextMenu(self):
         pass
 
+    # ----
+    # ---- Methods relating to setting up the profile info
+    # ----
     def initialize(self, currentProfile: str, profiles: List[str]):
         """ Called from the wizard page with the data needed to setup
-        the profile lists.It also signals updating warning panels """
+        the profile lists."""
         self.setCurrentProfile(currentProfile)
         self.setProfileList(profiles)
         self.conditionallyShowWarningFrame()
         self.ui.profileName.clear()
-        self.ui.profileError.setVisible(False)
+        self.setProfileError()
         self.validatePanel()
 
     def setProfileList(self, profiles: List[str]):
@@ -113,11 +116,10 @@ class ActionWidget(QWidget):
         if idx > -1:
             profiles.pop(idx)
         self.ui.profileBox.clear()
-        self.profiles = [self.tr("(Current) {}".format(self.currentProfile)), self.tr("Create new profile ...")]
+        self.profiles = [self.tr("{} (Current profile)".format(self.currentProfile)), self.tr("Create new profile ...")]
         self.profiles.extend(profiles)
         self.ui.profileBox.addItems(self.profiles)
-        self.ui.profileBox.setItemData(0, self.ProfileType.Current)
-        self.ui.profileBox.setItemData(self.ui.profileBox.count() - 1, self.ProfileType.New)
+        self.ui.profileBox.insertSeparator(2)
         self.ui.profileName.setEnabled(False)
 
     def setCurrentProfile(self, profile: str):
@@ -127,26 +129,36 @@ class ActionWidget(QWidget):
         self.ui.warningFrame.setVisible(self.pluginModel.missingPluginsAreSelected())
 
     def selectedProfileName(self) -> str:
-        idx = self.ui.profileBox.currentIndex()
-        if idx == 0:
+        if self.isCurrentProfile():
             return self.currentProfile
-        if idx == 1:
+        if self.isNewProfile():
             return self.ui.profileName.text()
         return self.ui.profileBox.currentText()
 
     def onProfileSelectionChanged(self, index):
-        idx = self.ui.profileBox.currentIndex()
-        self.ui.profileName.setEnabled(idx == 1)
-        self.validatePanel()
+        if self.isNewProfile():
+            self.ui.profileName.setEnabled(True)
+            self.onNewProfileName()  # This will call validatePanel
+        else:
+            self.ui.profileName.setEnabled(False)
+            self.setProfileError()
+            self.validatePanel()
 
     def onNewProfileName(self):
-        text = self.ui.profileName.text().lower()
-        bad = text == self.currentProfile.lower()
-        if not bad:
-            bad = next((i for i in range(len(self.profiles)) if self.profiles[i].lower() == text), -1) != -1
-        if bad:
-            self.ui.profileError.setText(self.tr("* Existing profile"))
-        self.ui.profileError.setVisible(bad)
+        text = self.ui.profileName.text()
+        if not text:
+            self.setProfileError((self.tr("* Missing profile")))
+        else:
+            # This checks if the name is an existing profile. If it is,
+            # it won't prevent validation, we just inform the user
+            text = text.lower()
+            bad = text == self.currentProfile.lower()
+            if not bad:
+                bad = next((i for i in range(len(self.profiles)) if self.profiles[i].lower() == text), -1) != -1
+            if bad:
+                self.setProfileError((self.tr("* Existing profile")))
+            else:
+                self.setProfileError()
         self.validatePanel()
 
     def validatePanel(self):
@@ -156,3 +168,16 @@ class ActionWidget(QWidget):
             or self.pluginModel.selectedCount() == 0
         )
         self.ui.applyButton.setDisabled(bad)
+
+    def isNewProfile(self):
+        return self.ui.profileBox.currentIndex() == 1
+
+    def isCurrentProfile(self):
+        return self.ui.profileBox.currentIndex() == 2
+
+    def setProfileError(self, text=None):
+        if not text:
+            self.ui.profileError.setVisible(False)
+        else:
+            self.ui.profileError.setText(text)
+            self.ui.profileError.setVisible(True)
