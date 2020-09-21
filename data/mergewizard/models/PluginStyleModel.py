@@ -119,7 +119,7 @@ class PluginStyleModel(QIdentityProxyModel):
             if section == Column.IsSelected:
                 return self.tr("Plugins selected for the merge")
             if section == Column.IsMissing:
-                return self.tr("Plugins which were not found")
+                return self.tr("Plugins which were not found (possibly in deactivated mods or hidden)")
             if section == Column.IsInactive:
                 return self.tr("Plugins not activated in MO2 profile")
             if section == Column.IsMaster:
