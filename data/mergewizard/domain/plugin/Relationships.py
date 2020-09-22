@@ -52,7 +52,6 @@ class Association:
 class Associations(Sequence):
     """ Associations is a managed list of plugins associated with a given plugin.
 
-       *  The contained list of associations is kept sorted by the plugins' priorities.
        *  No plugin is added twice.
        *  If trying to add a plugin that is already in the list:
             - if direct/indirect relationships are the same, no change is made.
