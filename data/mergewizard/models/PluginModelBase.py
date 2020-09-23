@@ -1,5 +1,6 @@
 from enum import IntEnum, auto
 from typing import List, Set
+import copy
 
 from PyQt5.QtCore import (
     pyqtSignal,
@@ -144,7 +145,8 @@ class PluginModelBase(QAbstractItemModel):
         return self.index(row, Column.PluginName)
 
     # -------------------------------------------------
-    # --- General queries
+    # --- General queries -- used primarily by the ActionModel
+    # --- and ActionWidget
     # -------------------------------------------------
 
     def missingPluginsAreSelected(self) -> bool:
@@ -158,6 +160,21 @@ class PluginModelBase(QAbstractItemModel):
 
     def selectedCount(self) -> int:
         return len(self._selected)
+
+    def mastersCount(self) -> int:
+        return len(self._masters)
+
+    def selectedRows(self) -> List[int]:
+        return copy.copy(self._selected)
+
+    def selectedMasters(self) -> List[int]:
+        """ Returns list of rows selected as masters but not selected to merge """
+        return [m for m in self._masters if not self._plugins[m].isSelected]
+
+    def maxPriority(self):
+        if not self._plugins:
+            return -1
+        return max(plugin.priority for plugin in self._plugins.values())
 
     # ------------------------------------------------
     # ---- Methods related to plugin order and selection

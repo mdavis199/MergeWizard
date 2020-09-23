@@ -40,6 +40,7 @@ class Ui_ActionWidget(object):
         self.logView.setProperty("showDropIndicator", False)
         self.logView.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.logView.setObjectName("logView")
+        self.logView.horizontalHeader().setCascadingSectionResizes(True)
         self.logView.horizontalHeader().setDefaultSectionSize(100)
         self.logView.horizontalHeader().setMinimumSectionSize(18)
         self.logView.horizontalHeader().setStretchLastSection(True)

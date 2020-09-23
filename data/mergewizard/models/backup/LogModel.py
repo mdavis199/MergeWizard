@@ -69,8 +69,10 @@ class LogModel(QAbstractItemModel):
         if not idx.isValid():
             return None
         if idx.column() == Column.Status:
-            if role == Qt.UserRole or role == Qt.DisplayRole:
+            if role == Qt.UserRole:
                 return self.content[idx.row()][0]
+            if role == Qt.DisplayRole:
+                return statusAsString(self.content[idx.row()][0])
         if idx.column() == Column.Message:
             if role == Qt.DisplayRole:
                 return self.content[idx.row()][1]
@@ -148,11 +150,9 @@ class LogModel(QAbstractItemModel):
         else:
             self.logMessage(value, Status.Debug)
 
-    @pyqtSlot(str)
-    @pyqtSlot(list)
-    @pyqtSlot(str, int)
-    @pyqtSlot(list, int)
-    def log(self, value, status=Status.Info):
+    @pyqtSlot(str, Status)
+    @pyqtSlot(list, Status)
+    def log(self, value, status):
         if isinstance(value, list):
             self.logMessages(value, status)
         else:
@@ -162,7 +162,7 @@ class LogModel(QAbstractItemModel):
 class LogFilterModel(QSortFilterProxyModel):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
-        self._showDebug = True
+        self._showDebug = False
 
     def filterAcceptsRow(self, row: int, parent: QModelIndex):
         if self._showDebug or parent.isValid():

@@ -1,11 +1,6 @@
 from enum import IntEnum
 from typing import List
-from PyQt5.QtCore import (
-    pyqtSignal,
-    QObject,
-    QModelIndex,
-    qInfo,
-)
+from PyQt5.QtCore import pyqtSignal, QObject, QModelIndex, qInfo, qDebug
 from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.ILogger import Status as LogStatus
 from mergewizard.models.PluginModelBase import PluginModelBase, Column
@@ -80,7 +75,6 @@ class PluginModel(PluginModelBase):
             return True
         if plugin.isMissing:
             return False
-        self._organizer.pluginList().setState(plugin.pluginName, PluginState.INACTIVE)
         state = self._organizer.pluginList().state(plugin.pluginName)
         if state == PluginState.INACTIVE:
             idx = self.index(row, Column.IsInactive)
@@ -130,110 +124,6 @@ class PluginModel(PluginModelBase):
             if idx.isValid():
                 self.deactivatePlugin(idx.row())
 
-    # ------------------------------------------------
-    # ---- Methods for Actions
-    # ------------------------------------------------
-
-    class ActionStatus(IntEnum):
-        Completed = 0
-        Skipped = 1
-
-    def enableSelected(self):
-        if not self._selected:
-            self.log.emit("Not enabling selected plugins. No plugins are selected.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-        rowsToEnable = []
-        rowsMissing = []
-        rowsAlreadyEnabled = []
-        for row in self._selected:
-            if self._plugins[row].isMissing:
-                rowsMissing.append(row)
-            elif self._plugins[row].isInactive:
-                rowsToEnable.append(row)
-            else:
-                rowsAlreadyEnabled.append(row)
-        if rowsMissing:
-            self.log.emit("Not enabling {} missing selected plugin(s).".format(len(rowsMissing)), LogStatus.Warn)
-        if not rowsToEnable:
-            self.log.emit("No plugins require enabling.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-
-        self.log.emit(
-            "Enabling {} of {} selected plugin(s).".format(len(rowsToEnable), len(self._selected)), LogStatus.Info
-        )
-        for row in rowsToEnable:
-            self.activatePlugin(row)
-        return self.ActionStatus.Completed
-
-    def enableMasters(self):
-        if not self._masters:
-            self.log.emit("Not enabling masters. No masters are selected.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-        rowsToEnable = []
-        rowsMissing = []
-        rowsAlreadyEnabled = []
-        for row in self._masters:
-            if self._plugins[row].isMissing:
-                rowsMissing.append(row)
-            elif self._plugins[row].isInactive:
-                rowsToEnable.append(row)
-            else:
-                rowsAlreadyEnabled.append(row)
-        if rowsMissing:
-            self.log.emit("Not enabling {} missing master(s).".format(len(rowsMissing)), LogStatus.Warn)
-        if not rowsToEnable:
-            self.log.emit("No masters require enabling.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-
-        self.log.emit(
-            "Enabling {} of {} plugin master(s).".format(len(rowsToEnable), len(self._masters)), LogStatus.Info
-        )
-        for row in rowsToEnable:
-            self.activatePlugin(row)
-        return self.ActionStatus.Completed
-
-    def disableOthers(self):
-        rowsToDisable = []
-        for row in range(len(self._plugins)):
-            plugin = self._plugins[row]
-            if not plugin.isSelected and not plugin.isSelectedAsMaster:
-                if not plugin.isInactive and not plugin.priority < 0:
-                    rowsToDisable.append(row)
-        if not rowsToDisable:
-            self.log.emit("Not disabling plugins. No plugins to disable.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-
-        self.log.emit("Disabling {} plugin(s).".format(len(rowsToDisable)), LogStatus.Info)
-        for row in rowsToDisable:
-            self.deactivatePlugin(row)
-        return self.ActionStatus.Completed
-
-    def moveSelected(self):
-        if not self._selected:
-            self.log.emit("Not moving plugins. No plugins are selected.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-        priority = self.maxPriority()
-        needToMove = []
-        missing = 0
-        for row in reversed(self._selected):
-            if self._plugins[row].isMissing:
-                missing = missing + 1
-            elif self._plugins[row].priority != priority:
-                needToMove.append(row)
-            priority = priority - 1
-        if missing:
-            self.log.emit("Not moving {} missing plugins.".format(missing), LogStatus.Info)
-        if not needToMove:
-            self.log.emit("No plugins require moving.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-        self.log.emit("Adjusting priority of {} selected plugin(s).".format(len(needToMove)), LogStatus.Info)
-        return self.ActionStatus.Completed
-
-    def maxPriority(self):
-        if not self._plugins:
-            return -1
-        return max(plugin.priority for plugin in self._plugins.values())
-
     def deactivateUnneededMods(self):
         # this will require a reload of the pluginModel, because plugin
         # priorities will change and plugins will be removed from the plugin list
@@ -248,44 +138,60 @@ class PluginModel(PluginModelBase):
             if self._organizer.modList().state(mod) & ModState.ACTIVE == ModState.ACTIVE
         }
         modsToRemove = activeMods - modsToKeep
-        if not modsToRemove:
-            self.log.emit("There are no mods to deactivate.", LogStatus.Info)
-            return self.ActionStatus.Skipped
-        self.log.emit("Deactivating {} mods.".format(len(modsToRemove)), LogStatus.Info)
-        self.disableMods(list(modsToRemove))
-        return self.ActionStatus.Completed
+        if modsToRemove:
+            self.disableMods(list(modsToRemove))
+
+    def getModStats(self):
+        """ This is for the action model.
+        It's duplicating work in the function above; but these take little time and the
+        actions for the actionModel do not need to be super fast"""
+        modsToKeep = {
+            plugin.modName
+            for plugin in self._plugins.values()
+            if (plugin.isSelected or plugin.isSelectedAsMaster) and not plugin.isMissing
+        }
+        activeMods = {
+            mod
+            for mod in self._organizer.modList().allMods()
+            if self._organizer.modList().state(mod) & ModState.ACTIVE == ModState.ACTIVE
+        }
+        return (len(activeMods), len(activeMods) - len(modsToKeep))
 
     # ------------------------------------------------
     # ---- Methods for logging and MO2 callbacks
     # ------------------------------------------------
 
     def onRefreshed(self):
-        qInfo("OnRefreshed")
-        self.log.emit("ModOrganizer refreshed the plugin list", LogStatus.Info)
+        qDebug("OnRefreshed")
+        # self.log.emit("ModOrganizer refreshed the plugin list", LogStatus.Debug)
 
     def onPluginMoved(self, name, old, new):
-        qInfo("OnPluginMoved")
-        self.log.emit("Plugin {}: load order moved from {} to {}".format(name, old, new), LogStatus.Info)
+        qDebug("OnPluginMoved")
+        """
+        self.log.emit("Plugin {}: load order moved from {} to {}".format(name, old, new), LogStatus.Debug)
         idxName = self.indexForPluginName(name)
         idx = idxName.siblingAtColumn(Column.Priority)
-        qInfo(
+        qDebug(
             "...before idx: r:{}, c:{}, name: {}, val: {}".format(
                 idx.row(), idx.column(), self.data(idxName), self.data(idx)
             )
         )
         self.setData(idx, new)
-        qInfo("...after idx: r:{}, c:{}, val: {}".format(idx.row(), idx.column(), self.data(idx)))
+        qDebug("...after idx: r:{}, c:{}, val: {}".format(idx.row(), idx.column(), self.data(idx)))
+        """
 
     def onPluginStateChanged(self, name, state):
-        qInfo("onPluginStateChanged")
-        self.log.emit("Plugin {}: changed to {}".format(name, state), LogStatus.Info)
+        qDebug("onPluginStateChanged")
+        # self.log.emit("Plugin {}: changed to {}".format(name, state), LogStatus.Debug)
 
     def onModStateChanged(self, stateDict):
-        qInfo("onModStateChanged")
+        qDebug("onModStateChanged")
         # active = (state & ModState.Active) == ModState.Active
+        """
         ModStateActive = 2
         for name in stateDict:
             active = (stateDict[name] & ModStateActive) == ModStateActive
             self.log.emit(
-                "Mod: {} changed (active? {}, state: {})".format(name, active, stateDict[name]), LogStatus.Info
+                "Mod: {} changed (active? {}, state: {})".format(name, active, stateDict[name]), LogStatus.Debug
             )
+        """
