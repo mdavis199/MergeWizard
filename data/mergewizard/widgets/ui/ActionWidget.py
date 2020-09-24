@@ -109,6 +109,7 @@ class Ui_ActionWidget(object):
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.actionView = QtWidgets.QTableView(self.actionFrame)
         self.actionView.setObjectName("actionView")
+        self.actionView.verticalHeader().setDefaultSectionSize(23)
         self.verticalLayout_6.addWidget(self.actionView)
         self.verticalLayout_8.addWidget(self.actionFrame)
         self.applyButton = QtWidgets.QPushButton(self.applyWidget)

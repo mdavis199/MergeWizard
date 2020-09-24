@@ -123,7 +123,7 @@ class ActionModel(QAbstractItemModel):
             ActionHolder(
                 Action.DisableOthers,
                 False,
-                "Disable Other",
+                "Disable Others",
                 "Disable plugins that are in neither list.",
                 self.disableOthers,
             ),

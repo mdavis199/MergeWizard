@@ -47,9 +47,10 @@ class ActionWidget(QWidget):
         logFilterModel.setSourceModel(logModel)
         self.ui.logView.setModel(logFilterModel)
         self.ui.logView.setWordWrap(False)
-        self.ui.logView.horizontalHeader().setStretchLastSection(True)
-        self.ui.logView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.ui.logView.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.logView.horizontalHeader().setStretchLastSection(True)
+        self.ui.logView.setColumnWidth(0, 50)
+        self.ui.logView.setColumnWidth(1, 100)
 
         # set up the actions panel
         actionModel = ActionModel()
