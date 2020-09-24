@@ -32,11 +32,16 @@ class Icon:
     INFO = ":/mergewizard/icon_info"
     SETTINGS = ":/mergewizard/icon_settings"
 
-    # shown in action panel
-    ERROR = ":/mergewizard/icon_error"
+    # log view in the action panel
+    LOG_INFO = ":/mergewizard/icon_dot_blue"
+    LOG_WARN = ":/mergewizard/icon_dot_yellow"
+    LOG_ERROR = ":/mergewizard/icon_dot_red"
+    LOG_SUCCESS = ":/mergewizard/icon_dot_green"
+    LOG_DEBUG = ":/mergewizard/icon_dot_gray"
 
     # shown in settings dialog
     FOLDER = ":/mergewizard/icon_folder"
+    ERROR = ":/mergewizard/icon_error"
 
 
 """

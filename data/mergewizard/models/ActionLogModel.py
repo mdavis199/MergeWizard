@@ -1,6 +1,8 @@
 from enum import IntEnum, auto
 from typing import List, Tuple
 from PyQt5.QtCore import pyqtSignal, Qt, QObject, QAbstractItemModel, QSortFilterProxyModel, QModelIndex, QMimeData
+from PyQt5.QtGui import QIcon
+from mergewizard.constants import Icon
 
 
 class Column(IntEnum):
@@ -75,6 +77,17 @@ class ActionLogModel(QAbstractItemModel):
             return self.content[idx.row()][idx.column()]
         if role == Qt.UserRole:
             return self.content[idx.row()][idx.column()]
+        if role == Qt.DecorationRole and idx.column() == Column.Status:
+            if self.content[idx.row()][Column.Status] == Status.Info:
+                return QIcon(Icon.LOG_INFO)
+            if self.content[idx.row()][Column.Status] == Status.Warn:
+                return QIcon(Icon.LOG_WARN)
+            if self.content[idx.row()][Column.Status] == Status.Error:
+                return QIcon(Icon.LOG_ERROR)
+            if self.content[idx.row()][Column.Status] == Status.Success:
+                return QIcon(Icon.LOG_SUCCESS)
+            if self.content[idx.row()][Column.Status] == Status.Debug:
+                return QIcon(Icon.LOG_DEBUG)
 
     def flags(self, idx: QModelIndex):
         defaults = Qt.ItemIsEnabled | Qt.ItemNeverHasChildren | Qt.ItemIsSelectable

@@ -17,6 +17,11 @@
     <file alias="icon_info">resources/info-black.svg</file>
     <file alias="icon_folder">resources/folder-black.svg</file>
     <file alias="icon_plugin">resources/puzzle_cyan.svg</file>
+    <file alias="icon_dot_gray">resources/dot_gray.svg</file>
+    <file alias="icon_dot_yellow">resources/dot_yellow.svg</file>
+    <file alias="icon_dot_red">resources/dot_red.svg</file>
+    <file alias="icon_dot_green">resources/dot_green.svg</file>
+    <file alias="icon_dot_blue">resources/dot_blue.svg</file>
 
     <file alias="icon_filled_square_gray">resources/filled_square_gray.svg</file>
     <file alias="icon_filled_square_green">resources/filled_square_green.svg</file>

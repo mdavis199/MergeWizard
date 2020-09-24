@@ -274,7 +274,7 @@ class ActionModel(QAbstractItemModel):
     # ----
 
     def log(self, level: LogLevel, action: Action, msg: str):
-        self.logMessage.emit(level, action.name, msg)
+        self.logMessage.emit(level, "{}. {}".format(action.id + 1, action.name), msg)
         QCoreApplication.processEvents()
 
     def info(self, action: Action, msg: str):
@@ -483,9 +483,7 @@ class ActionModel(QAbstractItemModel):
             self.info(action, "No plugins require moving.")
             self.setActionStatus(action, Status.Skipped)
             return
-        self.info(
-            action, "Moving {} of {} plugin(s). (Other plugins may be affected.)".format(len(needToMove), len(selected))
-        )
+        self.info(action, "Moving {} of {} plugin(s).".format(len(needToMove), len(selected)))
         self._pluginModel.movePlugins(selected)
         self.setActionStatus(action, Status.Success)
 
