@@ -148,12 +148,12 @@ class PluginModel(PluginModelBase):
         modsToKeep = {
             plugin.modName
             for plugin in self._plugins.values()
-            if (plugin.isSelected or plugin.isSelectedAsMaster) and not plugin.isMissing
+            if plugin.modName and (plugin.isSelected or plugin.isSelectedAsMaster) and not plugin.isMissing
         }
         activeMods = {
             mod
             for mod in self._organizer.modList().allMods()
-            if self._organizer.modList().state(mod) & ModState.ACTIVE == ModState.ACTIVE
+            if mod and (self._organizer.modList().state(mod) & ModState.ACTIVE) == ModState.ACTIVE
         }
         return (len(activeMods), len(activeMods) - len(modsToKeep))
 

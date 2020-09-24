@@ -168,7 +168,8 @@ class PluginModelBase(QAbstractItemModel):
         return copy.copy(self._selected)
 
     def selectedMasters(self) -> List[int]:
-        """ Returns list of rows selected as masters but not selected to merge """
+        """ Returns list of rows selected as masters but not selected to merge.
+        This exists only because it makes for a better log message. """
         return [m for m in self._masters if not self._plugins[m].isSelected]
 
     def maxPriority(self):

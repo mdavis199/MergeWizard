@@ -1,42 +1,44 @@
 from typing import List
-from PyQt5.QtCore import QDir, QFileInfo, QFile, QDirIterator
+from PyQt5.QtCore import pyqtSignal, QObject, QDir, QFileInfo, QFile, QDirIterator
 from mobase import IOrganizer
 from mergewizard.domain.MOLog import moWarn, moDebug
 
 # TODO: make this either Qt- or python-centric, instead of this odd mix.
 
 
-class Profile:
+class Profile(QObject):
     BACKUP_DIR = "mergewizard"
     BACKUP_FILES = ["modlist.txt", "plugins.txt"]
 
+    profileCreated = pyqtSignal(str)
+
     def __init__(self, organizer: IOrganizer):
+        super().__init__()
         self._organizer = organizer
         self._gameName = self._organizer.managedGame().gameName()
-        self._profileName = self._organizer.profileName()
-        self._profilePath = self._organizer.profile().absolutePath()
-        self._backupDir = self._profilePath + "/" + self.BACKUP_DIR
-        self._profilesPath = QFileInfo(self._profilePath).dir().absolutePath()
+        self._currentProfileName = self._organizer.profileName()
+        self._currentProfilePath = self._organizer.profile().absolutePath()
+        self._profilesFolder = QFileInfo(self._currentProfilePath).dir().absolutePath()
 
     def currentProfileName(self):
-        return self._profileName
+        return self._currentProfileName
 
     def currentProfilePath(self):
-        return self._profilePath
+        return self._currentProfilePath
 
-    def profilesPath(self):
-        return self._profilesPath
+    def profilesFolder(self):
+        return self._profilesFolder
 
     def profilePath(self, name=None):
-        return self.currentProfilePath() if not name else self._profilesPath + "/" + name
+        return self.currentProfilePath() if not name else self._profilesFolder + "/" + name
 
     def backupPath(self, name=None):
-        return self._backupDir if not name else self.profilePath(name) + "/" + self.BACKUP_DIR
+        return self.profilePath(name) + "/" + self.BACKUP_DIR
 
     def profileExists(self, name):
         return True if not name else QFile.exists(self.profilePath(name))
 
-    def backupDirExists(self, name):
+    def backupPathExists(self, name):
         return QFile.exists(self.backupPath(name))
 
     def isCurrentProfile(self, name: str) -> bool:
@@ -44,23 +46,25 @@ class Profile:
 
     def allProfiles(self) -> List[str]:
         profiles = []
-        infos = QDir(self.profilesPath(), "", QDir.IgnoreCase, QDir.NoDotAndDotDot | QDir.Dirs).entryInfoList()
+        infos = QDir(self.profilesFolder(), "", QDir.IgnoreCase, QDir.NoDotAndDotDot | QDir.Dirs).entryInfoList()
         for info in infos:
             profiles.append(info.baseName())
         return profiles
 
     def createProfile(self, name):
-        profileDir = QDir(self.profilePath(name))
-        if profileDir.exists():
+        if self.profileExists(name):
             return True
 
         # TODO: need to fix up the name before creating the directory
         # Refer to https://github.com/ModOrganizer2/modorganizer-uibase/blob/13963ed37276ede1fb052b838f8b7828d0f8d2f5/src/utility.cpp#L612
         # Refer to https://github.com/ModOrganizer2/modorganizer/blob/9945beabf160c68852a8bdac07de255f04fd6886/src/profile.cpp#L80
 
-        if not profileDir.mkdir(name):
-            moWarn(self.tr("Failed to create profile folder: {}").format(name))
+        profilesDir = QDir(self.profilesFolder())
+        if not profilesDir.mkdir(name):
+            moWarn(self.tr("Failed to create profile folder: {}").format(profilesDir.absoluteFilesPath(name)))
             return False
+        self.profileCreated.emit(name)
+
         # copy all files (one level) from current profile to new profile
         return self.copyFiles(self.profilePath(), self.profilePath(name))
 

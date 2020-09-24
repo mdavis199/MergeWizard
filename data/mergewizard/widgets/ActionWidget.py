@@ -100,9 +100,17 @@ class ActionWidget(QWidget):
         self.actionModel().setPluginModel(pluginModel)
 
     def setProfile(self, profile: Profile):
+        if self.profile:
+            raise RuntimeError("Profile can be set only once.")
         self.profile = profile
         self.actionModel().setProfile(profile)
         self.setCurrentProfile(self.profile.currentProfileName())
+        self.profile.profileCreated.connect(self.addNewProfile)
+
+    def addNewProfile(self, name: str):
+        self.ui.profileBox.addItem(name)
+        self.profiles.append(name)
+        self.onNewProfileName(False)
 
     def applyActions(self):
         self.actionModel().applyActions(self.selectedProfileName())
@@ -130,6 +138,7 @@ class ActionWidget(QWidget):
         self.profiles.extend(profiles)
         self.ui.profileBox.addItems(self.profiles)
         self.ui.profileBox.insertSeparator(2)
+        self.ui.profileBox.insertSeparator(self.ui.profileBox.count())
         self.ui.profileName.setEnabled(False)
 
     def setCurrentProfile(self, profile: str):
@@ -154,7 +163,7 @@ class ActionWidget(QWidget):
             self.setProfileError()
             self.validatePanel()
 
-    def onNewProfileName(self):
+    def onNewProfileName(self, validate=False):
         text = self.ui.profileName.text()
         if not text:
             self.setProfileError((self.tr("* Missing profile")))
@@ -169,7 +178,8 @@ class ActionWidget(QWidget):
                 self.setProfileError((self.tr("* Existing profile")))
             else:
                 self.setProfileError()
-        self.validatePanel()
+        if validate:
+            self.validatePanel()
 
     def validatePanel(self):
         bad = (
@@ -179,11 +189,11 @@ class ActionWidget(QWidget):
         )
         self.ui.applyButton.setDisabled(bad)
 
+    def isCurrentProfile(self):
+        return self.ui.profileBox.currentIndex() == 0
+
     def isNewProfile(self):
         return self.ui.profileBox.currentIndex() == 1
-
-    def isCurrentProfile(self):
-        return self.ui.profileBox.currentIndex() == 2
 
     def setProfileError(self, text=None):
         if not text:

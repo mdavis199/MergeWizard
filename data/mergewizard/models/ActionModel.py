@@ -361,36 +361,35 @@ class ActionModel(QAbstractItemModel):
     def finalizeActions(self, action: Action):
         # This is a required action.  But we only execute it if initialize
         # completed successfully.
-
         if self._actions[Action.Initialize].status != Status.Success:
             self.setActionStatus(action, Status.Cancelled)
             return
 
         # we only need to do this if a previous action was performed
         didNothing = True
+        somethingFailed = False
         for a in self._actions:
             if a.id == Action.Initialize or a.id == Action.Finalize:
                 continue
             if a.status == Status.Success or a.status == Status.Failed:
                 didNothing = False
+                if a.status == Status.Failed:
+                    somethingFailed = True
                 break
-        if didNothing:
-            self.setActionStatus(action, Status.Skipped)
 
-        self._pluginModel.updatePluginStates()
-        self.info(action, "Updated plugin states in MergeWizard.")
-
-        if a.status == Status.Failed:
-            if self._profileMgr.restoreBackup(self._profile):
-                self._profileMgr.removeBackup(self._profile)
-                self.info(action, "Restored files to profile from backup.")
-                self.setActionStatus(action.Status.Success)
+        """ if something failed, especially if it was not in the current profile,
+        shouldn't we restore the backup? """
+        if not didNothing:
+            self._pluginModel.updatePluginStates()
+            self.info(action, "Updated plugin states in MergeWizard.")
+            self.setActionStatus(action, Status.Success)
+        else:
+            if self._profileMgr.removeBackup(self._profile):
+                self.info(action, "Removed backup files")
+                self.setActionStatus(action, Status.Success)
             else:
-                self.warn(action, "Failed to restore backup files to profile.")
+                self.info(action, "Failed to remove backup files")
                 self.setActionStatus(action, Status.Failed)
-            return
-
-        self.setActionStatus(action, Status.Success)
 
     def enableSelected(self, action: Action):
         self.enableRows(action, self._pluginModel.selectedRows())
@@ -463,7 +462,7 @@ class ActionModel(QAbstractItemModel):
 
     def moveSelected(self, action: Action):
         if self._pluginModel.selectedCount() == 0:
-            self.info(action, "Not moving plugins. no plugins are selected.")
+            self.info(action, "Not moving plugins. No plugins are selected.")
             self.setActionStatus(action, Status.Skipped)
             return
 
@@ -477,7 +476,7 @@ class ActionModel(QAbstractItemModel):
                 missing = missing + 1
             elif plugin.priority != priority:
                 needToMove.append(row)
-            priority = priority = 1
+            priority = priority - 1
         if missing:
             self.warn(action, "Not moving {} missing plugin(s)".format(missing))
         if not needToMove:
