@@ -47,6 +47,7 @@ class ActionWidget(QWidget):
         logFilterModel.setSourceModel(logModel)
         self.ui.logView.setModel(logFilterModel)
         self.ui.logView.setWordWrap(False)
+        self.ui.logView.horizontalHeader().setStretchLastSection(True)
         self.ui.logView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.ui.logView.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
@@ -115,7 +116,8 @@ class ActionWidget(QWidget):
 
     def applyActions(self):
         self.actionModel().applyActions(self.selectedProfileName())
-        self.ui.logView.resizeColumnsToContents()
+        self.ui.logView.resizeColumnToContents(0)
+        self.ui.logView.resizeColumnToContents(1)
 
     def actionModel(self):
         return self.ui.actionView.model()

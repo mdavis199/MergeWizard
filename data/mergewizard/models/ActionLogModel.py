@@ -102,7 +102,7 @@ class ActionLogModel(QAbstractItemModel):
                 if section == Column.Status:
                     return self.tr("Status")
                 if section == Column.Stage:
-                    return self.tr("Stage")
+                    return self.tr("Action")
                 if section == Column.Message:
                     return self.tr("Message")
         return super().headerData(section, orientation, role)
