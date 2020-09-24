@@ -59,5 +59,8 @@ There is a lot of room for error. But MO handles its own files and states.
 2. Programmatically edit the files to reflect the changes we want.
 3. Save the files to the other profile
 
-Less room for error. But MO is not involved with determining plugin selection and order.
+MO is not involved with determining plugin selection and order.
 Requires MergeWizard to have knowledge of MO files and game requirements.
+The problem is when enabling or disabling a mod, plugins that were
+previously hidden may become available. Just naively editing an existing
+file would not allow for those newly visible plugins.
