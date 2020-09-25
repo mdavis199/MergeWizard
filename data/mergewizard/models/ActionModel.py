@@ -3,6 +3,7 @@ from functools import reduce
 from typing import List, Callable
 from PyQt5.QtCore import pyqtSignal, Qt, QObject, QModelIndex, QAbstractItemModel, qInfo, QCoreApplication
 
+from mobase import PluginState
 from mergewizard.models.ActionLogModel import Status as LogLevel
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.PluginModelBase import Role as PluginRole
@@ -502,14 +503,42 @@ class ActionModel(QAbstractItemModel):
         self.info(action, "Refreshed mod list")
         if self._context.profile.copyFilesToProfile(self._profile):
             self.info(action, "Copied mod and plugin data to profile.")
-            self._context.dataCache.restore()
+            self.restoreCurrentProfile(action)
             self.info(action, "Restored plugin states in current profile.")
             return True
         else:
             self.error(action, "Failed to copy mod and plugin files to profile.")
-            self._context.dataCache.restore()
+            self.restoreCurrentProfile(action)
             self.info(action, "Restored plugin states in current profile.")
             return False
+
+    def restoreCurrentProfile(self, action):
+        self._context.organizer.refreshModList(True)
+        mods = self._context.dataCache.cachedMods
+        if mods:
+            self.info(action, "Restoring active/inactive states for all mods in current profile.")
+            self._context.organizer.modList().setActive([mod.name for mod in mods if mod.active], True)
+            self._context.organizer.modList().setActive([mod.name for mod in mods if not mod.active], False)
+        plugins = self._context.dataCache.cachedPlugins
+        if plugins:
+            prioritySorted = sorted(plugins, key=lambda x: x.priority)
+            self.info(action, "Restoring active/inactive states for all plugins in current profile.")
+            for plugin in prioritySorted:
+                if plugin.isMissing:
+                    continue
+                self._context.organizer.pluginList().setState(
+                    plugin.pluginName, PluginState.INACTIVE if plugin.isInactive else PluginState.ACTIVE
+                )
+
+            self.info(action, "Restoring priority for all plugins in current profile.")
+            for plugin in prioritySorted:
+                if plugin.isMissing:
+                    continue
+                self._context.organizer.pluginList().setPriority(plugin.pluginName, plugin.priority)
+        if mods or plugins:
+            self._context.organizer.refreshModList(True)
+            self.info(action, "Updating MergeWizard plugin states.")
+            self._context.pluginModel.updatePluginStates()
 
     def previousActionsHadFailures(self, action):
         for a in self._actions:

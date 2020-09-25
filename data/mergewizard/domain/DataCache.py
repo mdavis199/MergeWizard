@@ -2,7 +2,7 @@ from copy import deepcopy
 from time import perf_counter
 from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 
-from mobase import IOrganizer, PluginState
+from mobase import IOrganizer
 from mergewizard.domain.mod.Mod import Mod
 from mergewizard.domain.plugin import Plugins
 from mergewizard.domain.DataLoader import DataLoader, DataRestorer
@@ -49,6 +49,16 @@ class DataCache(QObject):
     def isLoading(self) -> bool:
         return self._dataLoader and self._dataLoader.isRunning()
 
+    """ These two properties are for the action model only """
+
+    @property
+    def cachedMods(self):
+        return deepcopy(self.__mods)
+
+    @property
+    def cachedPlugins(self):
+        return deepcopy(list(self.__plugins.values()))
+
     # --------------------------------------------------------
 
     def stopLoading(self) -> None:
@@ -94,31 +104,3 @@ class DataCache(QObject):
         self.__mods = data[2]
         moPerf(startTime, perf_counter(), "Loading data into models - complete")
 
-    # ----
-    # ---- Methods that return a copy of the original data (for restoration)
-    # ----
-
-    def restore(self):
-        self.restoreAll(self.__mods, self.__plugins, self._organizer)
-        self._pluginModel.updatePluginStates()
-
-    def restoreAll(self, mods, plugins: Plugins, organizer: IOrganizer):
-        if mods:
-            organizer.modList().setActive([mod.name for mod in mods if mod.active], True)
-            organizer.modList().setActive([mod.name for mod in mods if not mod.active], False)
-            organizer.refreshModList(True)
-
-        if plugins:
-            prioritySorted = sorted(plugins.values(), key=lambda x: x.priority)
-            for plugin in prioritySorted:
-                if plugin.isMissing:
-                    continue
-                organizer.pluginList().setState(
-                    plugin.pluginName, PluginState.INACTIVE if plugin.isInactive else PluginState.ACTIVE
-                )
-
-            for plugin in prioritySorted:
-                if plugin.isMissing:
-                    continue
-                organizer.pluginList().setPriority(plugin.pluginName, plugin.priority)
-            organizer.refreshModList(True)
