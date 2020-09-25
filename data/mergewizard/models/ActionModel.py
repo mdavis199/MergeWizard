@@ -318,7 +318,6 @@ class ActionModel(QAbstractItemModel):
             else:
                 if cancel and not action.required:
                     self.setActionStatus(action, Status.Cancelled)
-                    self._context.profile.removeBackup(self._profile)
                 else:
                     self.setActionStatus(action, Status.Working)
                     action.function(action)
