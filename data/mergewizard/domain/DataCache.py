@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 
 from mobase import IOrganizer
 from mergewizard.domain.plugin import Plugins
-from mergewizard.domain.DataLoader import DataLoader
+from mergewizard.domain.DataLoader import DataLoader, DataRestorer
 from mergewizard.domain.MOLog import moPerf, moTime
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.MergeModel import MergeModel
@@ -26,8 +26,9 @@ class DataCache(QObject):
         self._dataLoadingStartTime: float = 0
 
         # CACHED Data
+        self.__mods = None
         self.__merges = None
-        self.__plugins = Plugins()
+        self.__plugins: Plugins = None
 
     # --------------------------------------------------------
 
@@ -89,5 +90,13 @@ class DataCache(QObject):
         self.pluginModel.setPlugins(deepcopy(self.__plugins))
         self.__merges = data[1]
         self.mergeModel.setMerges(self.__merges)
+        self.__mods = data[2]
         moPerf(startTime, perf_counter(), "Loading data into models - complete")
 
+    # ----
+    # ---- Methods that return a copy of the original data (for restoration)
+    # ----
+
+    def restore(self):
+        restorer = DataRestorer()
+        restorer.restore(self.__mods, self.__plugins, self._organizer)

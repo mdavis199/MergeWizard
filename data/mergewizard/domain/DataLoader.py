@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, List
 from os import path
 from glob import glob
 from PyQt5.QtCore import QThread, pyqtSignal, qInfo
@@ -6,6 +6,7 @@ from mobase import IOrganizer, PluginState, ModState
 from mergewizard.domain.plugin.Plugin import Plugin
 from mergewizard.domain.plugin.Plugins import Plugins
 from mergewizard.domain.merge.MergeFile import MergeFile
+from mergewizard.domain.mod.Mod import Mod
 from mergewizard.domain.MOLog import moWarn
 
 
@@ -23,6 +24,7 @@ class DataLoader(QThread):
         self._plugins = None
         self._pluginNames = None
         self._mergeFiles = None
+        self._mods = None
 
     def stop(self):
         self._stopped = True
@@ -37,9 +39,10 @@ class DataLoader(QThread):
         self._count = 0
         self._progress = 0
 
+        self.loadMods()
         self.loadPlugins()
         self.loadMergeFiles()
-        self.result.emit((self._plugins, self._mergeFiles))
+        self.result.emit((self._plugins, self._mergeFiles, self._mods))
 
     def loadPlugins(self):
         plugins = Plugins()
@@ -109,9 +112,36 @@ class DataLoader(QThread):
                 plugin.modName = pfd.modName
             self._plugins.addMergeRelationship(merge, plugin)
 
+    def loadMods(self):
+        self._mods = []
+        for name in self.__organizer.modList().allMods():
+            priority = self.__organizer.modList().priority(name)
+            state = self.__organizer.modList().state(name)
+            active = state & ModState.ACTIVE == ModState.active
+            self._mods.append(Mod(name, priority, active))
+
     def emitProgress(self):
         self._count = self._count + 1
         v = int(self._count * 100 / self._total)
         if v != self._progress:
             self._progress = v
             self.progress.emit(v)
+
+
+class DataRestorer:
+    def restore(self, mods: List[Mod], plugins: Plugins, organizer: IOrganizer):
+        if mods:
+            for mod in mods:
+                organizer.modList().setActive(mod.name, mod.active)
+        if plugins:
+            for plugin in plugins:
+                if plugin.isMissing:
+                    continue
+                organizer.pluginList().setState(PluginState.ACTIVE if plugin.isActive else PluginState.INACTIVE)
+
+            prioritySorted = sorted(plugins.values(), key=lambda x: x.priority)
+            for plugin in prioritySorted:
+                if plugin.isMissing:
+                    continue
+                organizer.pluginList().setPriority(plugin.name, plugin.priority)
+

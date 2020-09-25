@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Union, Tuple, List
+
 from collections.abc import Mapping
 from mergewizard.thirdparty.sortedcontainers import SortedDict
 from mergewizard.domain.plugin import Plugin

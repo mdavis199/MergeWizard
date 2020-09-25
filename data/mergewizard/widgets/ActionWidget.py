@@ -4,8 +4,7 @@ from PyQt5.QtCore import Qt, QSize, qInfo
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QAction
 
-
-from mergewizard.domain.Profile import Profile
+from mergewizard.domain.Context import Context
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.ActionModel import ActionModel
 from mergewizard.models.ActionLogModel import ActionLogModel, LogFilterModel
@@ -24,10 +23,7 @@ class ActionWidget(QWidget):
         super().__init__(parent)
         self.ui = Ui_ActionWidget()
         self.ui.setupUi(self)
-        self.profile: Profile = None
-        self.pluginModel: PluginModel = None
-        self.currentProfile = ""
-        self.profiles = []
+        self.context: Context = None
 
         # splitters
         Splitter.decorate(self.ui.splitter)
@@ -95,24 +91,16 @@ class ActionWidget(QWidget):
         h = h + (self.ui.actionView.rowHeight(0) / 2)
         self.ui.actionView.setMinimumSize(QSize(0, h))
 
+    def setContext(self, context):
+        self.context = context
+        self.actionModel().setContext(context)
+        self.context.profile.profileCreated.connect(self.addNewProfile)
+
     def showDebugMessages(self, show: bool):
         self.ui.logView.model().showDebugMessages(show)
 
-    def setPluginModel(self, pluginModel: PluginModel):
-        self.pluginModel = pluginModel
-        self.actionModel().setPluginModel(pluginModel)
-
-    def setProfile(self, profile: Profile):
-        if self.profile:
-            raise RuntimeError("Profile can be set only once.")
-        self.profile = profile
-        self.actionModel().setProfile(profile)
-        self.setCurrentProfile(self.profile.currentProfileName())
-        self.profile.profileCreated.connect(self.addNewProfile)
-
     def addNewProfile(self, name: str):
         self.ui.profileBox.addItem(name)
-        self.profiles.append(name)
         self.onNewProfileName(False)
 
     def applyActions(self):
@@ -129,32 +117,30 @@ class ActionWidget(QWidget):
     def initialize(self):
         """ Called from the wizard page with the data needed to setup
         the profile lists."""
-        self.setProfileList(self.profile.allProfiles())
+        self.setProfileList(self.context.profile.allProfiles())
         self.conditionallyShowWarningFrame()
         self.onProfileSelectionChanged()
         self.validatePanel()
 
     def setProfileList(self, profiles: List[str]):
-        idx = next((i for i in range(len(profiles)) if profiles[i] == self.currentProfile), -1)
-        if idx > -1:
-            profiles.pop(idx)
         self.ui.profileBox.clear()
-        self.profiles = [self.tr("{} (Current profile)".format(self.currentProfile)), self.tr("Create new profile ...")]
-        self.profiles.extend(profiles)
-        self.ui.profileBox.addItems(self.profiles)
+        self.ui.profileBox.addItems(
+            [
+                self.tr("{} (Current profile)".format(self.context.profile.currentProfileName())),
+                self.tr("Create new profile ..."),
+            ]
+        )
+        self.ui.profileBox.addItems([p for p in profiles if p != self.context.profile.currentProfileName()])
         self.ui.profileBox.insertSeparator(2)
         self.ui.profileBox.insertSeparator(self.ui.profileBox.count())
         self.ui.profileName.setEnabled(False)
 
-    def setCurrentProfile(self, profile: str):
-        self.currentProfile = profile
-
     def conditionallyShowWarningFrame(self):
-        self.ui.warningFrame.setVisible(self.pluginModel.missingPluginsAreSelected())
+        self.ui.warningFrame.setVisible(self.context.pluginModel.missingPluginsAreSelected())
 
     def selectedProfileName(self) -> str:
         if self.isCurrentProfile():
-            return self.currentProfile
+            return self.context.profile.currentProfileName()
         if self.isNewProfile():
             return self.ui.profileName.text()
         return self.ui.profileBox.currentText()
@@ -175,10 +161,9 @@ class ActionWidget(QWidget):
         else:
             # This checks if the name is an existing profile. If it is,
             # it won't prevent validation, we just inform the user
-            text = text.lower()
-            bad = text == self.currentProfile.lower()
+            bad = self.context.profile.isCurrentProfile(text)
             if not bad:
-                bad = next((i for i in range(len(self.profiles)) if self.profiles[i].lower() == text), -1) != -1
+                bad = self.ui.profileBox.findText(text, Qt.MatchFixedString) > 0
             if bad:
                 self.setProfileError((self.tr("* Existing profile")))
             else:
@@ -190,7 +175,7 @@ class ActionWidget(QWidget):
         bad = (
             not self.selectedProfileName()
             or self.actionModel().isNoneEnabled()
-            or self.pluginModel.selectedCount() == 0
+            or self.context.pluginModel.selectedCount() == 0
         )
         self.ui.applyButton.setDisabled(bad)
 

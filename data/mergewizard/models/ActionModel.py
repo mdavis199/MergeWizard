@@ -7,6 +7,8 @@ from mergewizard.models.ActionLogModel import Status as LogLevel
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.PluginModelBase import Role as PluginRole
 from mergewizard.domain.Profile import Profile
+from mergewizard.domain.Context import Context
+from mergewizard.domain.DataCache import DataCache
 
 
 class Column(IntEnum):
@@ -26,8 +28,7 @@ class Status(IntEnum):
 
 
 class Action(IntEnum):
-    Initialize = 0
-    EnableSelected = auto()
+    EnableSelected = 0
     EnableMasters = auto()
     DisableOthers = auto()
     MoveSelected = auto()
@@ -87,25 +88,20 @@ class ActionModel(QAbstractItemModel):
     started = pyqtSignal()
     finished = pyqtSignal()
 
-    def __init__(self, profile: Profile = None, parent: QObject = None):
+    def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self._pluginActions = [None] * len(Action)
         self._status: List[Status] = [Status.NotStarted] * len(Action)
         self._enabled: List[bool] = [False] * len(Action)
-        self._profileMgr: Profile = profile
-        self._pluginModel: PluginModel = None
+        self._context: Context = None
         self._profile: str = None
         self._actions = self.createActions()
 
-    def setPluginModel(self, model: PluginModel):
-        self._pluginModel = model
-
-    def setProfile(self, profileMgr: Profile):
-        self._profileMgr = profileMgr
+    def setContext(self, context: Context):
+        self._context = context
 
     def createActions(self):
         return [
-            ActionHolder(Action.Initialize, True, "Initialize", "Initialize actions.", self.initializeActions),
             ActionHolder(
                 Action.EnableSelected,
                 False,
@@ -311,6 +307,7 @@ class ActionModel(QAbstractItemModel):
     def applyActions(self, profile=None):
         self.started.emit()
         self._profile = profile
+
         for a in self._actions:
             self.setStatus(a, Status.NotStarted)
 
@@ -321,7 +318,7 @@ class ActionModel(QAbstractItemModel):
             else:
                 if cancel and not action.required:
                     self.setActionStatus(action, Status.Cancelled)
-                    self._profileMgr.removeBackup(self._profile)
+                    self._context.profile.removeBackup(self._profile)
                 else:
                     self.setActionStatus(action, Status.Working)
                     action.function(action)
@@ -339,68 +336,16 @@ class ActionModel(QAbstractItemModel):
     # ---- Each function must update the final status for its action.
     # ----
 
-    def initializeActions(self, action: Action):
-        self._createdNewProfile = False
-        if not self._profileMgr.profileExists(self._profile):
-            if self._profileMgr.createProfile(self._profile):
-                self.info(action, "Created new profile.")
-                self._createdNewProfile = True
-            else:
-                self.error(action, "Failed to create profile")
-                self.setActionStatus(action, Status.Failed)
-                return
-        else:
-            if self._profileMgr.backupFiles(self._profile):
-                self.info(action, "Backed up files from profile.")
-            else:
-                self.error(action, "Failed to backup files from profile")
-                self.setActionStatus(action, Status.Failed)
-                return
-        self.setActionStatus(action, Status.Success)
-
-    def finalizeActions(self, action: Action):
-        # This is a required action.  But we only execute it if initialize
-        # completed successfully.
-        if self._actions[Action.Initialize].status != Status.Success:
-            self.setActionStatus(action, Status.Cancelled)
-            return
-
-        # we only need to do this if a previous action was performed
-        didNothing = True
-        somethingFailed = False
-        for a in self._actions:
-            if a.id == Action.Initialize or a.id == Action.Finalize:
-                continue
-            if a.status == Status.Success or a.status == Status.Failed:
-                didNothing = False
-                if a.status == Status.Failed:
-                    somethingFailed = True
-                break
-
-        """ if something failed, especially if it was not in the current profile,
-        shouldn't we restore the backup? """
-        if not didNothing:
-            self._pluginModel.updatePluginStates()
-            self.info(action, "Updated plugin states in MergeWizard.")
-            self.setActionStatus(action, Status.Success)
-        else:
-            if self._profileMgr.removeBackup(self._profile):
-                self.info(action, "Removed backup files")
-                self.setActionStatus(action, Status.Success)
-            else:
-                self.info(action, "Failed to remove backup files")
-                self.setActionStatus(action, Status.Failed)
-
     def enableSelected(self, action: Action):
-        self.enableRows(action, self._pluginModel.selectedRows())
+        self.enableRows(action, self._context.pluginModel.selectedRows())
 
     def enableMasters(self, action: Action):
-        self.enableRows(action, self._pluginModel.selectedMasters())
+        self.enableRows(action, self._context.pluginModel.selectedMasters())
 
     def disableOthers(self, action: Action):
-        selected = self._pluginModel.selectedRows()
-        masters = self._pluginModel.selectedMasters()
-        total = self._pluginModel.rowCount()
+        selected = self._context.pluginModel.selectedRows()
+        masters = self._context.pluginModel.selectedMasters()
+        total = self._context.pluginModel.rowCount()
         rows = [i for i in range(total) if i not in selected and i not in masters]
         self.disableRows(action, rows)
 
@@ -414,7 +359,7 @@ class ActionModel(QAbstractItemModel):
         active = 0
         rowsToChange = []
         for row in rows:
-            plugin = self._pluginModel.data(self._pluginModel.index(row, 0), PluginRole.Data)
+            plugin = self._context.pluginModel.data(self._context.pluginModel.index(row, 0), PluginRole.Data)
             if plugin.isMissing:
                 missing = missing + 1
             elif not plugin.isInactive:
@@ -429,7 +374,7 @@ class ActionModel(QAbstractItemModel):
             return
         self.info(action, "Enabling {} of {} plugin(s).".format(len(rowsToChange), len(rows)))
         for row in rowsToChange:
-            self._pluginModel.activatePlugin(row)
+            self._context.pluginModel.activatePlugin(row)
         self.setActionStatus(action, Status.Success)
 
     def disableRows(self, action: Action, rows: List[int]):
@@ -442,7 +387,7 @@ class ActionModel(QAbstractItemModel):
         inactive = 0
         rowsToChange = []
         for row in rows:
-            plugin = self._pluginModel.data(self._pluginModel.index(row, 0), PluginRole.Data)
+            plugin = self._context.pluginModel.data(self._context.pluginModel.index(row, 0), PluginRole.Data)
             if plugin.isMissing:
                 missing = missing + 1
             elif plugin.isInactive:
@@ -457,25 +402,30 @@ class ActionModel(QAbstractItemModel):
             return
         self.info(action, "Disabling {} of {} plugin(s).".format(len(rowsToChange), len(rows)))
         for row in rowsToChange:
-            self._pluginModel.deactivatePlugin(row)
+            self._context.pluginModel.deactivatePlugin(row)
         self.setActionStatus(action, Status.Success)
 
     def moveSelected(self, action: Action):
-        if self._pluginModel.selectedCount() == 0:
+        if self._context.pluginModel.selectedCount() == 0:
             self.info(action, "Not moving plugins. No plugins are selected.")
             self.setActionStatus(action, Status.Skipped)
             return
 
-        selected = self._pluginModel.selectedRows()
-        priority = self._pluginModel.maxPriority()
+        selected = self._context.pluginModel.selectedRows()
+        priority = self._context.pluginModel.maxPriority()
+        self.debug(action, "Max priority is {}".format(priority))
         missing = 0
-        needToMove = []
+        needToMove = 0
         for row in reversed(selected):
-            plugin = self._pluginModel.data(self._pluginModel.index(row, 0), PluginRole.Data)
+            plugin = self._context.pluginModel.data(self._context.pluginModel.index(row, 0), PluginRole.Data)
             if plugin.isMissing:
                 missing = missing + 1
+                continue
             elif plugin.priority != priority:
-                needToMove.append(row)
+                self.debug(action, "Moving {} from {} to {}".format(plugin.pluginName, plugin.priority, priority))
+                needToMove = needToMove + 1
+            else:
+                self.debug(action, "Not moving {} from {}".format(plugin.pluginName, plugin.priority))
             priority = priority - 1
         if missing:
             self.warn(action, "Not moving {} missing plugin(s)".format(missing))
@@ -483,17 +433,95 @@ class ActionModel(QAbstractItemModel):
             self.info(action, "No plugins require moving.")
             self.setActionStatus(action, Status.Skipped)
             return
-        self.info(action, "Moving {} of {} plugin(s).".format(len(needToMove), len(selected)))
-        self._pluginModel.movePlugins(selected)
+        self.info(action, "Moving {} of {} plugin(s).".format(needToMove, len(selected)))
+        self._context.pluginModel.movePlugins(selected)
         self.setActionStatus(action, Status.Success)
 
     def deactivateMods(self, action: Action):
-        total, toChange = self._pluginModel.getModStats()
+        total, toChange = self._context.pluginModel.getModStats()
         if not toChange:
             self.info(action, "No mods require deactivating.")
             self.setActionStatus(action, Status.Skipped)
             return
         self.info(action, "Deactivating {} of {} mods".format(toChange, total))
-        self._pluginModel.deactivateUnneededMods()
+        self._context.pluginModel.deactivateUnneededMods()
         self.setActionStatus(action, Status.Success)
 
+    def finalizeActions(self, action: Action):
+        if self._context.profile.isCurrentProfile(self._profile):
+            self.finalizeForCurrentProfile(action)
+        elif self._context.profile.profileExists(self._profile):
+            self.finalizeForExistingProfile(action)
+        else:
+            self.finalizeForNewProfile(action)
+
+    def finalizeForCurrentProfile(self, action: Action):
+        if self.previousActionsDidSomething(action):
+            self._context.pluginModel.updatePluginStates()
+            self.info(action, "Updated plugin states")
+            self.setActionStatus(action, Status.Success)
+        else:
+            self.info(action, "Nothing to do")
+            self.setActionStatus(action, Status.Skipped)
+
+    def finalizeForNewProfile(self, action: Action):
+        if self._context.profile.createProfile(self._profile):
+            self.info(action, "Created new profile.")
+            self._createdNewProfile = True
+        else:
+            self.error(action, "Failed to create profile")
+            self.setActionStatus(action, Status.Failed)
+            return
+        if self.transferCurrentStateToAnotherProfile(action):
+            self.setActionStatus(action, Status.Success)
+        else:
+            # Do this ONLY for profiles MW created and that failed while being set up
+            if self._context.profile.removeFailedProfile(self._profile):
+                self.info(action, "Removed profile: {}".format(self._profile))
+            else:
+                self.warn(action, "Failed to remove profile: {}".format(self._profile))
+            self.setActionStatus(action, Status.Failed)
+
+    def finalizeForExistingProfile(self, action: Action):
+        if self._context.profile.backupFiles(self._profile):
+            self.info(action, "Backed up files for profile.")
+        else:
+            self.error(action, "Failed to backup files for profile")
+            self.setActionStatus(action, Status.Failed)
+            return
+        if self.transferCurrentStateToAnotherProfile(action):
+            self.setActionStatus(action, Status.Success)
+        elif self.context.profile.restoreBackup(self._profile):
+            self.info(action, "Restored backup files for profile: {}".format(self._profile))
+            self.setActionStatus(action, Status.Failed)
+        else:
+            self.error(action, "Failed to restore backup files for profile: {}".format(self._profile))
+            self.setActionStatus(action, Status.Failed)
+
+    def transferCurrentStateToAnotherProfile(self, action):
+        self._context.organizer.refreshModList(True)
+        self.info(action, "Refreshed mod list")
+        if self._context.profile.copyFilesToProfile(self._profile):
+            self.info(action, "Copied mod and plugin data to profile.")
+            self.warn(action, "TODO: Need to restore current profile")
+            return True
+        else:
+            self.error(action, "Failed to copy mod and plugin files to profile.")
+            self.warn(action, "TODO: Need to restore current profile")
+            return False
+
+    def previousActionsHadFailures(self, action):
+        for a in self._actions:
+            if a.id >= action.id:
+                break
+            if a.status == Status.Failed:
+                return True
+        return False
+
+    def previousActionsDidSomething(self, action):
+        for a in self._actions:
+            if a.id >= action.id:
+                break
+            if a.status == Status.Success:
+                return True
+        return False

@@ -7,8 +7,8 @@ from mergewizard.domain.MOLog import moWarn, moDebug
 
 
 class Profile(QObject):
-    BACKUP_DIR = "mergewizard"
-    BACKUP_FILES = ["modlist.txt", "plugins.txt"]
+    PROFILE_DIR = "mergewizard"
+    PROFILE_FILES = ["modlist.txt", "plugins.txt"]
 
     profileCreated = pyqtSignal(str)
 
@@ -33,7 +33,7 @@ class Profile(QObject):
         return self.currentProfilePath() if not name else self._profilesFolder + "/" + name
 
     def backupPath(self, name=None):
-        return self.profilePath(name) + "/" + self.BACKUP_DIR
+        return self.profilePath(name) + "/" + self.PROFILE_DIR
 
     def profileExists(self, name):
         return True if not name else QFile.exists(self.profilePath(name))
@@ -42,7 +42,7 @@ class Profile(QObject):
         return QFile.exists(self.backupPath(name))
 
     def isCurrentProfile(self, name: str) -> bool:
-        return name == self._profileName
+        return name.lower() == self._currentProfileName.lower()
 
     def allProfiles(self) -> List[str]:
         profiles = []
@@ -70,7 +70,7 @@ class Profile(QObject):
 
     def backupFiles(self, profileName: str):
         if self.createBackupFolder(profileName):
-            return self.copyFiles(self.profilePath(profileName), self.backupPath(profileName), self.BACKUP_FILES, True)
+            return self.copyFiles(self.profilePath(profileName), self.backupPath(profileName), self.PROFILE_FILES, True)
         return False
 
     def createBackupFolder(self, profileName: str):
@@ -78,9 +78,9 @@ class Profile(QObject):
         profileDir = QDir(self.profilePath(profileName))
         if not profileDir.exists():
             raise ValueError("Attempted to create backup folder in non-existant profile: {}".format(profileName))
-        if profileDir.exists(self.BACKUP_DIR):
+        if profileDir.exists(self.PROFILE_DIR):
             return True
-        if not profileDir.mkdir(self.BACKUP_DIR):
+        if not profileDir.mkdir(self.PROFILE_DIR):
             moWarn("Failed to create backup directory in profile: {}".format(profileName))
             return False
         return True
@@ -89,7 +89,10 @@ class Profile(QObject):
         if not self.backupPathExists(profileName):
             moWarn("Cannot restore files from backup. Backup does not exist for profile: {}".format(profileName))
             return False
-        return self.copyFiles(self.backupPath(profileName), self.profilePath(profileName), self.BACKUP_FILES, True)
+        return self.copyFiles(self.backupPath(profileName), self.profilePath(profileName), self.PROFILE_FILES, True)
+
+    def copyFilesToProfile(self, profile):
+        return self.copyFiles(self.profilePath(), self.profilePath(profile), self.PROFILE_FILES, True)
 
     def copyFiles(self, src, dst, names=None, overwrite=True):
         """ Copy files from src directory to dst directory. Subfolders are ignored.
@@ -121,3 +124,9 @@ class Profile(QObject):
         if not self.backupPathExists(profileName):
             return True
         return QDir(self.backupPath(profileName)).removeRecursively()
+
+    def removeFailedProfile(self, profile):
+        """ THIS IS ONLY FOR PROFILES CREATED BY MERGEWIZARD """
+        if not self.profileExists(profile):
+            return True
+        return QDir(self.profilePath(profile)).removeRecursively()

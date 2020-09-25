@@ -2,6 +2,7 @@ from typing import Any, Union, List
 from os import path
 from PyQt5.QtCore import QVariant, QObject, pyqtSignal
 from mobase import IOrganizer
+from mergewizard.domain.Profile import Profile
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
@@ -21,6 +22,7 @@ class Context(QObject):
     def __init__(self, organizer: IOrganizer):
         super().__init__()
         self.__dataCache: DataCache = DataCache(organizer)
+        self.__profile: Profile = Profile(organizer)
         self._enableHidingPlugins = False
         self._hidingMethod = ""
         self._zEditFolder = ""
@@ -43,6 +45,10 @@ class Context(QObject):
     @property
     def organizer(self) -> IOrganizer:
         return self.__dataCache.organizer
+
+    @property
+    def profile(self) -> Profile:
+        return self.__profile
 
     @property
     def enableHidingPlugins(self) -> bool:

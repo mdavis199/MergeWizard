@@ -83,7 +83,6 @@ class PluginModel(PluginModelBase):
 
     def movePlugins(self, rows: List[str]):
         priority = self.maxPriority()
-        qInfo("Moving {} plugins, max priority is : {}".format(len(rows), priority))
         for row in reversed(rows):
             plugin = self._plugins[row]
             if plugin.priority != priority:
