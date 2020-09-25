@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 from mobase import IOrganizer
 from mergewizard.domain.mod.Mod import Mod
 from mergewizard.domain.plugin import Plugins
-from mergewizard.domain.DataLoader import DataLoader, DataRestorer
+from mergewizard.domain.DataLoader import DataLoader
 from mergewizard.domain.MOLog import moPerf, moTime
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.models.MergeModel import MergeModel
