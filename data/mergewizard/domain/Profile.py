@@ -68,7 +68,7 @@ class Profile(QObject):
         # copy all files (one level) from current profile to new profile
         return self.copyFiles(self.profilePath(), self.profilePath(name))
 
-    def backupFiles(self, profileName: str):
+    def backupFiles(self, profileName=None):
         if self.createBackupFolder(profileName):
             return self.copyFiles(self.profilePath(profileName), self.backupPath(profileName), self.PROFILE_FILES, True)
         return False

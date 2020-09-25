@@ -2,7 +2,8 @@ from copy import deepcopy
 from time import perf_counter
 from PyQt5.QtCore import pyqtSignal, QObject, qInfo
 
-from mobase import IOrganizer
+from mobase import IOrganizer, PluginState
+from mergewizard.domain.mod.Mod import Mod
 from mergewizard.domain.plugin import Plugins
 from mergewizard.domain.DataLoader import DataLoader, DataRestorer
 from mergewizard.domain.MOLog import moPerf, moTime
@@ -98,5 +99,26 @@ class DataCache(QObject):
     # ----
 
     def restore(self):
-        restorer = DataRestorer()
-        restorer.restore(self.__mods, self.__plugins, self._organizer)
+        self.restoreAll(self.__mods, self.__plugins, self._organizer)
+        self._pluginModel.updatePluginStates()
+
+    def restoreAll(self, mods, plugins: Plugins, organizer: IOrganizer):
+        if mods:
+            organizer.modList().setActive([mod.name for mod in mods if mod.active], True)
+            organizer.modList().setActive([mod.name for mod in mods if not mod.active], False)
+            organizer.refreshModList(True)
+
+        if plugins:
+            prioritySorted = sorted(plugins.values(), key=lambda x: x.priority)
+            for plugin in prioritySorted:
+                if plugin.isMissing:
+                    continue
+                organizer.pluginList().setState(
+                    plugin.pluginName, PluginState.INACTIVE if plugin.isInactive else PluginState.ACTIVE
+                )
+
+            for plugin in prioritySorted:
+                if plugin.isMissing:
+                    continue
+                organizer.pluginList().setPriority(plugin.pluginName, plugin.priority)
+            organizer.refreshModList(True)

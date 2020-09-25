@@ -131,15 +131,17 @@ class DataLoader(QThread):
 class DataRestorer:
     def restore(self, mods: List[Mod], plugins: Plugins, organizer: IOrganizer):
         if mods:
-            for mod in mods:
-                organizer.modList().setActive(mod.name, mod.active)
+            organizer.modList().setActive([mod.name for mod in mods if mod.active], True)
+            organizer.modList().setActive([mod.name for mod in mods if not mod.active], False)
+
+        return
         if plugins:
-            for plugin in plugins:
+            prioritySorted = sorted(plugins.values(), key=lambda x: x.priority)
+            for plugin in prioritySorted:
                 if plugin.isMissing:
                     continue
                 organizer.pluginList().setState(PluginState.ACTIVE if plugin.isActive else PluginState.INACTIVE)
 
-            prioritySorted = sorted(plugins.values(), key=lambda x: x.priority)
             for plugin in prioritySorted:
                 if plugin.isMissing:
                     continue

@@ -29,6 +29,7 @@ class Context(QObject):
         self._modNameTemplate = ""
         self._profileNameTemplate = ""
         self._excludeInactiveMods = False
+        self.__profile.backupFiles()
 
     @property
     def dataCache(self) -> DataCache:

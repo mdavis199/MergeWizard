@@ -31,8 +31,8 @@ class Action(IntEnum):
     EnableSelected = 0
     EnableMasters = auto()
     DisableOthers = auto()
-    MoveSelected = auto()
     DeactivateMods = auto()
+    MoveSelected = auto()
     Finalize = auto()
 
 
@@ -124,18 +124,18 @@ class ActionModel(QAbstractItemModel):
                 self.disableOthers,
             ),
             ActionHolder(
-                Action.MoveSelected,
-                False,
-                "Move Selected",
-                'Move the "Selected Plugins" to the lowest priority.',
-                self.moveSelected,
-            ),
-            ActionHolder(
                 Action.DeactivateMods,
                 False,
                 "Deactivate Mods",
                 "Deactivate mods that do not contain enabled plugins.",
                 self.deactivateMods,
+            ),
+            ActionHolder(
+                Action.MoveSelected,
+                False,
+                "Move Selected",
+                'Move the "Selected Plugins" to the lowest priority.',
+                self.moveSelected,
             ),
             ActionHolder(Action.Finalize, True, "Finalize", "Finalize actions.", self.finalizeActions),
         ]
@@ -503,11 +503,13 @@ class ActionModel(QAbstractItemModel):
         self.info(action, "Refreshed mod list")
         if self._context.profile.copyFilesToProfile(self._profile):
             self.info(action, "Copied mod and plugin data to profile.")
-            self.warn(action, "TODO: Need to restore current profile")
+            self._context.dataCache.restore()
+            self.info(action, "Restored plugin states in current profile.")
             return True
         else:
             self.error(action, "Failed to copy mod and plugin files to profile.")
-            self.warn(action, "TODO: Need to restore current profile")
+            self._context.dataCache.restore()
+            self.info(action, "Restored plugin states in current profile.")
             return False
 
     def previousActionsHadFailures(self, action):
