@@ -1,12 +1,14 @@
 from typing import Any, Union, List
 from os import path
-from PyQt5.QtCore import QVariant, QObject, pyqtSignal
+from PyQt5.QtCore import QVariant, QObject, pyqtSignal, QDate, QTime
 from mobase import IOrganizer
+from mergewizard.domain.JSONObject import JSONObject
 from mergewizard.domain.Profile import Profile
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
 from mergewizard.constants import INTERNAL_PLUGIN_NAME, USER_SETTINGS, Setting
+from mergewizard.domain.MOLog import moWarn
 
 
 # NOTE: Must be a one-to-one mapping with constants.Setting enumeration.
@@ -206,4 +208,40 @@ class Context(QObject):
             self.setUserSetting(key, v)
             setattr(self, attr, v)
             self.settingChanged.emit(setting)
+
+    class MWData(JSONObject):
+        def __init__(self, loadedMod="", configuredDate="", configuredTime="", **kwargs):
+            self.loadedMod = loadedMod
+            self.configuredDate = configuredDate
+            self.configuredTime = configuredTime
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+    def writeMergeWizardFile(self, profileName=None):
+        if not self.profile.profileExists(profileName):
+            return False
+        data = self.MWData()
+        data.loadedMod = self.mergeModel.selectedMergeName()
+        data.configuredDate = QDate.toString(QDate.currentDate(), "yyyy.MM.dd")
+        data.configuredTime = QTime.toString(QTime.currentTime(), "hh:mm:ss ap t")
+        try:
+            with open(self.profile.mergeWizardFile(profileName), "w", encoding="utf8") as f:
+                f.write(data.toJSON())
+                return True
+        except (OSError, ValueError, TypeError) as ex:
+            moWarn(self.tr("Failed to write MergeWizard file: {}").format(ex.strerror()))
+        return False
+
+    def readMergeWizardFile(self, profileName=None):
+        if self.profile.mergeWizardFileExists(profileName):
+            file = self.profile.mergeWizardFile(profileName)
+            try:
+                with open(file, "r", encoding="utf8") as f:
+                    return self.MWData.fromJSON(f.read())
+            except OSError as ex:
+                moWarn('Failed to open MergeWizard file "{}": {}'.format(file, ex.strerror))
+            except ValueError as ex:
+                moWarn('Failed to read MergeWizard file "{}": {}'.format(file, ex))
+            except TypeError as ex:
+                moWarn('Failed to read MergeWizard file "{}": File is missing values.'.format(file, ex))
 

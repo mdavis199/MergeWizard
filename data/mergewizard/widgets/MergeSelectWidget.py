@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QItemSelectionModel, QModelIndex
+from PyQt5.QtCore import QItemSelectionModel, QModelIndex, Qt, qInfo
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from mergewizard.models.MergeModel import MergeSortModel, MergeModel, Column
@@ -25,6 +25,15 @@ class MergeSelectWidget(QWidget):
 
     def getSelectedMergeName(self):
         return self.ui.selectedMerge.text()
+
+    def selectMergeByName(self, name):
+        if name:
+            model = self.ui.mergeView.model()
+            idx = model.indexForMergeName(name)
+            if idx.isValid():
+                self.ui.mergeView.selectionModel().setCurrentIndex(
+                    idx, QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
+                )
 
     def selectionChanged(self):
         indexes = self.ui.mergeView.selectionModel().selectedRows(Column.Name)

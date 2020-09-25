@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from typing import List
 
-from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt
+from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt, qInfo
 from PyQt5.QtGui import QColor, QFont, QIcon
 
 from mergewizard.domain.merge import MergeFile as Merge
@@ -30,6 +30,8 @@ class MergeModel(QAbstractItemModel):
     # Methods for data initialization and access
     # ------------------------------------------------
 
+    # NOTE: These are actually the names of Mods that contain merge.json files
+
     def setMerges(self, merges: List[Merge]):
         if len(self.__merges) > 1:
             self.beginRemoveRows(QModelIndex(), 1, len(self.__merges))
@@ -43,8 +45,19 @@ class MergeModel(QAbstractItemModel):
     def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
         self.__selectedMerge = index.row()
 
+    def selectedMergeName(self):
+        if self.selectedMerge().isValid():
+            return self.data(self.selectedMerge())
+        return ""
+
     def selectedMerge(self) -> QModelIndex:
         return self.index(self.__selectedMerge, 1)
+
+    def indexForMergeName(self, name) -> QModelIndex:
+        row = next((i for i in range(len(self.__merges)) if self.__merges[i].name == name), -1)
+        if row >= 0:
+            return self.index(row, Column.Name)
+        return QModelIndex()
 
     def selectedMergePluginNames(self) -> List[str]:
         if self.__selectedMerge < 0:
@@ -165,6 +178,21 @@ class MergeSortModel(QSortFilterProxyModel):
         self.sort(-1 if sortByPriority else 0)
         self.invalidate()
 
+        # ----
+        # ---- Convenience pass-through methods
+        # ----
+
     def setSelectedMerge(self, idx: QModelIndex = QModelIndex()):
         sourceIndex = self.sourceModel().index(idx.row(), idx.column())
         self.sourceModel().setSelectedMerge(sourceIndex)
+
+    def selectedMerge(self) -> QModelIndex:
+        self.mapFromSource(self.sourceModel().selectedMerge())
+
+    def selectedMergeName(self):
+        if self.selectedMerge().isValid():
+            return self.data(self.selectedMerge())
+        return ""
+
+    def indexForMergeName(self, name) -> QModelIndex:
+        return self.mapFromSource(self.sourceModel().indexForMergeName(name))

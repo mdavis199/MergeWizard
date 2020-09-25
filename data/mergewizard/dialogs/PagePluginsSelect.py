@@ -220,6 +220,7 @@ class PagePluginsSelect(WizardPage):
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()
+        self.selectLastLoadedMerge()
 
     def setUpViewsAfterModelReload(self):
         section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
@@ -233,6 +234,12 @@ class PagePluginsSelect(WizardPage):
         else:
             width = self.ui.pluginsList.header().sectionSize(self.ui.pluginsList.sectionForColumn(Column.PluginName))
         self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width)
+
+    def selectLastLoadedMerge(self):
+        data = self.context.readMergeWizardFile()
+        if data:
+            self.ui.mergeSelectWidget.selectMergeByName(data.loadedMod)
+            self.selectPluginsFromMerge()
 
     def resizeSplitter(self):
         # the Selected Plugin view has fewer columns than the plugin view

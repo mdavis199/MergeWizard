@@ -1,6 +1,6 @@
 from typing import List
 from os import path
-from mergewizard.domain.merge.JSONObject import JSONObject
+from mergewizard.domain.JSONObject import JSONObject
 
 
 class PluginFileDesc(JSONObject):

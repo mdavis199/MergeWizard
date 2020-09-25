@@ -81,7 +81,7 @@ class Wizard(QWizard):
         self.saveSize()
         for id in self.pageIds():
             self.page(id).deinitializePage()
-        self.saveSelectedPluginsToFile()
+        # self.saveSelectedPluginsToFile()
 
     def saveSelectedPluginsToFile(self):
         pluginsFile = SavedPluginsFile(self.context())

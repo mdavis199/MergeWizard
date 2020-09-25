@@ -460,6 +460,7 @@ class ActionModel(QAbstractItemModel):
             self._context.pluginModel.updatePluginStates()
             self.info(action, "Updated plugin states")
             self.setActionStatus(action, Status.Success)
+            self.writeMergeWizardFile(action)
         else:
             self.info(action, "Nothing to do")
             self.setActionStatus(action, Status.Skipped)
@@ -473,6 +474,7 @@ class ActionModel(QAbstractItemModel):
             self.setActionStatus(action, Status.Failed)
             return
         if self.transferCurrentStateToAnotherProfile(action):
+            self.writeMergeWizardFile(action)
             self.setActionStatus(action, Status.Success)
         else:
             # Do this ONLY for profiles MW created and that failed while being set up
@@ -489,7 +491,9 @@ class ActionModel(QAbstractItemModel):
             self.error(action, "Failed to backup files for profile")
             self.setActionStatus(action, Status.Failed)
             return
+
         if self.transferCurrentStateToAnotherProfile(action):
+            self.writeMergeWizardFile(action)
             self.setActionStatus(action, Status.Success)
         elif self._context.profile.restoreBackup(self._profile):
             self.info(action, "Restored backup files for profile: {}".format(self._profile))
@@ -497,6 +501,11 @@ class ActionModel(QAbstractItemModel):
         else:
             self.error(action, "Failed to restore backup files for profile: {}".format(self._profile))
             self.setActionStatus(action, Status.Failed)
+
+    def writeMergeWizardFile(self, action):
+        self.info(action, "Writing mergewizard.txt to profile")
+        if not self._context.writeMergeWizardFile(self._profile):
+            self.warn(action, "Failed to write mergewizard.txt to profile: {}".format(self._profile))
 
     def transferCurrentStateToAnotherProfile(self, action):
         self._context.organizer.refreshModList(True)
@@ -555,3 +564,4 @@ class ActionModel(QAbstractItemModel):
             if a.status == Status.Success:
                 return True
         return False
+

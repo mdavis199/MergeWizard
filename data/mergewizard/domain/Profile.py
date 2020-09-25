@@ -1,5 +1,5 @@
 from typing import List
-from PyQt5.QtCore import pyqtSignal, QObject, QDir, QFileInfo, QFile, QDirIterator
+from PyQt5.QtCore import pyqtSignal, QObject, QDir, QFileInfo, QFile
 from mobase import IOrganizer
 from mergewizard.domain.MOLog import moWarn, moDebug
 
@@ -7,8 +7,9 @@ from mergewizard.domain.MOLog import moWarn, moDebug
 
 
 class Profile(QObject):
+    MERGEWIZARD_FILE = "mergewizard.txt"
     PROFILE_DIR = "mergewizard"
-    PROFILE_FILES = ["modlist.txt", "plugins.txt"]
+    PROFILE_FILES = ["modlist.txt", "plugins.txt", "loadorder.txt"]
 
     profileCreated = pyqtSignal(str)
 
@@ -34,6 +35,12 @@ class Profile(QObject):
 
     def backupPath(self, name=None):
         return self.profilePath(name) + "/" + self.PROFILE_DIR
+
+    def mergeWizardFile(self, name=None):
+        return self.profilePath(name) + "/" + self.MERGEWIZARD_FILE
+
+    def mergeWizardFileExists(self, name=None):
+        return QFile.exists(self.mergeWizardFile(name))
 
     def profileExists(self, name):
         return True if not name else QFile.exists(self.profilePath(name))
@@ -121,9 +128,11 @@ class Profile(QObject):
         return success
 
     def removeBackup(self, profileName, names=None):
-        if not self.backupPathExists(profileName):
+        backupdir = self.backupPath(profileName)
+        if not self.backupPathExists(backupdir):
             return True
-        return QDir(self.backupPath(profileName)).removeRecursively()
+        for file in self.PROFILE_FILES:
+            QFile(backupdir + "/" + file).remove()
 
     def removeFailedProfile(self, profile):
         """ THIS IS ONLY FOR PROFILES CREATED BY MERGEWIZARD """
