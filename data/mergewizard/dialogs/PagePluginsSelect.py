@@ -301,15 +301,22 @@ class PagePluginsSelect(WizardPage):
     # ----
 
     def selectPluginsFromMerge(self):
+        idx = self.context.mergeModel.selectedMerge()
         if self.context.mergeModel.selectedMerge().isValid():
-            self.ui.pluginSelectionGroup.setTitle(
-                self.tr("Plugins Selected for Merge: {}").format(self.ui.mergeSelectWidget.getSelectedMergeName())
-            )
+            # set the title for the group box
+            if idx.row() > 0:
+                self.ui.pluginSelectionGroup.setTitle(
+                    self.tr("Plugins Selected from Mod: {}").format(self.ui.mergeSelectWidget.getSelectedMergeName())
+                )
+            else:
+                self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected"))
+
+            # remove plugin selections from the plugin model and select the plugins from the mod's merge.json file
             pluginNames = self.context.mergeModel.selectedMergePluginNames()
             self.context.pluginModel.resetPluginSelection()
             self.context.pluginModel.selectPluginsByName(pluginNames)
         else:
-            self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected For Merge"))
+            self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected"))
             self.context.pluginModel.resetPluginSelection()
 
     # ----
