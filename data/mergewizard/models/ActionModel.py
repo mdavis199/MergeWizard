@@ -456,7 +456,7 @@ class ActionModel(QAbstractItemModel):
             self.finalizeForNewProfile(action)
 
     def finalizeForCurrentProfile(self, action: Action):
-        if self.previousActionsDidSomething(action):
+        if self.previousActionsHadSuccess(action):
             self._context.pluginModel.updatePluginStates()
             self.info(action, "Updated plugin states")
             self.setActionStatus(action, Status.Success)
@@ -557,7 +557,7 @@ class ActionModel(QAbstractItemModel):
                 return True
         return False
 
-    def previousActionsDidSomething(self, action):
+    def previousActionsHadSuccess(self, action):
         for a in self._actions:
             if a.id >= action.id:
                 break
