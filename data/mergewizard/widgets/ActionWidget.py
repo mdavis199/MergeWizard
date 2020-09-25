@@ -101,7 +101,7 @@ class ActionWidget(QWidget):
 
     def addNewProfile(self, name: str):
         self.ui.profileBox.addItem(name)
-        self.onNewProfileName(False)
+        self.onNewProfileName()
 
     def applyActions(self):
         self.actionModel().applyActions(self.selectedProfileName())
@@ -154,7 +154,7 @@ class ActionWidget(QWidget):
             self.setProfileError()
             self.validatePanel()
 
-    def onNewProfileName(self, validate=False):
+    def onNewProfileName(self):
         text = self.ui.profileName.text()
         if not text:
             self.setProfileError((self.tr("* Missing profile")))
@@ -168,7 +168,6 @@ class ActionWidget(QWidget):
                 self.setProfileError((self.tr("* Existing profile")))
             else:
                 self.setProfileError()
-        if validate:
             self.validatePanel()
 
     def validatePanel(self):

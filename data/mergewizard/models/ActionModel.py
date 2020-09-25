@@ -491,7 +491,7 @@ class ActionModel(QAbstractItemModel):
             return
         if self.transferCurrentStateToAnotherProfile(action):
             self.setActionStatus(action, Status.Success)
-        elif self.context.profile.restoreBackup(self._profile):
+        elif self._context.profile.restoreBackup(self._profile):
             self.info(action, "Restored backup files for profile: {}".format(self._profile))
             self.setActionStatus(action, Status.Failed)
         else:
