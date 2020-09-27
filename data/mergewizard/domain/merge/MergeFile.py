@@ -4,7 +4,7 @@ from mergewizard.domain.JSONObject import JSONObject
 
 
 class PluginFileDesc(JSONObject):
-    def __init__(self, filename: str, dataFolder: str, hash: str = "", **kwargs):
+    def __init__(self, filename: str, dataFolder: str, **kwargs):
         self.filename, self.dataFolder, self.hash = filename, dataFolder, hash
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -122,3 +122,27 @@ class MergeFile(JSONObject):
     def modIsActive(self, value: bool):
         self.__modIsActive = value
 
+
+class Merges(JSONObject):
+    def __init__(self, mergeList):
+        self.merges = []
+        self._profilePath = ""
+        self._profileName = ""
+        for m in mergeList:
+            self.merges.append(MergeFile(**m))
+
+    @property
+    def profilePath(self):
+        return self._profilePath
+
+    @profilePath.setter
+    def profilePath(self, path):
+        self._profilePath = path
+
+    @property
+    def profileName(self):
+        return self._profileName
+
+    @profileName.setter
+    def profileName(self, value):
+        self._profileName = value
