@@ -127,6 +127,9 @@
       <property name="spacing">
        <number>12</number>
       </property>
+      <property name="leftMargin">
+       <number>25</number>
+      </property>
       <item>
        <widget class="QGroupBox" name="groupBox_2">
         <property name="title">
@@ -134,7 +137,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="leftMargin">
-          <number>25</number>
+          <number>9</number>
          </property>
          <item>
           <widget class="QLineEdit" name="zeditPathEdit">
@@ -182,7 +185,7 @@
         </property>
         <layout class="QFormLayout" name="formLayout_4">
          <property name="leftMargin">
-          <number>25</number>
+          <number>9</number>
          </property>
          <item row="0" column="0">
           <widget class="QRadioButton" name="sortSavedMerges">
@@ -218,7 +221,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <property name="leftMargin">
-          <number>25</number>
+          <number>9</number>
          </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_9">
