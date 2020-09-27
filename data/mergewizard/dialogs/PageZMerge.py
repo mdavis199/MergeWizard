@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QDir, qInfo, QVariant
+from PyQt5.QtCore import QDir, QVariant
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QComboBox
 from mergewizard.dialogs.WizardPage import WizardPage
@@ -97,7 +97,6 @@ class PageZMerge(WizardPage):
         """ Fills in the modName combobox with the mod names from the selected profile.
         This is called by the change signal from the profile combobox """
 
-        qInfo("loadMergeNames")
         self.ui.modName.clear()
         profileRow = self.ui.zmergeProfile.currentData()
         if profileRow is None:
@@ -113,19 +112,16 @@ class PageZMerge(WizardPage):
             if mergeName == selectedMergeName:
                 self.ui.modName.setCurrentIndex(self.ui.modName.count() - 1)
         if self.isNewMerge():
-            qInfo("Setting modname to: {}".format(self.newModName))
             self.ui.modName.setCurrentText(self.newModName)
 
     def loadMergeFile(self):
         """ Sets the name of the plugin (it it can) and loads the merge view.
         This is called by the change signal from the modName combo box """
 
-        if not self.isNewMerge():
-            currentMerge = self.ui.modName.currentData()
-            currentProfile = self.ui.zmergeProfile.currentData()
-            qInfo("loadMergeFile()  currentProfile: {}, currentMerge: {}".format(currentProfile, currentMerge))
-            if currentProfile is not None and currentMerge is not None:
-                self.ui.pluginName.setText(self.profiles[currentProfile].merges[currentMerge].filename)
+        currentMerge = self.ui.modName.currentData()
+        currentProfile = self.ui.zmergeProfile.currentData()
+        if currentProfile is not None and currentMerge is not None:
+            self.ui.pluginName.setText(self.profiles[currentProfile].merges[currentMerge].filename)
         else:
             self.ui.pluginName.setText(self.newPluginName)
 
