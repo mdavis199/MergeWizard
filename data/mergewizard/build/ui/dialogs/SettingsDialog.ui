@@ -92,6 +92,9 @@
    </item>
    <item row="1" column="0">
     <widget class="QGroupBox" name="enableLoadingZMerge">
+     <property name="toolTip">
+      <string>Incorporate info from &quot;merge.json&quot; files located in mod folders.</string>
+     </property>
      <property name="title">
       <string>Enable Loading zMerge JSON Files</string>
      </property>
@@ -117,6 +120,9 @@
    </item>
    <item row="2" column="0">
     <widget class="QGroupBox" name="enableZMergeIntegration">
+     <property name="toolTip">
+      <string>Allow incorporating merge details into zMerge configuration files.</string>
+     </property>
      <property name="title">
       <string>Enable zMerge Integration</string>
      </property>
@@ -189,6 +195,9 @@
          </property>
          <item row="0" column="0">
           <widget class="QRadioButton" name="sortSavedMerges">
+           <property name="toolTip">
+            <string>When saving changes to zMerge configuration, sort the merges by mod name.</string>
+           </property>
            <property name="text">
             <string>Sort merges by mod name</string>
            </property>
@@ -199,6 +208,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QRadioButton" name="prependChangedMerges">
+           <property name="toolTip">
+            <string>When adding or editing a merge, place the merge first in zMerge's configuration.</string>
+           </property>
            <property name="text">
             <string>Place new or changed mods at beginning of list</string>
            </property>
@@ -206,6 +218,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QRadioButton" name="appendChangedMerges">
+           <property name="toolTip">
+            <string>When adding or editing a merge, place the merge last in zMerge's configuration.</string>
+           </property>
            <property name="text">
             <string>Place new or changed mods at end of list</string>
            </property>
