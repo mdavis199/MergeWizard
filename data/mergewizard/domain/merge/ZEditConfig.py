@@ -33,7 +33,7 @@ qWarning = print
 class ZEditConfig:
 
     # in user's Roaming Folder
-    RELATIVE_ZEDIT_PROFILES_FILE = "zEdit/profiles.json"
+    RELATIVE_ZEDIT_PROFILES_FILE = "../zEdit/profiles.json"
 
     # in zEdit's installation folder
     RELATIVE_PROFILE_DIR = "profiles"

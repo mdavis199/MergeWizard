@@ -1,8 +1,9 @@
-from PyQt5.QtCore import QDir
+from PyQt5.QtCore import QDir, qInfo, QVariant
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QWidget, QFileDialog
+from PyQt5.QtWidgets import QWidget, QFileDialog, QComboBox
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
+from mergewizard.domain.merge.ZEditConfig import ZEditConfig
 from mergewizard.constants import Setting, Icon
 from .ui.PageZMerge import Ui_PageZMerge
 
@@ -13,6 +14,8 @@ class PageZMerge(WizardPage):
         self.ui = Ui_PageZMerge()
         self.ui.setupUi(self)
         self.context = context
+        self.profiles = []
+        self.lastProfile = context.getSetting("lastZMergeProfile", QVariant.String, "")
 
         self.ui.folderError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.profileError.setPixmap(QPixmap(Icon.ERROR))
@@ -24,14 +27,18 @@ class PageZMerge(WizardPage):
         self.setPluginNameError()
         self.setModNameError()
 
+        self.ui.modName.setEditable(True)
+        self.ui.modName.setInsertPolicy(QComboBox.InsertAtTop)
         self.ui.zeditPathButton.setIcon(QIcon(Icon.FOLDER))
         self.ui.zeditPathButton.clicked.connect(lambda: self.showFileDialog())
         self.ui.zeditPathEdit.textChanged.connect(lambda: self.validateZEditPath())
         self.ui.pluginName.textChanged.connect(lambda: self.validatePluginName())
-        self.ui.modName.textChanged.connect(lambda: self.validateModName())
+        self.ui.zmergeProfile.currentIndexChanged.connect(self.loadMergeNames)
+        self.ui.modName.currentIndexChanged.connect(self.loadMergeFile)
         self.context.settingChanged.connect(self.settingChanged)
 
     def initializePage(self):
+        self.loadProfiles()
         self.initializeMOProfileName()
         self.initializeZEditPath()
         self.initializeZMergeProfile()
@@ -39,7 +46,12 @@ class PageZMerge(WizardPage):
         self.validatePanel()
 
     def isOkToExit(self):
+        self.context.setSetting("lastZMergeProfile", self.ui.zmergeProfile.currentText())
         return True
+
+    # ----
+    # ---- Validation and Error handling
+    # ----
 
     def setZEditFolderError(self, msg=None):
         if msg:
@@ -97,10 +109,11 @@ class PageZMerge(WizardPage):
             self.setPluginNameError()
 
     def validateModName(self):
-        if not self.ui.modName.text():
-            self.setModNameError("Mod name cannot be empty.")
-        else:
-            self.setModNameError()
+        pass
+
+    # ----
+    # ---- Initializing and setting values
+    # ----
 
     def settingChanged(self, setting: int):
         if setting == Setting.ZEDIT_FOLDER:
@@ -125,5 +138,37 @@ class PageZMerge(WizardPage):
 
     def initializeNames(self):
         selectedMerge = self.context.dataCache.mergeModel.selectedMergeName()
-        self.ui.modName.setText(selectedMerge)
+        # self.ui.modName.setText(selectedMerge)
 
+    def loadProfiles(self):
+        self.profiles = ZEditConfig.getProfiles(self.context.profile.gameName(), self.context.zEditFolder)
+        self.ui.zmergeProfile.clear()
+        for i in range(len(self.profiles)):
+            name = self.profiles[i].profileName
+            self.ui.zmergeProfile.addItem(name, i)
+            if name == self.lastProfile:
+                self.ui.zmergeProfile.setCurrentIndex(i)
+
+    def loadMergeNames(self, profileRow: int):
+        self.ui.modName.clear()
+        if self.profiles[profileRow].merges:
+            self.ui.modName.insertSeparator(0)
+
+        selectedMerge = self.context.mergeModel.selectedMergeName()
+        for i in range(len(self.profiles[profileRow].merges)):
+            mergeName = self.profiles[profileRow].merges[i].name
+            self.ui.modName.addItem(mergeName, i)
+            if mergeName == selectedMerge:
+                self.ui.modName.setCurrentIndex(self.ui.modName.count() - 1)
+
+    def loadMergeFile(self, modNameRow: int):
+        currentMerge = self.ui.modName.currentData()
+        if currentMerge is None:
+            self.calculateNewPluginName()
+            return
+        currentProfile = self.ui.zmergeProfile.currentData()
+        if currentProfile is not None:
+            self.ui.pluginName.setText(self.profiles[currentProfile].merges[currentMerge].filename)
+
+    def calculateNewPluginName(self):
+        self.ui.pluginName.clear()

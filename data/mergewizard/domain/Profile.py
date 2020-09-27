@@ -16,10 +16,13 @@ class Profile(QObject):
     def __init__(self, organizer: IOrganizer):
         super().__init__()
         self._organizer = organizer
-        self._gameName = self._organizer.managedGame().gameName()
+        self._gameName = self._organizer.managedGame().gameShortName()
         self._currentProfileName = self._organizer.profileName()
         self._currentProfilePath = self._organizer.profile().absolutePath()
         self._profilesFolder = QFileInfo(self._currentProfilePath).dir().absolutePath()
+
+    def gameName(self):
+        return self._gameName
 
     def currentProfileName(self):
         return self._currentProfileName
