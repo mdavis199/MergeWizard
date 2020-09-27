@@ -51,10 +51,18 @@ settings stored by MO.
 
 
 class Setting(IntEnum):
+    # hiding plugins
     ENABLE_HIDING_PLUGINS = 0
     HIDING_METHOD = auto()
+
+    # loading zMerge files
+    ENABLE_LOADING_ZMERGE = auto()
     EXCLUDE_INACTIVE_MODS = auto()
+
+    # zMerge integration
+    ENABLE_ZMERGE_INTEGRATION = auto()
     ZEDIT_FOLDER = auto()
+    MERGE_ORDER = auto()
     MODNAME_TEMPLATE = auto()
     PROFILENAME_TEMPLATE = auto()
 
@@ -70,10 +78,16 @@ There must be a one-to-one mapping with the Setting enum above.
 # NOTE: our tooltips are provided on the UI.  Can consider adding here if we
 # include translation methods.
 USER_SETTINGS = [
+    # hiding plugins
     ("_enableHidingPlugins", "enable-plugin-hiding", "", True),
     ("_hidingMethod", "hide-method", "", "mohidden"),
-    ("_excludeInactiveMods", "exclude-deactivated-mods", "", False),
+    # loading zMerge files
+    ("_enableLoadingMergeFiles", "enable-loading-merge-files", "", True),
+    ("_excludeInactiveMods", "exclude-deactivated-mods", "", True),
+    # zMerge integration
+    ("_enableZMergeIntegration", "enable-zMerge", "", True),
     ("_zEditFolder", "zedit-folder", "", ""),
+    ("_mergeOrder", "saving-merge_files", "", "sort"),
     ("_modNameTemplate", "mod-name-template", "", ""),
     ("_profileNameTemplate", "profile-name-template", "", ""),
 ]

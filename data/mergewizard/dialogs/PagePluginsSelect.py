@@ -309,7 +309,7 @@ class PagePluginsSelect(WizardPage):
                     self.tr("Plugins Selected from Mod: {}").format(self.ui.mergeSelectWidget.getSelectedMergeName())
                 )
             else:
-                self.ui.pluginsSelectionGroup.setTitle(self.tr("Plugins Selected"))
+                self.ui.pluginSelectionGroup.setTitle(self.tr("Plugins Selected"))
 
             # remove plugin selections from the plugin model and select the plugins from the mod's merge.json file
             pluginNames = self.context.mergeModel.selectedMergePluginNames()

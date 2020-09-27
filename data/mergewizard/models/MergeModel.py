@@ -45,9 +45,17 @@ class MergeModel(QAbstractItemModel):
     def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
         self.__selectedMerge = index.row()
 
+    def isSelectedMergeNew(self):
+        return self.__selectedMerge <= 0
+
     def selectedMergeName(self):
-        if self.selectedMerge().isValid():
+        if self.__selectedMerge > 0:
             return self.data(self.selectedMerge())
+        return ""
+
+    def selectedPluginName(self):
+        if self.__selectedMerge > 0:
+            return self.__merges[self.__selectedMerge].filename
         return ""
 
     def selectedMerge(self) -> QModelIndex:
@@ -190,9 +198,13 @@ class MergeSortModel(QSortFilterProxyModel):
         self.mapFromSource(self.sourceModel().selectedMerge())
 
     def selectedMergeName(self):
-        if self.selectedMerge().isValid():
-            return self.data(self.selectedMerge())
-        return ""
+        return self.sourceModel().selectedMergeName()
+
+    def selectedPluginName(self):
+        return self.sourceModel().selectedPluginName()
 
     def indexForMergeName(self, name) -> QModelIndex:
         return self.mapFromSource(self.sourceModel().indexForMergeName(name))
+
+    def isSelectedMergeNew(self) -> bool:
+        return self.sourceModel().isSelectedMergeNew()

@@ -11,9 +11,6 @@ from mergewizard.constants import INTERNAL_PLUGIN_NAME, USER_SETTINGS, Setting
 from mergewizard.domain.MOLog import moWarn
 
 
-# NOTE: Must be a one-to-one mapping with constants.Setting enumeration.
-
-
 class Context(QObject):
     """
     Context contains data and convenience methods passed between the different WizardPages
@@ -25,12 +22,15 @@ class Context(QObject):
         super().__init__()
         self.__dataCache: DataCache = DataCache(organizer)
         self.__profile: Profile = Profile(organizer)
-        self._enableHidingPlugins = False
+        self._enableHidingPlugins = True
         self._hidingMethod = ""
+        self._enableLoadingMergeFiles = True
+        self._excludeInactiveMods = False
+        self._enableZMergeIntegration = True
         self._zEditFolder = ""
+        self._mergeOrder = ""
         self._modNameTemplate = ""
         self._profileNameTemplate = ""
-        self._excludeInactiveMods = False
         self.__profile.backupFiles()
 
     @property
@@ -62,8 +62,24 @@ class Context(QObject):
         return self._hidingMethod
 
     @property
+    def enableLoadingMergeFiles(self) -> bool:
+        return self._enableLoadingMergeFiles
+
+    @property
+    def excludeInactiveMods(self) -> bool:
+        return self._excludeInactiveMods
+
+    @property
+    def enableZMergeIntegration(self) -> bool:
+        return self._enableZMergeIntegration
+
+    @property
     def zEditFolder(self) -> str:
         return self._zEditFolder
+
+    @property
+    def mergeOrder(self) -> str:
+        return self._mergeOrder
 
     @property
     def modNameTemplate(self) -> str:
@@ -72,10 +88,6 @@ class Context(QObject):
     @property
     def profileNameTemplate(self) -> str:
         return self._profileNameTemplate
-
-    @property
-    def excludeInactiveMods(self) -> str:
-        return self._excludeInactiveMods
 
     # ----
     # ---- Semi-private settings stored in modorganizer.ini
@@ -114,7 +126,7 @@ class Context(QObject):
     """
     To add a new setting,
     1. add a key to the constants.Setting file
-    3. add a tuple in the constants.USER_SETTINGS in the same order as in the constants setting file
+    3. add a tuple in the constants.USER_SETTINGS in the same order as constants.Setting
     2. add a matching attribute and a property to the top of the class
     4. add a test in the validateUserSetting method below that provides default values
        when a test fails
@@ -160,7 +172,7 @@ class Context(QObject):
 
     def validateUserSetting(self, setting: Setting, value: Any) -> Any:
         """ Returns either the value, if it is valid for the setting, or a default"""
-        if setting == Setting.ENABLE_HIDING_PLUGINS:
+        if setting in [Setting.ENABLE_HIDING_PLUGINS, Setting.ENABLE_LOADING_ZMERGE, Setting.ENABLE_ZMERGE_INTEGRATION]:
             if isinstance(value, bool):
                 return value
             return True
@@ -176,6 +188,13 @@ class Context(QObject):
             return value if value is not None else ""
         if setting == Setting.PROFILENAME_TEMPLATE:
             return value if value is not None else ""
+        if setting == Setting.MERGE_ORDER:
+            VALUES = ["sort", "prepend", "append"]
+            if value:
+                value = value.lower()
+                if value in VALUES:
+                    return value
+            return "sort"
         if setting == Setting.HIDING_METHOD:
             VALUES = ["mohidden", "optional", "disable"]
             if value:
