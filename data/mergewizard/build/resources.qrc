@@ -2,6 +2,12 @@
 <qresource prefix="/mergewizard">
     <file alias="icon_mergewizard">resources/merge_icon.png</file>
 
+    <file alias="icon_save">resources/save.svg</file>
+    <file alias="icon_launch">resources/launch.svg</file>
+    <file alias="icon_table_view">resources/table_view.svg</file>
+    <file alias="icon_view_headline">resources/view_headline.svg</file>
+
+    <file alias="icon_share">resources/share.svg</file>
     <file alias="icon_error">resources/error_red.svg</file>
     <file alias="icon_settings">resources/gear_black.svg</file>
     <file alias="icon_create">resources/create.svg</file>

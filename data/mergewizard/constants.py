@@ -29,7 +29,7 @@ class Icon:
     # tool buttons
     FILTER = ":/mergewizard/icon_filter"
     EDIT = ":/mergewizard/icon_create"
-    INFO = ":/mergewizard/icon_info"
+    INFO = ":/mergewizard/icon_share"
     SETTINGS = ":/mergewizard/icon_settings"
 
     # log view in the action panel
@@ -38,6 +38,10 @@ class Icon:
     LOG_ERROR = ":/mergewizard/icon_dot_red"
     LOG_SUCCESS = ":/mergewizard/icon_dot_green"
     LOG_DEBUG = ":/mergewizard/icon_dot_gray"
+
+    # shown in the zmerge configuration page
+    SAVE = ":/mergewizard/icon_save"
+    LAUNCH = ":/mergewizard/icon_launch"
 
     # shown in settings dialog
     FOLDER = ":/mergewizard/icon_folder"

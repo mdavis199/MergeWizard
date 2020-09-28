@@ -1,0 +1,2015 @@
+[
+  {
+    "name": "[Merge] Animals Merged",
+    "filename": "Animals Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Wyrmstooth.esp",
+      "Gray Fox Cowl.esm",
+      "Falskaar.esm",
+      "Skyrim Revamped - Complete Enemy Overhaul.esp",
+      "SkyTEST-RealisticAnimals&Predators.esp",
+      "Skyrim Immersive Creatures Special Edition.esp",
+      "Summermyst - Enchantments of Skyrim.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "Apocalypse - Magic of Skyrim.esp",
+      "Convenient Horses.esp",
+      "KrittaKittyHorsesForSSE.esp",
+      "CH GFC_FAL_WYR.esp",
+      "Convenient Horses - Apocalypse+CACO+SIC+Summermyst.esp",
+      "Skytest Immersive Creatures.esp",
+      "Skytest Creature Extension.esp",
+      "CrittersAintSnitches.esp",
+      "CrittersAintSnitches-SkyTEST-RA&P Patch.esp",
+      "SkyTEST Less Fear SSE Patch.esp",
+      "True Hunter.esp",
+      "OMEGA Lexy LOTD Animals Merged Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:30:22.169Z",
+    "plugins": [
+      {
+        "filename": "KrittaKittyHorsesForSSE.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Realistic Horse Breeds by KrittaKitty\\"
+      },
+      {
+        "filename": "CH GFC_FAL_WYR.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Bruma and Other Patches for Convenient Horses\\"
+      },
+      {
+        "filename": "Convenient Horses - Apocalypse+CACO+SIC+Summermyst.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Convenient Horses Patch Hub\\"
+      },
+      {
+        "filename": "Skytest Immersive Creatures.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Immersive Creatures\\"
+      },
+      {
+        "filename": "Skytest Creature Extension.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Vanilla and DLC Creation Extension\\"
+      },
+      {
+        "filename": "CrittersAintSnitches.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Critters Aint Snitches v1.0 SSE\\"
+      },
+      {
+        "filename": "CrittersAintSnitches-SkyTEST-RA&P Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Critters Aint Snitches v1.0 SSE-SkyTEST RAandP Patch\\"
+      },
+      {
+        "filename": "SkyTEST Less Fear SSE Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SkyTEST Less Fear SSE Patch\\"
+      },
+      {
+        "filename": "True Hunter.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\True Hunter\\"
+      },
+      {
+        "filename": "OMEGA Lexy LOTD Animals Merged Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Lexy LOTD Animals Merged Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] CCOR Patches Merged",
+    "filename": "CCOR Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "JSwords.esm",
+      "Campfire.esm",
+      "Summermyst - Enchantments of Skyrim.esp",
+      "Immersive Sounds - Compendium.esp",
+      "Ordinator - Perks of Skyrim.esp",
+      "Dr_Bandolier.esp",
+      "1nivWICCloaks.esp",
+      "Cloaks.esp",
+      "Cloaks - Dawnguard.esp",
+      "Weapons Armor Clothing & Clutter Fixes.esp",
+      "aMidianBorn_ContentAddon.esp",
+      "PrvtI_HeavyArmory.esp",
+      "Hothtrooper44_ArmorCompilation.esp",
+      "Complete Crafting Overhaul_Remastered.esp",
+      "MLU.esp",
+      "Hothtrooper44_ArmorCompilation_CCOR_Patch.esp",
+      "CCOR_Campfire_Patch.esp",
+      "PrvtI_HeavyArmory_CCOR_AMB_Patch.esp",
+      "CCOR_JSwords_Patch.esp",
+      "Cloaks_CCOR_Patch.esp",
+      "1nivWICCloaks_COS_CCOR_Patch.esp",
+      "Dr_Bandolier_CCOR_Patch.esp",
+      "CCOR Bandolier patch fixes.esp",
+      "CCOR_Ordinator.esp",
+      "ISC - CCOR Patch.esp",
+      "OMEGA MLU CCOR Patch.esp",
+      "CCOR Merged Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:32:35.350Z",
+    "plugins": [
+      {
+        "filename": "Hothtrooper44_ArmorCompilation_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Immersive Armors __ CCOR\\"
+      },
+      {
+        "filename": "CCOR_Campfire_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Campfire __ CCOR\\"
+      },
+      {
+        "filename": "PrvtI_HeavyArmory_CCOR_AMB_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Heavy Armory __ WACCF_CCOR_AMB\\"
+      },
+      {
+        "filename": "CCOR_JSwords_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\JaySuS Swords __ CCOR\\"
+      },
+      {
+        "filename": "Cloaks_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Cloaks of Skyrim __ CCOR\\"
+      },
+      {
+        "filename": "1nivWICCloaks_COS_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Winter is Coming __ CCOR\\"
+      },
+      {
+        "filename": "Dr_Bandolier_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Bandoliers __ CCOR\\"
+      },
+      {
+        "filename": "CCOR Bandolier patch fixes.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\CCOR Bandoliers patch fix\\"
+      },
+      {
+        "filename": "CCOR_Ordinator.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Ordinator __ CCOR\\"
+      },
+      {
+        "filename": "ISC - CCOR Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ISC - CCOR Patch\\"
+      },
+      {
+        "filename": "OMEGA MLU CCOR Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "CCOR Merged Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\CCOR Merged Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Enhanced Lighting For ENB Merged",
+    "filename": "ELE Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Wyrmstooth.esp",
+      "3DNPC.esp",
+      "LegacyoftheDragonborn.esm",
+      "Falskaar.esm",
+      "ETaC - RESOURCES.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "RealisticWaterTwo.esp",
+      "EnhancedLightsandFX.esp",
+      "Kynesgrove.esp",
+      "Karthwasten.esp",
+      "ArtifactsOfBoethiah.esp",
+      "Medieval Lanterns of Skyrim.esp",
+      "Helgen Reborn.esp",
+      "ETaC - Riverwood.esp",
+      "Cutting Room Floor.esp",
+      "OCW_Obscure's_CollegeofWinterhold.esp",
+      "Immersive Citizens - AI Overhaul.esp",
+      "ImprovedHearthfireLighting.esp",
+      "ELE_SSE.esp",
+      "NoGrassINCaves.esp",
+      "Immersive Citizens - ELE patch.esp",
+      "ELE_SSE_CRF.esp",
+      "ETaC Riverwood ELE - Consistency Patch.esp",
+      "ELE_SSE_Falskaar.esp",
+      "ELE_SSE_HR.esp",
+      "ELE_SSE_LotD.esp",
+      "ELE_SSE_MLoS.esp",
+      "ToTB ELE - Consistency Patch.esp",
+      "3DNPC - ELE Consistency Patch.esp",
+      "ELE-ELFX Patch AIO.esp",
+      "ELE - Wyrmstooth.esp",
+      "OCW_ELFX_FEPatch.esp",
+      "ELE Merge Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:34:30.109Z",
+    "plugins": [
+      {
+        "filename": "ImprovedHearthfireLighting.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Improved Hearthfire Lighting SE\\"
+      },
+      {
+        "filename": "ELE_SSE.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Enhanced Lighting for ENB (ELE) - Special Edition\\"
+      },
+      {
+        "filename": "NoGrassINCaves.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\No grass in caves\\"
+      },
+      {
+        "filename": "Immersive Citizens - ELE patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Immersive Citizens - AI Overhaul\\"
+      },
+      {
+        "filename": "ELE_SSE_CRF.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE SE - Cutting Room Floor patch\\"
+      },
+      {
+        "filename": "ETaC Riverwood ELE - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - ELE Merge\\"
+      },
+      {
+        "filename": "ELE_SSE_Falskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE SE - Falskaar patch\\"
+      },
+      {
+        "filename": "ELE_SSE_HR.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE SE - Helgen Reborn patch\\"
+      },
+      {
+        "filename": "ELE_SSE_LotD.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE SE - Legacy of the Dragonborn patch\\"
+      },
+      {
+        "filename": "ELE_SSE_MLoS.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE SSE - Medieval Lanters of Skyrim\\"
+      },
+      {
+        "filename": "ToTB ELE - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - ELE Merge\\"
+      },
+      {
+        "filename": "3DNPC - ELE Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - ELE Merge\\"
+      },
+      {
+        "filename": "ELE-ELFX Patch AIO.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\ELE-ELFX Consistency Patch and Tweaks\\"
+      },
+      {
+        "filename": "ELE - Wyrmstooth.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - ELE Merge\\"
+      },
+      {
+        "filename": "OCW_ELFX_FEPatch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Obscure's College of Winterhold\\"
+      },
+      {
+        "filename": "ELE Merge Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - ELE Merge\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Faces Merged",
+    "filename": "Faces Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Beards.esp",
+      "KS Hairdo's.esp",
+      "Improved Eyes Skyrim.esp",
+      "NB-Scars.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:35:17.858Z",
+    "plugins": [
+      {
+        "filename": "Beards.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Hvergelmir's Aesthetics - Beards\\",
+        "hash": "e447407406f65425207232b73e495463"
+      },
+      {
+        "filename": "KS Hairdo's.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\KS Hairdo's SSE\\"
+      },
+      {
+        "filename": "Improved Eyes Skyrim.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Improved Eyes Skyrim\\"
+      },
+      {
+        "filename": "NB-Scars.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Northborn Scars\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Farmhouse Chimneys Patches Merged",
+    "filename": "Farmhouse Chimneys Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Falskaar.esm",
+      "Wyrmstooth.esp",
+      "FarmhouseChimneys.esp",
+      "Fall of Granite Hill.esp",
+      "Helgen Reborn.esp",
+      "FarmhouseChimneysFalskaar.esp",
+      "FarmhouseChimneysHelgenReborn.esp",
+      "FarmhouseChimneysWyrmstooth.esp",
+      "FarmhouseChimneysGraniteHill.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:35:56.228Z",
+    "plugins": [
+      {
+        "filename": "FarmhouseChimneysFalskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Farmhouse Chimneys SE\\"
+      },
+      {
+        "filename": "FarmhouseChimneysHelgenReborn.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Farmhouse Chimneys SE\\"
+      },
+      {
+        "filename": "FarmhouseChimneysWyrmstooth.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Farmhouse Chimneys SE\\"
+      },
+      {
+        "filename": "FarmhouseChimneysGraniteHill.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Farmhouse Chimneys SE\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] iWant Patches Merged",
+    "filename": "iWant Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "LegacyoftheDragonborn.esm",
+      "Wyrmstooth.esp",
+      "Falskaar.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "RealisticNeedsandDiseases.esp",
+      "iWant RND for CACO.esp",
+      "SkyTEST-RealisticAnimals&Predators.esp",
+      "Sacrosanct - Vampires of Skyrim.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "iWant RND for CACO with Falskaar.esp",
+      "iWant RND for CACO with Hearthfire Wells.esp",
+      "iWant RND for CACO with Lexy's LOTD.esp",
+      "iWant RND for CACO with Sacrosanct - Vampires of Skyrim.esp",
+      "iWant RND for CACO with SkyTEST - Realistic Animals and Predators.esp",
+      "iWant RND for CACO with Wyrmstooth.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:36:52.490Z",
+    "plugins": [
+      {
+        "filename": "iWant RND for CACO with Falskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      },
+      {
+        "filename": "iWant RND for CACO with Wyrmstooth.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      },
+      {
+        "filename": "iWant RND for CACO with Hearthfire Wells.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      },
+      {
+        "filename": "iWant RND for CACO with SkyTEST - Realistic Animals and Predators.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      },
+      {
+        "filename": "iWant RND for CACO with Sacrosanct - Vampires of Skyrim.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      },
+      {
+        "filename": "iWant RND for CACO with Lexy's LOTD.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\iWant RND for CACO\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] KIC + RWT Patches Merged",
+    "filename": "KIC + RWT Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Falskaar.esm",
+      "RealisticWaterTwo.esp",
+      "Oakwood.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "Keep It Clean.esp",
+      "Wyrmstooth.esp",
+      "Landscape Fixes For Grass Mods.esp",
+      "Keep It Clean - Falskaar patch.esp",
+      "CACO_Keep It Clean.esp",
+      "YOT - Keep it Clean.esp",
+      "Oakwood - Realistic Water Two 2.0.0 Patch.esp",
+      "RealisticWaterTwo - Falskaar.esp",
+      "RealisticWaterTwo - Waves - Falskaar.esp",
+      "RealisticWaterTwo - Waves - Wyrmstooth.esp",
+      "Realistic Water Two - Landscape For Grass Mods Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:37:47.741Z",
+    "plugins": [
+      {
+        "filename": "Keep It Clean - Falskaar patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Keep It Clean - A Bathing mod\\"
+      },
+      {
+        "filename": "CACO_Keep It Clean.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Keep It Clean - A Bathing mod\\"
+      },
+      {
+        "filename": "YOT - Keep it Clean.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Keep It Clean - A Bathing mod\\"
+      },
+      {
+        "filename": "Oakwood - Realistic Water Two 2.0.0 Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Oakwood Patch v1.0\\"
+      },
+      {
+        "filename": "RealisticWaterTwo - Falskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Realistic Water Two - Falskaar Patch v1.0\\"
+      },
+      {
+        "filename": "RealisticWaterTwo - Waves - Falskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Realistic Water Two - Falskaar Patch v1.0\\"
+      },
+      {
+        "filename": "RealisticWaterTwo - Waves - Wyrmstooth.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Wyrmstooth Patch v1.0\\"
+      },
+      {
+        "filename": "Realistic Water Two - Landscape For Grass Mods Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes for Grass Mods Patch v1.0\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Landscape Fixes For Grass Patches Merged",
+    "filename": "Landscape Fixes For Grass Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "LegacyoftheDragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Oakwood.esp",
+      "Shor's Stone.esp",
+      "Ivarstead.esp",
+      "Rorikstead.esp",
+      "Dragon Bridge.esp",
+      "Provincial Courier Service.esp",
+      "DBM_RelicHunter.esp",
+      "Alternate Start - Live Another Life.esp",
+      "MoonAndStar_MAS.esp",
+      "Helgen Reborn.esp",
+      "Cutting Room Floor.esp",
+      "Landscape Fixes For Grass Mods.esp",
+      "Landscape Fixes For Grass mods - Cutting Room Floor Locations.esp",
+      "Landscape For Grass mods - Helgen Reborn Patch.esp",
+      "Landscape For Grass Mods - Moon and Star PATCH.esp",
+      "Landscape Fixes For Grass mods - Alternate start Locations.esp",
+      "RelicHunter_Grass_Patch.esp",
+      "Landscape For Grass Mods -Immersive Citizens PATCH.esp",
+      "Landscape For Grass Mods -Provincial Courier PATCH.esp",
+      "Landscape For Grass Mods - Arthmoor's Dragon Bridge PATCH.esp",
+      "Landscape For Grass Mods - Arthmoor's Rorikstead PATCH.esp",
+      "Landscape For Grass Mods - Arthmoor's Ivarstead PATCH.esp",
+      "Landscape For Grass Mods Arthmoor's Shor's Stone PATCH.esp",
+      "Landscape For Grass Mods - Oakwood PATCH.esp",
+      "Landscape For Grass Mods - Military Camps.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:39:11.364Z",
+    "plugins": [
+      {
+        "filename": "Landscape Fixes For Grass mods - Cutting Room Floor Locations.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass mods - Helgen Reborn Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patch for Helgen Reborn\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Moon and Star PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patch for Moon and Star\\"
+      },
+      {
+        "filename": "Landscape Fixes For Grass mods - Alternate start Locations.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "RelicHunter_Grass_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RelicHunter_Grass_Patch\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods -Immersive Citizens PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Immersive Citizens v0.4 Patch\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods -Provincial Courier PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Arthmoor's Dragon Bridge PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Arthmoor's Rorikstead PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Arthmoor's Ivarstead PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods Arthmoor's Shor's Stone PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Oakwood PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - Patches for Arthmoor's Town add-ons\\"
+      },
+      {
+        "filename": "Landscape For Grass Mods - Military Camps.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Landscape Fixes - z Vanilla Military Camps\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Miscellaneous Merged",
+    "filename": "Miscellaneous Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "LegacyoftheDragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Campfire.esm",
+      "BGCollectables.esp",
+      "Cutting Room Floor.esp",
+      "Apocalypse - Magic of Skyrim.esp",
+      "Frostfall.esp",
+      "The Brotherhood of Old.esp",
+      "SkyrimSewers.esp",
+      "Raven Rock - Fix Exit on Horseback.esp",
+      "CT_AskToShowRoom.esp",
+      "GoOnAhead.esp",
+      "ORM-Arvak.esp",
+      "Cinematic Dragon Soul Absorbtion.esp",
+      "True Scholar.esp",
+      "YOT - True Scholar.esp",
+      "InnRoomCosts.esp",
+      "QuickLight.esp",
+      "SJG Quick Light Patch.esp",
+      "PumpingIron.esp",
+      "TBoO & SS Patch.esp",
+      "SSoB.esp",
+      "Don'tTalkWithYourMouthFull.esp",
+      "dD-No Spinning Death Animation Merged.esp",
+      "Frostfall Vampire Fix.esp",
+      "SpellTomeLevel.esp",
+      "SpellTomeLevel-apocalypse.esp",
+      "Display Spell Scroll Level.esp",
+      "Display Spell Scroll Level - Apocalypse.esp",
+      "Miscellaneous Merge Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:40:36.007Z",
+    "plugins": [
+      {
+        "filename": "Raven Rock - Fix Exit on Horseback.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Raven Rock - Fix Exit on Horseback\\"
+      },
+      {
+        "filename": "CT_AskToShowRoom.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Ask Innkeepers To Show Room SE\\"
+      },
+      {
+        "filename": "GoOnAhead.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Go On Ahead\\"
+      },
+      {
+        "filename": "ORM-Arvak.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Dawnguard Rewritten - Arvak\\",
+        "hash": "0cddb41d715474e899033a0b4040ec16"
+      },
+      {
+        "filename": "Cinematic Dragon Soul Absorbtion.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Cinematic Dragon Soul Absorbtion\\"
+      },
+      {
+        "filename": "True Scholar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\The Eloquent Reader - True Scholar SE Edition\\"
+      },
+      {
+        "filename": "YOT - True Scholar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "InnRoomCosts.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Inn Room Costs\\"
+      },
+      {
+        "filename": "QuickLight.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Quick Light SE\\"
+      },
+      {
+        "filename": "SJG Quick Light Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\(SJG) Quick Light Patch\\"
+      },
+      {
+        "filename": "PumpingIron.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Pumping Iron - Dynamic Muscle Growth\\"
+      },
+      {
+        "filename": "TBoO & SS Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Compatibility patch for Brotherhood of Old and Skyrim sewer\\"
+      },
+      {
+        "filename": "SSoB.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Stackable Stones of Barenziah with Optional Quest Markers\\"
+      },
+      {
+        "filename": "Don'tTalkWithYourMouthFull.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Don't Talk With Your Mouth Full\\"
+      },
+      {
+        "filename": "dD-No Spinning Death Animation Merged.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\No Spinning Death Animation\\"
+      },
+      {
+        "filename": "Frostfall Vampire Fix.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Frostfall Vampire Fix\\"
+      },
+      {
+        "filename": "SpellTomeLevel.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Display Spell Tome Level\\"
+      },
+      {
+        "filename": "SpellTomeLevel-apocalypse.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Display Spell Tome Level - Magic Mod Add-ons\\"
+      },
+      {
+        "filename": "Display Spell Scroll Level.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Display Spell Scroll Level\\"
+      },
+      {
+        "filename": "Display Spell Scroll Level - Apocalypse.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Display Spell Scroll Level - Apocalypse\\"
+      },
+      {
+        "filename": "Miscellaneous Merge Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Miscellaneous Merge Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] MLU Patches Merged",
+    "filename": "MLU Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "LegacyoftheDragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Audio Overhaul Skyrim.esp",
+      "Complete Crafting Overhaul_Remastered.esp",
+      "Lore Weapon Expansion.esp",
+      "Inigo.esp",
+      "WACCF_Armor and Clothing Extension.esp",
+      "OBIS SE.esp",
+      "Skyrim Immersive Creatures Special Edition.esp",
+      "Weapons Armor Clothing & Clutter Fixes.esp",
+      "imp_helm_legend.esp",
+      "aMidianBorn_ContentAddon.esp",
+      "Immersive Sounds - Compendium.esp",
+      "PrvtIRoyalArmory.esp",
+      "ZIA_Complete Pack.esp",
+      "Summermyst - Enchantments of Skyrim.esp",
+      "Skyrim Revamped - Complete Enemy Overhaul.esp",
+      "Hothtrooper44_ArmorCompilation.esp",
+      "MLU.esp",
+      "MLU - Immersive Armors.esp",
+      "OMEGA Summermyst SRCEO Patch.esp",
+      "MLU_RoyalArmory_patch.esp",
+      "OMEGA ZIA MLU Patch.esp",
+      "OMEGA ZIA MLU ISC Patch.esp",
+      "imp_helm_legend_WACCF_AMB_Patch.esp",
+      "OMEGA MLU Improved Closefaced Helmets.esp",
+      "OMEGA SRCEO MLU Patch.esp",
+      "OMEGA SJ's SIC and OBIS Patch.esp",
+      "OMEGA WACCF ACE SRCEO Patch.esp",
+      "OMEGA SRCEO ME Patch.esp",
+      "MLU - Inigo.esp",
+      "OMEGA - Lore Weapon Expansion.esp",
+      "MLU - AmidianBorn Content Addon Patch.esp",
+      "MLU Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:49:52.318Z",
+    "plugins": [
+      {
+        "filename": "MLU - Immersive Armors.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\MLU - Immersive Armors\\"
+      },
+      {
+        "filename": "OMEGA Summermyst SRCEO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "MLU_RoyalArmory_patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\MLU Community Patches - Royal Armory\\"
+      },
+      {
+        "filename": "OMEGA ZIA MLU Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA ZIA MLU ISC Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "imp_helm_legend_WACCF_AMB_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Improved Closefaced Helmets __ WACCF-AMB\\"
+      },
+      {
+        "filename": "OMEGA MLU Improved Closefaced Helmets.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA SRCEO MLU Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA SJ's SIC and OBIS Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA WACCF ACE SRCEO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA SRCEO ME Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "MLU - Inigo.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\MLU ESL - Inigo\\"
+      },
+      {
+        "filename": "OMEGA - Lore Weapon Expansion.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA - Lore Weapon Expansion Patch\\"
+      },
+      {
+        "filename": "MLU - AmidianBorn Content Addon Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\MLU - AmidianBorn Content Addon\\"
+      },
+      {
+        "filename": "MLU Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA MLU Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] MLOS Patches Merged",
+    "filename": "MLOS Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Whistling Mine.esp",
+      "Soljund's Sinkhole.esp",
+      "Helarchen Creek.esp",
+      "Kynesgrove.esp",
+      "Darkwater Crossing.esp",
+      "Oakwood.esp",
+      "Karthwasten.esp",
+      "Medieval Lanterns of Skyrim.esp",
+      "Medieval Lanterns of Skyrim - ARTH Karthwasten Patch.esp",
+      "Medieval Lanterns of Skyrim - ARTH Oakwood.esp",
+      "Medieval Lanterns of Skyrim - ARTH Darkwater Crossing Patch.esp",
+      "Medieval Lanterns of Skyrim - ARTH Kynesgrove Patch.esp",
+      "Medieval Lanterns of Skyrim - ARTH Helarchen Creek.esp",
+      "Medieval Lanterns of Skyrim - ARTH Soljunds Sinkhole.esp",
+      "Medieval Lanterns of Skyrim - ARTH Whistling Mine Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:41:54.909Z",
+    "plugins": [
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Karthwasten Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Oakwood.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Darkwater Crossing Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Kynesgrove Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Helarchen Creek.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Soljunds Sinkhole.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      },
+      {
+        "filename": "Medieval Lanterns of Skyrim - ARTH Whistling Mine Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Medieval Lanterns of Skyrim - Arthmoor Villages Multi Patcher\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] No Snow Under The Roof Merged",
+    "filename": "NSUTR - Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Whistling Mine.esp",
+      "Helarchen Creek.esp",
+      "Dawnstar.esp",
+      "Cutting Room Floor.esp",
+      "Prometheus_No_snow_Under_the_roof.esp",
+      "Better Dynamic Snow.esp",
+      "Better Dynamic Snow - NSUTR Patch.esp",
+      "NSUTR_bugfixes.esp",
+      "NSUTR_groundsnow_mesh_fixes.esp",
+      "NSUTR_improvements.esp",
+      "NSUTR_Static_fix.esp",
+      "No Snow Under The Roof - CRF Patch.esp",
+      "Dawnstar_No Snow Under the Roof_Patch.esp",
+      "Helarchen Creek - No Snow Under the Roof.esp",
+      "Whistling Mine - No Snow Under the Roof.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T17:50:55.987Z",
+    "plugins": [
+      {
+        "filename": "Better Dynamic Snow - NSUTR Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Better Dynamic Snow SE\\"
+      },
+      {
+        "filename": "NSUTR_bugfixes.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\No snow under the roof - Bug fixes v1.4\\"
+      },
+      {
+        "filename": "NSUTR_groundsnow_mesh_fixes.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\No snow under the roof - Bug fixes v1.4\\"
+      },
+      {
+        "filename": "NSUTR_improvements.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\No snow under the roof - Bug fixes v1.4\\"
+      },
+      {
+        "filename": "NSUTR_Static_fix.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\NSUTR_Bug_fixes-static_objects_hotfixes\\"
+      },
+      {
+        "filename": "No Snow Under The Roof - CRF Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Cutting Room Floor - No Snow Under the Roof SE\\"
+      },
+      {
+        "filename": "Dawnstar_No Snow Under the Roof_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Dawnstar - No Snow Under the Roof\\"
+      },
+      {
+        "filename": "Helarchen Creek - No Snow Under the Roof.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Helarchen Creek - No Snow Under the Roof\\"
+      },
+      {
+        "filename": "Whistling Mine - No Snow Under the Roof.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Whistling Mine - No Snow Under the Roof\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] OMEGA CACO Patches Merged",
+    "filename": "OMEGA CACO Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "LegacyoftheDragonborn.esm",
+      "3DNPC.esp",
+      "Wyrmstooth.esp",
+      "Gray Fox Cowl.esm",
+      "Falskaar.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "RealisticNeedsandDiseases.esp",
+      "Relationship Dialogue Overhaul.esp",
+      "Ordinator - Perks of Skyrim.esp",
+      "Weapons Armor Clothing & Clutter Fixes.esp",
+      "SkyTEST-RealisticAnimals&Predators.esp",
+      "Skyrim Immersive Creatures Special Edition.esp",
+      "Sacrosanct - Vampires of Skyrim.esp",
+      "Predator Vision.esp",
+      "Complete Crafting Overhaul_Remastered.esp",
+      "moonpath.esp",
+      "Inigo.esp",
+      "Audio Overhaul Skyrim.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "MLU.esp",
+      "CACO_USSEP_Patch.esp",
+      "OMEGA AOS CACO Patch.esp",
+      "CACO_Falskaar_Patch.esp",
+      "CACO_GrayCowl_Patch.esp",
+      "Inigo_CACO_Patch.esp",
+      "CACO_Moonpath_Patch.esp",
+      "OMEGA MLU CACO Patch.esp",
+      "Complete Alchemy & Cooking Overhaul_CCOR_Patch.esp",
+      "Predator Vision_CACO_Patch.esp",
+      "OMEGA Sacrosanct CACO Patch.esp",
+      "OMEGA SIC CACO Patch.esp",
+      "OMEGA SkyTEST CACO Patch.esp",
+      "OMEGA SRCEO CACO Patch.esp",
+      "OMEGA WACCF CACO Patch.esp",
+      "CACO_Ordinator_Patch.esp",
+      "CACO_Wyrmstooth_Patch.esp",
+      "Qw_CACO_3DNPC Patch.esp",
+      "Qw_CACO_RDO Patch.esp",
+      "OMEGA Lexy LOTD CACO Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:02:52.450Z",
+    "plugins": [
+      {
+        "filename": "CACO_USSEP_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Unofficial Skyrim Special Edition Patch __ CACO\\"
+      },
+      {
+        "filename": "OMEGA AOS CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\CACO Patches\\"
+      },
+      {
+        "filename": "CACO_Falskaar_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Falskaar __ CACO\\"
+      },
+      {
+        "filename": "CACO_GrayCowl_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Gray Cowl Nocturnal __ CACO\\"
+      },
+      {
+        "filename": "Inigo_CACO_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Inigo __ CACO\\"
+      },
+      {
+        "filename": "CACO_Moonpath_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Moonpath __ CACO\\"
+      },
+      {
+        "filename": "OMEGA MLU CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "Complete Alchemy & Cooking Overhaul_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Complete Alchemy and Cooking Overhaul\\"
+      },
+      {
+        "filename": "Predator Vision_CACO_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Predator Vision __ CACO\\"
+      },
+      {
+        "filename": "OMEGA Sacrosanct CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA SIC CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\CACO Patches\\"
+      },
+      {
+        "filename": "OMEGA SkyTEST CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA SRCEO CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA -SRCEO CACO Patch\\"
+      },
+      {
+        "filename": "OMEGA WACCF CACO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "CACO_Ordinator_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Ordinator __ CACO\\"
+      },
+      {
+        "filename": "CACO_Wyrmstooth_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Wyrmstooth __ CACO\\"
+      },
+      {
+        "filename": "Qw_CACO_3DNPC Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\QUASIPC - Unified Patch Compendium\\"
+      },
+      {
+        "filename": "Qw_CACO_RDO Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\QUASIPC - Unified Patch Compendium\\"
+      },
+      {
+        "filename": "OMEGA Lexy LOTD CACO Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Lexy LOTD CACO Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Pre Bash Merged",
+    "filename": "Pre Bash Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "3DNPC.esp",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Wyrmstooth.esp",
+      "ETaC - RESOURCES.esm",
+      "Falskaar.esm",
+      "LegacyoftheDragonborn.esm",
+      "RealisticWaterTwo.esp",
+      "Helgen Reborn.esp",
+      "GIST soul trap.esp",
+      "Better Dynamic Snow.esp",
+      "Oakwood.esp",
+      "Whistling Mine.esp",
+      "Soljund's Sinkhole.esp",
+      "Shor's Stone.esp",
+      "Keld-Nar.esp",
+      "Karthwasten.esp",
+      "Helarchen Creek.esp",
+      "Fall of Granite Hill.esp",
+      "Darkwater Crossing.esp",
+      "Missives.esp",
+      "Missives - Solstheim.esp",
+      "Missives - Falskaar Patch.esp",
+      "Immersive Sounds - Compendium.esp",
+      "Moonlight Tales Special Edition.esp",
+      "Skyrim Immersive Creatures Special Edition.esp",
+      "Weapons Armor Clothing & Clutter Fixes.esp",
+      "imp_helm_legend.esp",
+      "MLU.esp",
+      "dD - Enhanced Blood Main.esp",
+      "dD-Short Script Range.esp",
+      "OMEGA - True Soldiers.esp",
+      "Lethal Traps.esp",
+      "SIC - ICH Patch.esp",
+      "Moonlight Tales - Werebear Form Bug Fix Patch.esp",
+      "EBT - IC PATCH.esp",
+      "OMEGA CE.esp",
+      "OMEGA CE Immersive Sounds Compendium.esp",
+      "TMBVanillaArmorandClothes.esp",
+      "Missive - Experience Patch.esp",
+      "More DBM Shipping Crates.esp",
+      "Arthmoor DBM Shipping Crates.esp",
+      "LOTD shipment crates patch.esp",
+      "Better Dynamic Ash.esp",
+      "ETaC - Better Dynamic Snow Patch.esp",
+      "Companions - Don't be a Milk Drinker (Farkas only option).esp",
+      "RUSTIC SOULGEMS - Unsorted - ESL - GIST.esp",
+      "JS Dragon Claws - Helgen Reborn Patch.esp",
+      "JS Dragon Claws - Wyrmstooth Patch.esp",
+      "3DNPC Imperious Patch.esp",
+      "SIC_Nimhe_Patch.esp",
+      "GDOS - Glorious Solitude Door - Rotation Fix.esp",
+      "GDOS - Splendid Mechanized Dwemer Door.esp",
+      "SolitudeTempleFrescoesBig.esp",
+      "Pre Bash - Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:06:43.733Z",
+    "plugins": [
+      {
+        "filename": "dD-Short Script Range.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Enhanced Blood Textures\\",
+        "hash": "becab781de5bd37164a8a3b1ab7f5b50"
+      },
+      {
+        "filename": "OMEGA - True Soldiers.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA - True Soldiers\\"
+      },
+      {
+        "filename": "Lethal Traps.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lethal Traps\\"
+      },
+      {
+        "filename": "SIC - ICH Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Skyrim Immersive Creatures - SIC and ICH patch\\"
+      },
+      {
+        "filename": "Moonlight Tales - Werebear Form Bug Fix Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Moonlight Tales - Werebear Form Bug Fix Patch\\"
+      },
+      {
+        "filename": "EBT - IC PATCH.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Enhanced Blood Textures\\",
+        "hash": "0200912e94670e139fc70ba797f1107e"
+      },
+      {
+        "filename": "OMEGA CE.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "OMEGA CE Immersive Sounds Compendium.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\OMEGA Updated AIO\\"
+      },
+      {
+        "filename": "TMBVanillaArmorandClothes.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\TMB Vanilla Armors and Clothes SSE\\"
+      },
+      {
+        "filename": "Missive - Experience Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Missives - Experience Patch\\"
+      },
+      {
+        "filename": "More DBM Shipping Crates.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\More DBM Shipping Crates\\"
+      },
+      {
+        "filename": "Arthmoor DBM Shipping Crates.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Arthmoor DBM Shipping Crates\\"
+      },
+      {
+        "filename": "LOTD shipment crates patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\LOTD Museum Shipment Crates Patch\\"
+      },
+      {
+        "filename": "Better Dynamic Ash.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Better Dynamic Ash SE\\"
+      },
+      {
+        "filename": "ETaC - Better Dynamic Snow Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Expanded Towns and Cities SE Version\\"
+      },
+      {
+        "filename": "Companions - Don't be a Milk Drinker (Farkas only option).esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\The Companions - Don't be a Milk Drinker\\"
+      },
+      {
+        "filename": "RUSTIC SOULGEMS - Unsorted - ESL - GIST.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RUSTIC SOUL GEMS\\"
+      },
+      {
+        "filename": "JS Dragon Claws - Helgen Reborn Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\JS Dragon Claws - Helgen Reborn Patch\\"
+      },
+      {
+        "filename": "JS Dragon Claws - Wyrmstooth Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\JS Dragon Claws - Wyrmstooth Patch\\"
+      },
+      {
+        "filename": "3DNPC Imperious Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Interesting NPC's Imperious Patch\\"
+      },
+      {
+        "filename": "SIC_Nimhe_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\SIC Nimhe Patch\\"
+      },
+      {
+        "filename": "GDOS - Glorious Solitude Door - Rotation Fix.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Glorious Doors of Skyrim (GDOS) - 2k\\",
+        "hash": "1daa4e8946a4898c696636bbe0c96c82"
+      },
+      {
+        "filename": "GDOS - Splendid Mechanized Dwemer Door.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Glorious Doors of Skyrim (GDOS) - 2k\\",
+        "hash": "70d0a8bef4d119de0775bd94af3e5127"
+      },
+      {
+        "filename": "SolitudeTempleFrescoesBig.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Solitude and Temple Frescoes SSE\\"
+      },
+      {
+        "filename": "Pre Bash - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Pre Bash Consistency Patch\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] RS Children Patches Merged",
+    "filename": "RS Children Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Falskaar.esm",
+      "3DNPC.esp",
+      "RSkyrimChildren.esm",
+      "Wyrmstooth.esp",
+      "ETaC - RESOURCES.esm",
+      "Oakwood.esp",
+      "Keld-Nar.esp",
+      "Helgen Reborn.esp",
+      "MoonAndStar_MAS.esp",
+      "ForgottenCity.esp",
+      "Cutting Room Floor.esp",
+      "BooksOfSkyrim.esp",
+      "ETaC - Riverwood.esp",
+      "RSC 3DNPC Patch.esp",
+      "RSC BoS Patch.esp",
+      "RSC CRF Patch.esp",
+      "RSC Falskaar Patch.esp",
+      "RSC Forgotten City Patch.esp",
+      "RSC HR Patch.esp",
+      "RSC MoonAndStar Patch.esp",
+      "RSC Keld-Nar Patch.esp",
+      "ARTHOakwood_RSChildrenPatch.esp",
+      "RSC ETaC RW Patch.esp",
+      "RSC WT Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:08:17.282Z",
+    "plugins": [
+      {
+        "filename": "RSC 3DNPC Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC BoS Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC CRF Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC Falskaar Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC Forgotten City Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC HR Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC MoonAndStar Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC Keld-Nar Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "ARTHOakwood_RSChildrenPatch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      },
+      {
+        "filename": "RSC ETaC RW Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Expanded Towns and Cities SE Version\\"
+      },
+      {
+        "filename": "RSC WT Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\RS Children Patch Compendium\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Snazzy Overhaul Patches Merged",
+    "filename": "Snazzy Overhaul Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "3DNPC.esp",
+      "Falskaar.esm",
+      "Wyrmstooth.esp",
+      "LegacyoftheDragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Helgen Reborn.esp",
+      "Soljund's Sinkhole.esp",
+      "Shor's Stone.esp",
+      "Whistling Mine.esp",
+      "Kynesgrove.esp",
+      "Karthwasten.esp",
+      "Darkwater Crossing.esp",
+      "Immersive Citizens - AI Overhaul.esp",
+      "EnhancedLightsandFX.esp",
+      "Cutting Room Floor.esp",
+      "Alternate Start - Live Another Life.esp",
+      "Snazzy Furniture and Clutter Overhaul.esp",
+      "OCW_Obscure's_CollegeofWinterhold.esp",
+      "OCW_SFCO_FEPatch.esp",
+      "SFCO - CRF Patch.esp",
+      "SFCO - 3DNPC Patch.esp",
+      "SFCO - ELFX Patch.esp",
+      "SFCO - Alternate Start Patch.esp",
+      "SFCO - Immersive Citizens Patch.esp",
+      "SFCO - Arthmoor's Villages Patch.esp",
+      "SFCO - Falskaar Patch.esp",
+      "SFCO - Helgen Reborn Patch.esp",
+      "SFCO - Wyrmstooth Patch.esp",
+      "SFCO - LotD Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:09:34.692Z",
+    "plugins": [
+      {
+        "filename": "OCW_SFCO_FEPatch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Obscure's College of Winterhold\\"
+      },
+      {
+        "filename": "SFCO - CRF Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - 3DNPC Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - ELFX Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Alternate Start Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Immersive Citizens Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Arthmoor's Villages Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Falskaar Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Helgen Reborn Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - Wyrmstooth Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      },
+      {
+        "filename": "SFCO - LotD Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Snazzy Furniture and Clutter Overhaul SE - Patches\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Trivial Smelters of Skyrim Merged",
+    "filename": "Trivial Smelters of Skyrim Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Trivial Smelters Falkreath.esp",
+      "Trivial Smelters Granite Hill.esp",
+      "Trivial Smelters Riften.esp",
+      "Trivial Smelters Rorikstead.esp",
+      "Trivial Smelters Morthal 3DNPC.esp",
+      "Trivial Smelters Solitude.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:10:03.030Z",
+    "plugins": [
+      {
+        "filename": "Trivial Smelters Falkreath.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      },
+      {
+        "filename": "Trivial Smelters Granite Hill.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      },
+      {
+        "filename": "Trivial Smelters Riften.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      },
+      {
+        "filename": "Trivial Smelters Rorikstead.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      },
+      {
+        "filename": "Trivial Smelters Morthal 3DNPC.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      },
+      {
+        "filename": "Trivial Smelters Solitude.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Trivial Smelters of Skyrim\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] Weapons & Armours Merged",
+    "filename": "Weapons Armours Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "Immersive Sounds - Compendium.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "Audio Overhaul Skyrim.esp",
+      "Weapons Armor Clothing & Clutter Fixes.esp",
+      "Complete Crafting Overhaul_Remastered.esp",
+      "SparklesSE.esp",
+      "Faction Crossbows.esp",
+      "Faction Crossbows_CCOR_Patch.esp",
+      "Faction Crossbows - Consistency Patch.esp",
+      "BlackSacramentArmor.esp",
+      "Black Sacrament Armor - Consistency Patch.esp",
+      "LustmordVampireArmor.esp",
+      "Lustmord Vampire Armor - Consistency Patch.esp",
+      "Northgirl.esp",
+      "NorthGirl Armor - Consistency Patch.esp",
+      "RogueArmorHD.esp",
+      "Rogue Armor HD - Consistency Patch.esp",
+      "ScoutArmor.esp",
+      "Scout Armor - Consistency Patch.esp",
+      "El_WayfarersCoatSSE.esp",
+      "El_WayfarersCoatSSE_CCOR_Patch.esp",
+      "Wayfarers Coat SSE - Consistency Patch.esp",
+      "TalosHousecarl.esp",
+      "TalosHousecarl - Consistency Patch.esp",
+      "Volkihar Knight.esp",
+      "Volkihar Knight - Consistency Patch.esp",
+      "Silver_Arrows.esp",
+      "Silver Arrows - Projectile Speed Fix.esp",
+      "Silver Arrows - Consistency Patch.esp",
+      "AmuletsShowOnEverything.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:11:11.445Z",
+    "plugins": [
+      {
+        "filename": "SparklesSE.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Improved Weapon Impact EFFECTS Correct Metal SE\\"
+      },
+      {
+        "filename": "Faction Crossbows.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Faction Crossbows SE\\"
+      },
+      {
+        "filename": "Faction Crossbows_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Faction Crossbows __ CCOR\\"
+      },
+      {
+        "filename": "Faction Crossbows - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "BlackSacramentArmor.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Black Sacrament Armor\\"
+      },
+      {
+        "filename": "Black Sacrament Armor - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "LustmordVampireArmor.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lustmord Vampire Armour SSE\\"
+      },
+      {
+        "filename": "Lustmord Vampire Armor - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "Northgirl.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Northgirl Armor UNP - SSE\\"
+      },
+      {
+        "filename": "NorthGirl Armor - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "RogueArmorHD.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\UNP Rogue Armor for SE\\"
+      },
+      {
+        "filename": "Rogue Armor HD - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "ScoutArmor.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Scout Armor SE\\"
+      },
+      {
+        "filename": "Scout Armor - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "El_WayfarersCoatSSE.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Wayfarer's Coat\\"
+      },
+      {
+        "filename": "El_WayfarersCoatSSE_CCOR_Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Wayfarers Coat __ CCOR\\"
+      },
+      {
+        "filename": "Wayfarers Coat SSE - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "TalosHousecarl.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Talos Housecarl Armor Pack\\"
+      },
+      {
+        "filename": "TalosHousecarl - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "Volkihar Knight.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Volkihar Knight - Vampire Armor\\"
+      },
+      {
+        "filename": "Volkihar Knight - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "Silver_Arrows.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Silver Arrows\\"
+      },
+      {
+        "filename": "Silver Arrows - Projectile Speed Fix.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Silver Arrows - Projectile Speed Fix\\"
+      },
+      {
+        "filename": "Silver Arrows - Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Lexy's LOTD Consistency Patches - Weapons and Armour Merge\\"
+      },
+      {
+        "filename": "AmuletsShowOnEverything.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\QUARK - Qwinn's Ultimate Amulet Restoration Kit\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] World Encounter Addon Patches Merged",
+    "filename": "World Encounter Addon Patches Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dragonborn.esm",
+      "Falskaar.esm",
+      "Gray Fox Cowl.esm",
+      "moonpath.esp",
+      "Gray Cowl of Nocturnal - Delayed Start.esp",
+      "Gray Cowl of Nocturnal - Unofficial Patch.esp",
+      "Falskaar - Boat Location.esp",
+      "Falskaar - Unique Region Names.esp",
+      "Falskaar - Bug Fixes.esp",
+      "Moonpath Music - Sky and Lighting fix - merged.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:11:56.102Z",
+    "plugins": [
+      {
+        "filename": "Gray Cowl of Nocturnal - Delayed Start.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\The Gray Cowl of Nocturnal SE - Addons and Patches\\"
+      },
+      {
+        "filename": "Gray Cowl of Nocturnal - Unofficial Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\The Gray Cowl of Nocturnal SE - Addons and Patches\\"
+      },
+      {
+        "filename": "Falskaar - Boat Location.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Falskaar - Addons and Patches\\"
+      },
+      {
+        "filename": "Falskaar - Unique Region Names.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Falskaar - Addons and Patches\\"
+      },
+      {
+        "filename": "Falskaar - Bug Fixes.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Falskaar - Addons and Patches\\"
+      },
+      {
+        "filename": "Moonpath Music - Sky and Lighting fix - merged.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\Moonpath to Elsweyr Sky and Lightning fix\\"
+      }
+    ]
+  },
+  {
+    "name": "[Merge] YOT - Your Own Thoughts Merged",
+    "filename": "YOT - Your Own Thoughts Merged.esp",
+    "method": "Clobber",
+    "loadOrder": [
+      "Skyrim.esm",
+      "Update.esm",
+      "Dawnguard.esm",
+      "HearthFires.esm",
+      "Dragonborn.esm",
+      "Wyrmstooth.esp",
+      "LegacyoftheDragonborn.esm",
+      "Gray Fox Cowl.esm",
+      "3DNPC.esp",
+      "Falskaar.esm",
+      "Campfire.esm",
+      "Unofficial Skyrim Special Edition Patch.esp",
+      "OMEGA Enai Patch - no Nomadic Heritage.esp",
+      "Complete Alchemy & Cooking Overhaul.esp",
+      "Wildcat - Combat of Skyrim.esp",
+      "Summermyst - Enchantments of Skyrim.esp",
+      "Provincial Courier Service.esp",
+      "Sacrosanct - Vampires of Skyrim.esp",
+      "Thunderchild - Epic Shout Package.esp",
+      "Lock_Overhaul.esp",
+      "Imperious - Races of Skyrim.esp",
+      "Helgen Reborn.esp",
+      "Cutting Room Floor.esp",
+      "Convenient Horses.esp",
+      "Ordinator - Perks of Skyrim.esp",
+      "Apocalypse - Ordinator Compatibility Patch.esp",
+      "Apocalypse - Magic of Skyrim.esp",
+      "Moonlight Tales Special Edition.esp",
+      "Frostfall.esp",
+      "Andromeda - Unique Standing Stones of Skyrim.esp",
+      "OCW_Obscure's_CollegeofWinterhold.esp",
+      "YOT - Your Own Thoughts.esp",
+      "YOT - Frostfall Module.esp",
+      "YOT - Moonlight Tales Overhaul.esp",
+      "YOT - OCW.esp",
+      "YOT - Andromeda.esp",
+      "YOT - Apocalypse.esp",
+      "YOT - Convenient Horses.esp",
+      "YOT - Cutting Room Floor.esp",
+      "YOT - Falskaar.esp",
+      "YOT - Helgen Reborn.esp",
+      "YOT - Imperious.esp",
+      "YOT - Interesting NPCs.esp",
+      "YOT - Lock Overhaul.esp",
+      "YOT - Thunderchild.esp",
+      "YOT - Ordinator.esp",
+      "YOT - PCS.esp",
+      "YOT - Sacrosanct.esp",
+      "YOT - Summermyst.esp",
+      "YOT - Wildcat.esp",
+      "YOT - Gray Fox.esp",
+      "YOT - LOTD5.esp",
+      "YOT - Wyrmstooth.esp",
+      "YOT - Your Own Thoughts Consistency Patch.esp"
+    ],
+    "archiveAction": "Extract",
+    "buildMergedArchive": false,
+    "useGameLoadOrder": true,
+    "handleFaceData": true,
+    "handleVoiceData": true,
+    "handleBillboards": true,
+    "handleStringFiles": true,
+    "handleTranslations": true,
+    "handleIniFiles": true,
+    "handleDialogViews": true,
+    "copyGeneralAssets": false,
+    "dateBuilt": "2020-07-11T18:13:51.749Z",
+    "plugins": [
+      {
+        "filename": "YOT - Your Own Thoughts.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Frostfall Module.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Moonlight Tales Overhaul.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - OCW.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Andromeda.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Apocalypse.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Convenient Horses.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Cutting Room Floor.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Falskaar.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Helgen Reborn.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Imperious.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Interesting NPCs.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Lock Overhaul.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Thunderchild.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Ordinator.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - PCS.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Sacrosanct.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Summermyst.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Wildcat.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Gray Fox.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - LOTD5.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Wyrmstooth.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts SE\\"
+      },
+      {
+        "filename": "YOT - Your Own Thoughts Consistency Patch.esp",
+        "dataFolder": "G:\\ModTools\\ModOrganizer\\mods\\YOT - Your Own Thoughts Consistency Patch\\"
+      }
+    ]
+  }
+]

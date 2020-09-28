@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Skyrim SE Testing",
+    "gameMode": 4,
+    "gamePath": "G:\\Games\\Skyrim",
+    "language": "English"
+  },
+  {
+    "name": "Skyrim SE",
+    "gameMode": 4,
+    "gamePath": "G:\\Games\\Skyrim",
+    "language": "English"
+  },
+  {
+    "name": "New Profile",
+    "gameMode": 3,
+    "gamePath": "",
+    "language": "English"
+  }
+]

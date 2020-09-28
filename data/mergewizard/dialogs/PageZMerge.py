@@ -1,9 +1,12 @@
-from PyQt5.QtCore import QDir, QVariant
+from PyQt5.QtCore import QDir, QVariant, Qt
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QWidget, QComboBox
+from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
 from mergewizard.domain.merge.ZEditConfig import ZEditConfig
+from mergewizard.domain.merge.MergeFile import MergeFile
+from mergewizard.models.MergeFileModel import MergeFileModel
+from mergewizard.widgets.ComboBoxDelegate import ComboBoxDelegate
 from mergewizard.constants import Setting, Icon
 from .ui.PageZMerge import Ui_PageZMerge
 
@@ -27,11 +30,17 @@ class PageZMerge(WizardPage):
         self.ui.pluginNameError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.modNameError.setPixmap(QPixmap(Icon.ERROR))
 
+        # button
+        self.ui.applyButton.setIcon(QIcon(Icon.SAVE))
+        self.ui.launchButton.setIcon(QIcon(Icon.LAUNCH))
+
+        # name panel
         self.ui.modName.setEditable(True)
         self.ui.modName.setInsertPolicy(QComboBox.InsertAtTop)
 
         self.validatePanel()
 
+        # signals
         self.context.settingChanged.connect(self.settingChanged)
         self.ui.zmergeProfile.currentTextChanged.connect(lambda: self.loadMergeNames())
         self.ui.modName.currentTextChanged.connect(lambda: self.loadMergeFile())
@@ -39,6 +48,11 @@ class PageZMerge(WizardPage):
         self.ui.zmergeProfile.currentTextChanged.connect(lambda: self.validateZMergeProfile())
         self.ui.modName.currentTextChanged.connect(lambda: self.validateModName())
         self.ui.pluginName.textChanged.connect(lambda: self.validatePluginName())
+
+        # zMerge Views
+        self.ui.zMergeView.setModel(MergeFileModel())
+        self.ui.zMergeView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.zMergeView.setItemDelegateForColumn(1, ComboBoxDelegate(self))
 
     def initializePage(self):
         self.initializeMOProfileName()

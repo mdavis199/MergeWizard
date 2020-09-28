@@ -2,6 +2,9 @@ from typing import List
 from os import path
 from mergewizard.domain.JSONObject import JSONObject
 
+# REFER: https://github.com/z-edit/zedit/blob/baf117802822f9649568f42f4deebd0a1f21ab22/src/javascripts/Services/merge/mergeService.js#L82
+# for defaults.
+
 
 class PluginFileDesc(JSONObject):
     def __init__(self, filename: str, dataFolder: str, **kwargs):
@@ -22,6 +25,11 @@ class PluginFileDesc(JSONObject):
 
 
 class MergeFile(JSONObject):
+
+    METHOD_VALUES = ["Clobber", "Clean"]
+
+    ARCHIVEACTION_VALUES = ["Extract", "Copy", "Ignore"]
+
     def __hash__(self):
         return self.__hash
 
@@ -42,13 +50,13 @@ class MergeFile(JSONObject):
 
     def __init__(
         self,
-        name,
+        name: str = "",
         filename: str = "",
         method="Clobber",
         loadOrder: List[str] = [],
         archiveAction: str = "Extract",
         buildMergedArchive: bool = False,
-        useGameLoadOrder: bool = True,
+        useGameLoadOrder: bool = False,
         handleFaceData: bool = True,
         handleVoiceData: bool = True,
         handleBillboards: bool = True,

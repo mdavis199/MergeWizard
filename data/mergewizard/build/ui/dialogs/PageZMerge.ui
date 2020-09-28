@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
+    <width>1048</width>
     <height>698</height>
    </rect>
   </property>
@@ -19,34 +19,49 @@
   <property name="subTitle">
    <string>Create or modify a zMerge configuration for the selected plugins.</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="optionsBox">
-     <property name="title">
-      <string>Merge Options</string>
+  <layout class="QVBoxLayout" name="verticalLayout_5">
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QTableView" name="zmergeView"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>136</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+     <widget class="QGroupBox" name="zMergeBox">
+      <property name="title">
+       <string>Merge Configuration</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTreeView" name="zMergeView">
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QGroupBox" name="originalBox">
+      <property name="title">
+       <string>Original Configuration</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTreeView" name="originalZMerge"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QGroupBox" name="configurationBox">
+   <item>
+    <widget class="QFrame" name="configurationBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -56,15 +71,31 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>175</height>
+       <height>203</height>
       </size>
      </property>
-     <property name="title">
-      <string>zMerge Configuration</string>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>203</height>
+      </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QWidget" name="widget_2" native="true">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>136</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
         <property name="minimumSize">
          <size>
           <width>500</width>
@@ -76,6 +107,9 @@
           <width>500</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="title">
+         <string>Profile and Name Selection</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="1" column="0">
@@ -275,46 +309,78 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget" native="true">
+       <widget class="QFrame" name="frame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>250</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QPushButton" name="applyButton">
-           <property name="minimumSize">
-            <size>
-             <width>283</width>
-             <height>23</height>
-            </size>
+          <widget class="QPushButton" name="toggleOriginal">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
            <property name="text">
-            <string>Apply Changes</string>
+            <string>View Origninal Configuration</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="minimumSize">
-            <size>
-             <width>283</width>
-             <height>23</height>
-            </size>
+          <widget class="QPushButton" name="toggleJsonView">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>View Configuration as JSON</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="applyButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Save Changes</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="launchButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
            <property name="text">
             <string>Launch zMerge</string>
            </property>
           </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>63</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>

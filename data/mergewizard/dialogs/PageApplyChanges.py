@@ -34,7 +34,7 @@ class PageApplyChanges(WizardPage):
         if selectedMerge:
             self.ui.selectedGroup.setTitle(self.tr("Selected Plugins: {}").format(selectedMerge))
         else:
-            self.iu.selectedGroup.setTitle(self.tr("Selected Plugins"))
+            self.ui.selectedGroup.setTitle(self.tr("Selected Plugins"))
 
     def isOkToExit(self):
         return True
