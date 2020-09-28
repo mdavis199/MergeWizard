@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import QDir, QFile, QFileInfo, QDirIterator
+from PyQt5.QtCore import QDir, QFile, QFileInfo, QDirIterator, qInfo
 
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
@@ -30,6 +30,11 @@ class PageApplyChanges(WizardPage):
         # this is called whenever the wizard moves forward to this page.
         # We use it to ensure the action widget reflects changes made in the plugin selection
         self.ui.actionWidget.initialize()
+        selectedMerge = self.context.mergeModel.selectedMergeName()
+        if selectedMerge:
+            self.ui.selectedGroup.setTitle(self.tr("Selected Plugins: {}").format(selectedMerge))
+        else:
+            self.iu.selectedGroup.setTitle(self.tr("Selected Plugins"))
 
     def isOkToExit(self):
         return True
