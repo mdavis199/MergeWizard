@@ -51,8 +51,8 @@ class PageZMerge(WizardPage):
 
         # zMerge Views
         self.ui.zMergeView.setModel(MergeFileModel())
-        self.ui.zMergeView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.ui.zMergeView.setItemDelegateForColumn(1, ComboBoxDelegate(self))
+        self.ui.zMergeView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.zMergeView.setItemDelegateForColumn(1, ComboBoxDelegate(6, self))
 
     def initializePage(self):
         self.initializeMOProfileName()

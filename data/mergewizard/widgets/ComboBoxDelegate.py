@@ -1,10 +1,11 @@
-from PyQt5.QtCore import Qt, QObject, QModelIndex, QAbstractItemModel, qInfo
+from PyQt5.QtCore import Qt, QObject, QModelIndex, QAbstractItemModel, QSize
 from PyQt5.QtWidgets import QWidget, QComboBox, QStyleOptionViewItem, QStyledItemDelegate
 
 
 class ComboBoxDelegate(QStyledItemDelegate):
-    def __init__(self, parent: QObject = None):
+    def __init__(self, maxChars: int = 0, parent: QObject = None):
         super().__init__(parent)
+        self._maxChars = maxChars
 
     def createEditor(
         self, parent: QWidget, option: QStyleOptionViewItem, idx: QModelIndex,
@@ -33,3 +34,11 @@ class ComboBoxDelegate(QStyledItemDelegate):
         if not editor.count():
             super().setModelData(editor, model, idx)
         model.setData(idx, editor.currentText(), Qt.EditRole)
+
+    def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex):
+        if self._maxChars == 0:
+            return super().sizeHint(option, idx)
+        textWidth = option.fontMetrics.width("W" * self._maxChars)
+        textHeight = option.fontMetrics.height()
+        return QSize(textWidth, textHeight)
+

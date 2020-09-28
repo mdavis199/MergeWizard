@@ -129,6 +129,8 @@ class MergeFileModel(QAbstractItemModel):
         return 0
 
     def columnCount(self, parent: QModelIndex = QModelIndex()):
+        # For combobox delegates this keeps the drop-down indicators from being very far
+        # from the text. The last column will be completely empty.
         return len(Column) + 1
 
     def index(self, row: int, col: int, parent: QModelIndex = QModelIndex()):
