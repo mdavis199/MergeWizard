@@ -156,7 +156,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Plugins Selected for Merge</string>
+       <string>Selected Plugins</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
