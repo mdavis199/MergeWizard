@@ -45,7 +45,7 @@
           <bool>true</bool>
          </attribute>
          <attribute name="headerMinimumSectionSize">
-          <number>39</number>
+          <number>50</number>
          </attribute>
         </widget>
        </item>
@@ -57,7 +57,14 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QTreeView" name="originalZMerge"/>
+        <widget class="QTreeView" name="originalZMerge">
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -33,7 +33,7 @@ class Ui_PageZMerge(object):
         self.zMergeView.setUniformRowHeights(True)
         self.zMergeView.setObjectName("zMergeView")
         self.zMergeView.header().setCascadingSectionResizes(True)
-        self.zMergeView.header().setMinimumSectionSize(39)
+        self.zMergeView.header().setMinimumSectionSize(50)
         self.verticalLayout.addWidget(self.zMergeView)
         self.originalBox = QtWidgets.QGroupBox(self.splitter)
         self.originalBox.setObjectName("originalBox")
