@@ -183,7 +183,7 @@ class Ui_PagePluginsSelect(object):
         self.pluginGroup.setTitle(_translate("PagePluginsSelect", "Plugin List"))
         self.filterEdit.setPlaceholderText(_translate("PagePluginsSelect", "Filter plugins by name ..."))
         self.filterCount.setText(_translate("PagePluginsSelect", "Filtering: 0/0"))
-        self.pluginSelectionGroup.setTitle(_translate("PagePluginsSelect", "Plugins Selected for Merge"))
+        self.pluginSelectionGroup.setTitle(_translate("PagePluginsSelect", "Selected Plugins"))
         self.progressLabel.setText(_translate("PagePluginsSelect", "Loading data:"))
 from mergewizard.views.PluginView import PluginView
 from mergewizard.widgets.MergeInfoWidget import MergeInfoWidget
