@@ -42,25 +42,38 @@ class PageZMerge(WizardPage):
 
         # signals
         self.context.settingChanged.connect(self.settingChanged)
-        self.ui.zmergeProfile.currentTextChanged.connect(lambda: self.loadMergeNames())
+        self.ui.zMergeProfile.currentTextChanged.connect(lambda: self.loadMergeNames())
         self.ui.modName.currentTextChanged.connect(lambda: self.loadMergeFile())
 
-        self.ui.zmergeProfile.currentTextChanged.connect(lambda: self.validateZMergeProfile())
+        self.ui.zMergeProfile.currentTextChanged.connect(lambda: self.validateZMergeProfile())
         self.ui.modName.currentTextChanged.connect(lambda: self.validateModName())
         self.ui.pluginName.textChanged.connect(lambda: self.validatePluginName())
 
         # zMerge Views
-        self.ui.zMergeView.setModel(MergeFileModel())
-        self.ui.zMergeView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.ui.zMergeView.setItemDelegateForColumn(1, ComboBoxDelegate(6, self))
+        self.ui.zMergeConfigView.setModel(MergeFileModel())
+        self.ui.zMergeConfigView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.zMergeConfigView.setItemDelegateForColumn(1, ComboBoxDelegate(self))
+
+        self.ui.originalConfigView.setModel(MergeFileModel())
+        self.ui.originalConfigView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.originalConfigView.model().isEditable = False
+
+    @property
+    def currentProfile(self):
+        return self.ui.zMergeProfile.currentData()
+
+    @property
+    def currentMerge(self):
+        return self.ui.modName.currentData()
 
     def initializePage(self):
         self.initializeMOProfileName()
         self.calculateNewNames()
         self.initializeZEditPath()
+        self.loadOriginalConfig()
 
     def isOkToExit(self):
-        self.context.setSetting("lastZMergeProfile", self.ui.zmergeProfile.currentText())
+        self.context.setSetting("lastZMergeProfile", self.ui.zMergeProfile.currentText())
         return True
 
     def settingChanged(self, setting: int):
@@ -97,22 +110,22 @@ class PageZMerge(WizardPage):
         """ This is called whenever the Wizard moves forward to this page and whenever the
         zEdit folder changes in Settings """
 
-        self.ui.zmergeProfile.clear()
+        self.ui.zMergeProfile.clear()
         if not self.zEditFolder:
             return
         self.profiles = ZEditConfig.getProfiles(self.context.profile.gameName(), self.zEditFolder)
         for i in range(len(self.profiles)):
             name = self.profiles[i].profileName
-            self.ui.zmergeProfile.addItem(name, i)
+            self.ui.zMergeProfile.addItem(name, i)
             if name == self.lastProfile:
-                self.ui.zmergeProfile.setCurrentIndex(i)
+                self.ui.zMergeProfile.setCurrentIndex(i)
 
     def loadMergeNames(self):
         """ Fills in the modName combobox with the mod names from the selected profile.
         This is called by the change signal from the profile combobox """
 
         self.ui.modName.clear()
-        profileRow = self.ui.zmergeProfile.currentData()
+        profileRow = self.ui.zMergeProfile.currentData()
         if profileRow is None:
             return
 
@@ -133,7 +146,7 @@ class PageZMerge(WizardPage):
         This is called by the change signal from the modName combo box """
 
         currentMerge = self.ui.modName.currentData()
-        currentProfile = self.ui.zmergeProfile.currentData()
+        currentProfile = self.ui.zMergeProfile.currentData()
         if currentProfile is not None and currentMerge is not None:
             self.ui.pluginName.setText(self.profiles[currentProfile].merges[currentMerge].filename)
         else:
@@ -188,6 +201,13 @@ class PageZMerge(WizardPage):
         selectedMerge = self.context.dataCache.mergeModel.selectedMergeName()
         # self.ui.modName.setText(selectedMerge)
 
+    def loadOriginalConfig(self):
+        pass
+
+    # ----
+    # ---- Convenient Accessors
+    # ----
+
     # ----
     # ---- Validation and Error handling
     # ----
@@ -213,7 +233,7 @@ class PageZMerge(WizardPage):
         self.validatePluginName()
 
     def validateZMergeProfile(self):
-        if self.ui.zmergeProfile.currentIndex() < 0:
+        if self.ui.zMergeProfile.currentIndex() < 0:
             self.setZMergeProfileError("Unable to find a zMerge profile for this game.")
         else:
             self.setZMergeProfileError()

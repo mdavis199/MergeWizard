@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QWidget, QComboBox, QStyleOptionViewItem, QStyledIte
 
 
 class ComboBoxDelegate(QStyledItemDelegate):
-    def __init__(self, maxChars: int = 0, parent: QObject = None):
+    def __init__(self, parent: QObject = None):
         super().__init__(parent)
-        self._maxChars = maxChars
+        self._maxChars = 0
 
     def createEditor(
         self, parent: QWidget, option: QStyleOptionViewItem, idx: QModelIndex,
@@ -20,19 +20,19 @@ class ComboBoxDelegate(QStyledItemDelegate):
         cb.setCurrentIndex(editorIdx)
         return cb
 
-    def setEditorData(self, editor: QComboBox, idx: QModelIndex):
-        if not editor.count():
-            super().setEditorData(editor, idx)
+    def setEditorData(self, editor, idx: QModelIndex):
+        if not isinstance(editor, QComboBox):
+            return super().setEditorData(editor, idx)
         currentText = idx.data(Qt.EditRole)
         editorIdx = editor.findText(currentText)
         if editorIdx >= 0:
             editor.setCurrentIndex(editorIdx)
 
     def setModelData(
-        self, editor: QComboBox, model: QAbstractItemModel, idx: QModelIndex,
+        self, editor, model: QAbstractItemModel, idx: QModelIndex,
     ):
-        if not editor.count():
-            super().setModelData(editor, model, idx)
+        if not isinstance(editor, QComboBox):
+            return super().setModelData(editor, model, idx)
         model.setData(idx, editor.currentText(), Qt.EditRole)
 
     def sizeHint(self, option: QStyleOptionViewItem, idx: QModelIndex):

@@ -166,10 +166,11 @@ class MergeFileModel(QAbstractItemModel):
         if idx.column() == 0 and depth == Id.Depth.D0:
             if idx.row() == Row.LoadOrder or idx.row() == Row.MergedPlugins or idx.row() == Row.ZEditOptions:
                 return DEFAULT_FLAGS  # These may have children
-            elif self.isEditable and (idx.row() == Row.ModName or idx.row() == Row.PluginName):
-                return DEFAULT_FLAGS | Qt.ItemIsEditable
-        if idx.column() == 1 and depth == Id.Depth.D1:
-            if idx.parent().row() == Row.ZEditOptions and self.isEditable:
+
+        elif self.isEditable and idx.column() == 1:
+            if depth == Id.Depth.D0 and (idx.row() == Row.ModName or idx.row() == Row.PluginName):
+                return DEFAULT_FLAGS | Qt.ItemNeverHasChildren | Qt.ItemIsEditable
+            if depth == Id.Depth.D1 and idx.parent().row() == Row.ZEditOptions:
                 if isBoolOption(idx.row()):
                     return DEFAULT_FLAGS | Qt.ItemNeverHasChildren | Qt.ItemIsUserCheckable
                 else:
@@ -195,6 +196,8 @@ class MergeFileModel(QAbstractItemModel):
         return self._style_data(idx, role)
 
     def _checkstate_data(self, idx: QModelIndex):
+        if not self.isEditable:
+            return
         depth = Id.depth(idx)
         if (
             depth == Id.Depth.D1

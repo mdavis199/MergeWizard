@@ -1,14 +1,38 @@
 from typing import List
+from enum import IntEnum
 from os import path
 from mergewizard.domain.JSONObject import JSONObject
 
-# REFER: https://github.com/z-edit/zedit/blob/baf117802822f9649568f42f4deebd0a1f21ab22/src/javascripts/Services/merge/mergeService.js#L82
-# for defaults.
+"""
+Some things to keep in mind:
+
+There are one or two versions of a merge's configuration:
+1.  One located in zMerge profile's "merges.json"
+2.  One located in the mod's "merge.json"
+
+The first will exist after zMerge (or MW) adds a configuration to the profile.
+The second will exist after zMerge actually builds the merge.
+
+If the merge was configured, but not built, the merge will exist in the profile
+but not in the mod.
+
+Someone might remove the merge from the profile after it is built. So, it
+may exist in the mod but not in the profile.
+
+The configuration may have been built then modified. So the one in the mod and
+the one in the configuration may be different.
+
+"""
 
 
-class PluginFileDesc(JSONObject):
+class PluginDesc(JSONObject):
+    class Compare(IntEnum):
+        Same = 0
+        Different = -1
+        DifferentFolders = 1
+
     def __init__(self, filename: str, dataFolder: str, **kwargs):
-        self.filename, self.dataFolder, self.hash = filename, dataFolder, hash
+        self.filename, self.dataFolder = filename, dataFolder
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -22,6 +46,19 @@ class PluginFileDesc(JSONObject):
     @modName.setter
     def modName(self, value):
         self.__modName = value
+
+    def compare(self, other):
+        if other is None or self.filename != other.filename:
+            return self.Compare.Different
+        if not path.samefile(self.dataFolder, other.dataFolder):
+            return self.Compare.DifferentFolders
+        return self.Compare.Same
+
+    def sameName(self, other):
+        return self.filename == other.filename
+
+    def sameFolder(self, other):
+        return path.samefile(self.dataFolder, other.dataFolder)
 
 
 class MergeFile(JSONObject):
@@ -66,7 +103,7 @@ class MergeFile(JSONObject):
         handleDialogViews: bool = True,
         copyGeneralAssets: bool = False,
         dateBuilt: str = "",
-        plugins: List[PluginFileDesc] = [],
+        plugins: List[PluginDesc] = [],
         **kwargs
     ):
         self.__key = name.lower()
@@ -89,11 +126,11 @@ class MergeFile(JSONObject):
         self.handleDialogViews: bool = handleDialogViews
         self.copyGeneralAssets: bool = copyGeneralAssets
         self.dateBuilt: str = dateBuilt
-        self.plugins: List[PluginFileDesc] = []
+        self.plugins: List[PluginDesc] = []
         if plugins:
             if isinstance(plugins[0], dict):
                 for p in plugins:
-                    self.plugins.append(PluginFileDesc(**p))
+                    self.plugins.append(PluginDesc(**p))
             else:
                 self.plugins = plugins
         for k, v in kwargs.items():
@@ -129,6 +166,29 @@ class MergeFile(JSONObject):
     @modIsActive.setter
     def modIsActive(self, value: bool):
         self.__modIsActive = value
+
+    def compare(self, other) -> List[str]:
+        """ Compares itself with another mergefile and returns a list
+        of differing attributes.  Missing attributes and attributes that begin
+         with '_' are ignored. """
+
+        attrs = []
+        for a in self.__dict__.items():
+            if a[0].startswith("_"):
+                continue
+            elif not hasattr(other, a[0]):
+                continue
+            elif a[0] == "plugins":
+                if not self.comparePlugins():
+                    attrs.append("plugins")
+            elif getattr(other, a[0]) != a[1]:
+                attrs.append(a[0])
+
+    def comparePlugins(self, other):
+        if len(self.plugins != len(other.plugins)):
+            return False
+        for i in range(len(self.plugins)):
+            return self.plugins[i].compare(other.plugins[i]) == PluginDesc.Compare.Same
 
 
 class Merges(JSONObject):

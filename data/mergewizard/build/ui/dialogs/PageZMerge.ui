@@ -37,7 +37,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QTreeView" name="zMergeView">
+        <widget class="QTreeView" name="zMergeConfigView">
          <property name="uniformRowHeights">
           <bool>true</bool>
          </property>
@@ -57,7 +57,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QTreeView" name="originalZMerge">
+        <widget class="QTreeView" name="originalConfigView">
          <property name="uniformRowHeights">
           <bool>true</bool>
          </property>
@@ -193,7 +193,7 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="zmergeProfileLabel">
+          <widget class="QLabel" name="zMergeProfileLabel">
            <property name="text">
             <string>zMerge Profile:</string>
            </property>
@@ -203,7 +203,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QComboBox" name="zmergeProfile"/>
+          <widget class="QComboBox" name="zMergeProfile"/>
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="profileError">
