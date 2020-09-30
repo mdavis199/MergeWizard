@@ -10,7 +10,7 @@ from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageApplyChanges import PageApplyChanges
 from mergewizard.dialogs.PageZMerge import PageZMerge
 from mergewizard.dialogs.SettingsDialog import SettingsDialog
-from mergewizard.domain.Context import Context
+from mergewizard.domain.Context import Context, INT_VALIDATOR, BOOLEAN_VALIDATOR
 from mergewizard.domain.SavedPluginsFile import SavedPluginsFile
 from mergewizard.views.PluginViewFactory import PluginViewFactory
 from mergewizard.constants import Icon, Setting
@@ -44,7 +44,7 @@ class Wizard(QWizard):
         self.button(self.CustomButton1).setVisible(True)  # no setting at this time
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         self.customButtonClicked.connect(self.handleCustomButton)
-        self.context().loadUserSetting()
+        self.context().settings.loadUserSettings()
         self.addWizardPages()
         self.restoreSize()
 
@@ -56,7 +56,7 @@ class Wizard(QWizard):
         self.setPage(PageId.PageApplyChanges, PageApplyChanges(self.context(), self))
         self.setPage(PageId.PageZMerge, PageZMerge(self.context(), self))
         for pageId in self.pageIds():
-            self.context().settingChanged.connect(self.page(pageId).settingChanged)
+            self.context().settings.settingChanged.connect(self.page(pageId).settingChanged)
 
     def handleCustomButton(self, which: int):
         if which == QWizard.CustomButton1:
@@ -81,6 +81,7 @@ class Wizard(QWizard):
         self.saveSize()
         for id in self.pageIds():
             self.page(id).deinitializePage()
+        self.__context.settings.storeUserSettings()
         # self.saveSelectedPluginsToFile()
 
     def saveSelectedPluginsToFile(self):
@@ -88,28 +89,22 @@ class Wizard(QWizard):
         pluginsFile.write()
 
     def saveSize(self) -> None:
-        self.context().setSetting("WindowMaximized", self.isMaximized())
+        self.context().settings.setInternal("Window.Maximized", self.isMaximized())
         if not self.isMaximized():
-            self.context().setSetting("WindowHeight", self.size().height())
-            self.context().setSetting("WindowWidth", self.size().width())
-            self.context().setSetting("WindowX", self.pos().x())
-            self.context().setSetting("WindowY", self.pos().y())
+            self.context().settings.setInternal("Window.Height", self.size().height())
+            self.context().settings.setInternal("Window.Width", self.size().width())
+            self.context().settings.setInternal("Window.X", self.pos().x())
+            self.context().settings.setInternal("Window.Y", self.pos().y())
 
     def restoreSize(self) -> None:
-        try:
-            height = int(self.context().getSetting("WindowHeight", QVariant.Int, 0))
-            width = int(self.context().getSetting("WindowWidth", QVariant.Int, 0))
-            x = int(self.context().getSetting("WindowX", QVariant.Int, 0))
-            y = int(self.context().getSetting("WindowY", QVariant.Int, 0))
-        except ValueError:
-            height = 0
-            width = 0
-            x = 0
-            y = 0
+        isMaximized = self.context().settings.internal("Window.Maximized", False, BOOLEAN_VALIDATOR)
+        height = self.context().settings.internal("Window.Height", 0, INT_VALIDATOR)
+        width = self.context().settings.internal("Window.Width", 0, INT_VALIDATOR)
+        x = self.context().settings.internal("Window.X", 0, INT_VALIDATOR)
+        y = self.context().settings.internal("Window.Y", 0, INT_VALIDATOR)
         if height and width:
             self.resize(QSize(width, height))
-        if x and y:
+        if x or y:
             self.move(QPoint(x, y))
-        isMaximized = self.context().getSetting("WindowMaximized", QVariant.Bool, False)
         if isMaximized:
             self.setWindowState(self.windowState() | Qt.WindowMaximized)

@@ -9,9 +9,6 @@ import mergewizard.resources
 
 
 class PluginTool(mobase.IPluginTool):
-
-    DESCRIPTION = "Enable plugins and their masters using text entry"
-
     def __tr(self, str):
         return QCoreApplication.translate(INTERNAL_PLUGIN_NAME, str)
 
@@ -43,10 +40,10 @@ class PluginTool(mobase.IPluginTool):
         return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.final)
 
     def description(self):
-        return self.__tr(self.DESCRIPTION)
+        return self.__tr("Enable plugins and their masters using text entry")
 
     def tooltip(self):
-        return self.__tr(self.DESCRIPTION)
+        return self.description()
 
     def displayName(self):
         return self.__tr("MergeWizard")

@@ -2,296 +2,667 @@
 <ui version="4.0">
  <class>SettingsDialog</class>
  <widget class="QDialog" name="SettingsDialog">
-  <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
-    <height>492</height>
+    <width>514</width>
+    <height>601</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
   <property name="windowTitle">
-   <string>Settings</string>
+   <string>Dialog</string>
   </property>
-  <property name="modal">
-   <bool>true</bool>
-  </property>
-  <layout class="QGridLayout" name="gridLayout_4">
-   <property name="verticalSpacing">
-    <number>12</number>
-   </property>
-   <item row="0" column="0">
-    <widget class="QGroupBox" name="enableHiding">
-     <property name="toolTip">
-      <string>These options implement some of the features of Deorder's excellent plugin: &quot;Merge Plugins Hide&quot;</string>
-     </property>
-     <property name="title">
-      <string>Enable Hiding Plugins</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="leftMargin">
-       <number>25</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="hideMethod">
-        <property name="toolTip">
-         <string>Renames the plugin by appending the extension '.mohidden'.</string>
-        </property>
-        <property name="text">
-         <string>Hide plugin</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="optionalMethod">
-        <property name="toolTip">
-         <string>Moves the plugin to the 'optional' folder.</string>
-        </property>
-        <property name="text">
-         <string>Move to &quot;Optional&quot; folder</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QRadioButton" name="disableMethod">
-        <property name="toolTip">
-         <string>Disables the plugin.</string>
-        </property>
-        <property name="text">
-         <string>Disable plugin</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="enableLoadingZMerge">
-     <property name="toolTip">
-      <string>Incorporate info from &quot;merge.json&quot; files located in mod folders.</string>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="title">
-      <string>Enable Loading zMerge JSON Files</string>
+     <property name="documentMode">
+      <bool>false</bool>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="leftMargin">
-       <number>25</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="excludeInactiveMods">
-        <property name="toolTip">
-         <string>Excludes loading zMerge files from deactivated mods.</string>
-        </property>
-        <property name="text">
-         <string>Do not import file information from deactivated mods.</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="enableZMergeIntegration">
-     <property name="toolTip">
-      <string>Allow incorporating merge details into zMerge configuration files.</string>
-     </property>
-     <property name="title">
-      <string>Enable zMerge Integration</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="spacing">
-       <number>12</number>
-      </property>
-      <property name="leftMargin">
-       <number>25</number>
-      </property>
-      <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>zEdit Installation Directory</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="leftMargin">
-          <number>9</number>
+     <widget class="QWidget" name="generalTab">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="enableHiding">
+         <property name="toolTip">
+          <string>These options implement some of the features of Deorder's excellent plugin: &quot;Merge Plugins Hide&quot;</string>
          </property>
+         <property name="title">
+          <string>Enable Hiding Plugins</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <property name="leftMargin">
+           <number>25</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="hide">
+            <property name="toolTip">
+             <string>Renames the plugin by appending the extension '.mohidden'.</string>
+            </property>
+            <property name="text">
+             <string>Hide plugin</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">hidePluginsGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="move">
+            <property name="toolTip">
+             <string>Moves the plugin to the 'optional' folder.</string>
+            </property>
+            <property name="text">
+             <string>Move to &quot;Optional&quot; folder</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">hidePluginsGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="disable">
+            <property name="toolTip">
+             <string>Disables the plugin.</string>
+            </property>
+            <property name="text">
+             <string>Disable plugin</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">hidePluginsGroup</string>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="enableZMerge">
+         <property name="title">
+          <string>Enable zMerge Integration</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <property name="leftMargin">
+           <number>25</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="zeditPathGroup">
+            <property name="title">
+             <string>zEdit Installation Directory</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="leftMargin">
+              <number>9</number>
+             </property>
+             <item>
+              <widget class="QLineEdit" name="zeditPathEdit">
+               <property name="toolTip">
+                <string>This directory contains zEdit's 'profiles' folder.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="zeditPathButton">
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="zeditPathError">
+               <property name="minimumSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Path does not include &quot;zedit.exe&quot;.</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="profileGroup">
+            <property name="title">
+             <string>zEdit Profile</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QComboBox" name="zeditProfile">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="zeditProfileError">
+               <property name="minimumSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Path does not include &quot;zedit.exe&quot;.</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="enableLoadingZMerge">
+         <property name="toolTip">
+          <string>Incorporate info from &quot;merge.json&quot; files located in mod folders.</string>
+         </property>
+         <property name="title">
+          <string>Enable Loading zMerge JSON Files</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="leftMargin">
+           <number>25</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="excludeInactiveMods">
+            <property name="toolTip">
+             <string>Excludes loading zMerge files from deactivated mods.</string>
+            </property>
+            <property name="text">
+             <string>Do not import file information from deactivated mods.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QTextEdit" name="textEdit">
+            <property name="palette">
+             <palette>
+              <active>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>255</red>
+                  <green>255</green>
+                  <blue>238</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>255</red>
+                  <green>255</green>
+                  <blue>238</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="Base">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>255</red>
+                  <green>255</green>
+                  <blue>238</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Enable zMerge Integration&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When this option is enabled, the zEdit profile will be scanned for configured merges. This will detect plugins that have been selected for a merge even if the merged plugin has not been built. This option will also enable editing and creating zEdit merge configurations from within MergeWizard.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This option will not detect built merges whose configurations were deleted from the profile.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Enable Loading zMerge JSON Files&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When this option is enabled, merge details are loaded from &amp;quot;merge.json&amp;quot; files located in mod folders.  &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This option will not detect merges that are configured but not built. &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You may want to enable this option if you have merges that were deleted from zEdit's profile.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;If both options are enabled:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The information in the profile may differ from the information in the mod folder if the merge was changed but not yet rebuilt.  MergeWizard gives priority to the configuration in the profile.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="defaultsTab">
+      <attribute name="title">
+       <string>Defaults for New Merges</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="zeditPathEdit">
-           <property name="toolTip">
-            <string>This directory contains zEdit's 'profiles' folder.</string>
+          <widget class="QGroupBox" name="generalOptions">
+           <property name="title">
+            <string>General</string>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QCheckBox" name="useGameLoadOrder">
+              <property name="text">
+               <string>Use Game Load Order</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="buildMergedArchive">
+              <property name="text">
+               <string>Build Merged Archive</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="zeditPathButton">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="errorIndicator">
-           <property name="minimumSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16</width>
-             <height>16</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Path does not include &quot;zedit.exe&quot;.</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QGroupBox" name="mergeMethod">
+             <property name="title">
+              <string>Merge Method</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QRadioButton" name="clobber">
+                <property name="text">
+                 <string>Clobber</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">mergeMethodGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="clean">
+                <property name="text">
+                 <string>Clean</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">mergeMethodGroup</string>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="archiveAction">
+             <property name="title">
+              <string>Archive Action</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QRadioButton" name="extract">
+                <property name="text">
+                 <string>Extract</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">archiveActionGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="copy">
+                <property name="text">
+                 <string>Copy</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">archiveActionGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="ignore">
+                <property name="text">
+                 <string>Ignore</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">archiveActionGroup</string>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_5">
-        <property name="title">
-         <string>Saving zMerge Configuration</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_4">
-         <property name="leftMargin">
-          <number>9</number>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="assetHandling">
+         <property name="title">
+          <string>Asset Handling</string>
          </property>
-         <item row="0" column="0">
-          <widget class="QRadioButton" name="sortSavedMerges">
-           <property name="toolTip">
-            <string>When saving changes to zMerge configuration, sort the merges by mod name.</string>
-           </property>
-           <property name="text">
-            <string>Sort merges by mod name</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QRadioButton" name="prependChangedMerges">
-           <property name="toolTip">
-            <string>When adding or editing a merge, place the merge first in zMerge's configuration.</string>
-           </property>
-           <property name="text">
-            <string>Place new or changed mods at beginning of list</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QRadioButton" name="appendChangedMerges">
-           <property name="toolTip">
-            <string>When adding or editing a merge, place the merge last in zMerge's configuration.</string>
-           </property>
-           <property name="text">
-            <string>Place new or changed mods at end of list</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_3">
-        <property name="title">
-         <string>Name Templates for New Merges</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>9</number>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QCheckBox" name="faceData">
+              <property name="text">
+               <string>Handle Face Data</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="voiceData">
+              <property name="text">
+               <string>Handle Voice Data</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="billboardData">
+              <property name="text">
+               <string>Hande Billboard</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="stringFiles">
+              <property name="text">
+               <string>Handle String Files</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QCheckBox" name="translations">
+              <property name="text">
+               <string>Handle Translations</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="iniFiles">
+              <property name="text">
+               <string>Handle Ini Files</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="dialogViews">
+              <property name="text">
+               <string>Handle Dialog Views</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="generalAssets">
+              <property name="text">
+               <string>Copy General Assets</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="title">
+          <string>Saving Merges</string>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Profile Name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="profileNameTemplate">
-           <property name="toolTip">
-            <string>For new merges, attempt to derive the plugin name from the profile name.</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Mod Name</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="modNameTemplate">
-           <property name="toolTip">
-            <string>For new merges, attempt to derive the mod name from the plugin name. </string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>$ is a placeholder for the basename of the generated plugin.</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
+         <layout class="QFormLayout" name="formLayout_5">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="sort">
+            <property name="toolTip">
+             <string>When saving changes to zMerge configuration, sort the merges by mod name.</string>
+            </property>
+            <property name="text">
+             <string>Sort merges by mod name</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">savingMergesGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="prependNew">
+            <property name="toolTip">
+             <string>When adding or editing a merge, place the merge first in zMerge's configuration.</string>
+            </property>
+            <property name="text">
+             <string>Place new mods at front of list</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">savingMergesGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="appendNew">
+            <property name="toolTip">
+             <string>When adding or editing a merge, place the merge last in zMerge's configuration.</string>
+            </property>
+            <property name="text">
+             <string>Place new mods at end of list</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">savingMergesGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QRadioButton" name="prependChanged">
+            <property name="text">
+             <string>Place new and changed mods at front of list</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">savingMergesGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QRadioButton" name="appendChanged">
+            <property name="text">
+             <string>Place new and changed mods at end of list</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">savingMergesGroup</string>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Name Templates for New Merges</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Profile Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="profileNameTemplate">
+            <property name="toolTip">
+             <string>For new merges, attempt to derive the plugin name from the profile name.</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Mod Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="modNameTemplate">
+            <property name="toolTip">
+             <string>For new merges, attempt to derive the mod name from the plugin name. </string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>$ is a placeholder for the basename of the generated plugin.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -331,4 +702,10 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="hidePluginsGroup"/>
+  <buttongroup name="archiveActionGroup"/>
+  <buttongroup name="savingMergesGroup"/>
+  <buttongroup name="mergeMethodGroup"/>
+ </buttongroups>
 </ui>

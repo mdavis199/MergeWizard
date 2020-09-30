@@ -1,7 +1,8 @@
-from PyQt5.QtCore import QDir
+from os import path
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QDialog, QFileDialog
-from mergewizard.domain.Context import Context
+from mergewizard.domain.Context import Context, Validator
+from mergewizard.domain.merge.ZEditConfig import ZEditConfig
 from mergewizard.constants import Setting, Icon
 from .ui.SettingsDialog import Ui_SettingsDialog
 
@@ -11,56 +12,92 @@ class SettingsDialog(QDialog):
         super().__init__(parent)
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
-        self.ui.errorIndicator.setPixmap(QPixmap(Icon.ERROR))
+        self.zeditProfile = None
+
+        self.ui.zeditPathError.setPixmap(QPixmap(Icon.ERROR))
+        self.ui.zeditProfileError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.zeditPathButton.setIcon(QIcon(Icon.FOLDER))
         self.ui.zeditPathButton.clicked.connect(lambda: self.showFileDialog())
         self.ui.zeditPathEdit.textChanged.connect(lambda: self.validateZEditPath())
 
+        self.ui.hidePluginsGroup.setId(self.ui.hide, 0)
+        self.ui.hidePluginsGroup.setId(self.ui.move, 1)
+        self.ui.hidePluginsGroup.setId(self.ui.disable, 2)
+
+        self.ui.mergeMethodGroup.setId(self.ui.clobber, 0)
+        self.ui.mergeMethodGroup.setId(self.ui.clean, 1)
+
+        self.ui.archiveActionGroup.setId(self.ui.extract, 0)
+        self.ui.archiveActionGroup.setId(self.ui.copy, 1)
+        self.ui.archiveActionGroup.setId(self.ui.ignore, 2)
+
+        self.ui.savingMergesGroup.setId(self.ui.sort, 0)
+        self.ui.savingMergesGroup.setId(self.ui.prependNew, 1)
+        self.ui.savingMergesGroup.setId(self.ui.appendNew, 2)
+        self.ui.savingMergesGroup.setId(self.ui.prependChanged, 3)
+        self.ui.savingMergesGroup.setId(self.ui.appendChanged, 4)
+
     def loadSettings(self, context: Context):
-        # set ui widget values
-        self.ui.enableHiding.setChecked(context.enableHidingPlugins)
-        hidingMethod = context.hidingMethod
-        if hidingMethod == "mohidden":
-            self.ui.hideMethod.setChecked(True)
-        elif hidingMethod == "optional":
-            self.ui.optionalMethod.setChecked(True)
-        else:
-            self.ui.disableMethod.setChecked(True)
-        mergeOrder = context.mergeOrder
-        if mergeOrder == "sort":
-            self.ui.sortSavedMerges.setChecked(True)
-        elif mergeOrder == "prepend":
-            self.ui.prependChangedMerges.setChecked(True)
-        else:
-            self.ui.appendChangedMerges.setChecked(True)
-        self.ui.enableLoadingZMerge.setChecked(context.enableLoadingMergeFiles)
-        self.ui.excludeInactiveMods.setChecked(context.excludeInactiveMods)
-        self.ui.zeditPathEdit.setText(context.zEditFolder)
-        self.ui.modNameTemplate.setText(context.modNameTemplate)
-        self.ui.profileNameTemplate.setText(context.profileNameTemplate)
-        self.validateZEditPath()
+        self.zeditProfile = context.settings[Setting.ZEDIT_PROFILE]
+        self.gameName = context.profile.gameName()
+
+        # check boxes
+        self.ui.enableHiding.setChecked(context.settings[Setting.ENABLE_HIDING_PLUGINS])
+        self.ui.enableZMerge.setChecked(context.settings[Setting.ENABLE_ZMERGE_INTEGRATION])
+        self.ui.enableLoadingZMerge.setChecked(context.settings[Setting.ENABLE_LOADING_ZMERGE])
+        self.ui.excludeInactiveMods.setChecked(context.settings[Setting.EXCLUDE_INACTIVE_MODS])
+        self.ui.useGameLoadOrder.setChecked(context.settings[Setting.USE_GAME_LOADORDER])
+        self.ui.buildMergedArchive.setChecked(context.settings[Setting.BUILD_MERGED_ARCHIVE])
+        self.ui.faceData.setChecked(context.settings[Setting.FACE_DATA])
+        self.ui.voiceData.setChecked(context.settings[Setting.VOICE_DATA])
+        self.ui.billboardData.setChecked(context.settings[Setting.BILLBOARD_DATA])
+        self.ui.stringFiles.setChecked(context.settings[Setting.STRINGS_DATA])
+        self.ui.translations.setChecked(context.settings[Setting.TRANSLATIONS_DATA])
+        self.ui.iniFiles.setChecked(context.settings[Setting.INI_FILES_DATA])
+        self.ui.dialogViews.setChecked(context.settings[Setting.DIALOGS_DATA])
+        self.ui.generalAssets.setChecked(context.settings[Setting.GENERAL_ASSETS])
+
+        # text edit fields
+        self.ui.zeditPathEdit.setText(context.settings[Setting.ZEDIT_FOLDER])
+        self.ui.profileNameTemplate.setText(context.settings[Setting.PROFILENAME_TEMPLATE])
+        self.ui.modNameTemplate.setText(context.settings[Setting.MODNAME_TEMPLATE])
+
+        # radio buttons
+        hidingMethod = context.settings[Setting.HIDING_METHOD]
+        self.ui.hidePluginsGroup.button(hidingMethod).setChecked(True)
+
+        mergeMethod = context.settings[Setting.MERGE_METHOD]
+        self.ui.mergeMethodGroup.button(mergeMethod).setChecked(True)
+
+        archiveAction = context.settings[Setting.ARCHIVE_ACTION]
+        self.ui.archiveActionGroup.button(archiveAction).setChecked(True)
+
+        mergeOrder = context.settings[Setting.MERGE_ORDER]
+        self.ui.savingMergesGroup.button(mergeOrder).setChecked(True)
 
     def storeSettings(self, context: Context):
-        context.storeUserSetting(Setting.ENABLE_HIDING_PLUGINS, self.ui.enableHiding.isChecked())
-        if self.ui.hideMethod.isChecked():
-            context.storeUserSetting(Setting.HIDING_METHOD, "mohidden")
-        if self.ui.optionalMethod.isChecked():
-            context.storeUserSetting(Setting.HIDING_METHOD, "optional")
-        if self.ui.disableMethod.isChecked():
-            context.storeUserSetting(Setting.HIDING_METHOD, "disable")
-        context.storeUserSetting(Setting.ENABLE_LOADING_ZMERGE, self.ui.enableLoadingZMerge.isChecked())
-        context.storeUserSetting(Setting.EXCLUDE_INACTIVE_MODS, self.ui.excludeInactiveMods.isChecked())
-        context.storeUserSetting(Setting.ENABLE_ZMERGE_INTEGRATION, self.ui.enableZMergeIntegration.isChecked())
-        context.storeUserSetting(Setting.ZEDIT_FOLDER, self.ui.zeditPathEdit.text())
-        if self.ui.sortSavedMerges.isChecked():
-            context.storeUserSetting(Setting.MERGE_ORDER, "sort")
-        elif self.ui.prependSavedMerges.isChecked():
-            context.storeUserSetting(Setting.MERGE_ORDER, "prepend")
-        else:
-            context.storeUserSetting(Setting.MERGE_ORDER, "append")
-
-        context.storeUserSetting(Setting.MODNAME_TEMPLATE, self.ui.modNameTemplate.text())
-        context.storeUserSetting(Setting.PROFILENAME_TEMPLATE, self.ui.profileNameTemplate.text())
+        context.settings[Setting.ENABLE_HIDING_PLUGINS] = self.ui.enableHiding.isChecked()
+        context.settings[Setting.ENABLE_ZMERGE_INTEGRATION] = self.ui.enableZMerge.isChecked()
+        context.settings[Setting.ENABLE_LOADING_ZMERGE] = self.ui.enableLoadingZMerge.isChecked()
+        context.settings[Setting.EXCLUDE_INACTIVE_MODS] = self.ui.excludeInactiveMods.isChecked()
+        context.settings[Setting.USE_GAME_LOADORDER] = self.ui.useGameLoadOrder.isChecked()
+        context.settings[Setting.BUILD_MERGED_ARCHIVE] = self.ui.buildMergedArchive.isChecked()
+        context.settings[Setting.FACE_DATA] = self.ui.faceData.isChecked()
+        context.settings[Setting.VOICE_DATA] = self.ui.voiceData.isChecked()
+        context.settings[Setting.BILLBOARD_DATA] = self.ui.billboardData.isChecked()
+        context.settings[Setting.STRINGS_DATA] = self.ui.stringFiles.isChecked()
+        context.settings[Setting.TRANSLATIONS_DATA] = self.ui.translations.isChecked()
+        context.settings[Setting.INI_FILES_DATA] = self.ui.iniFiles.isChecked()
+        context.settings[Setting.DIALOGS_DATA] = self.ui.dialogViews.isChecked()
+        context.settings[Setting.GENERAL_ASSETS] = self.ui.generalAssets.isChecked()
+        context.settings[Setting.ZEDIT_FOLDER] = self.ui.zeditPathEdit.text()
+        context.settings[Setting.PROFILENAME_TEMPLATE] = self.ui.profileNameTemplate.text()
+        context.settings[Setting.MODNAME_TEMPLATE] = self.ui.modNameTemplate.text()
+        context.settings[Setting.HIDING_METHOD] = self.ui.hidePluginsGroup.checkedId()
+        context.settings[Setting.MERGE_METHOD] = self.ui.mergeMethodGroup.checkedId()
+        context.settings[Setting.ARCHIVE_ACTION] = self.ui.archiveActionGroup.checkedId()
+        context.settings[Setting.MERGE_ORDER] = self.ui.savingMergesGroup.checkedId()
+        context.settings[Setting.ZEDIT_PROFILE] = self.ui.zeditProfile.currentText()
 
     def showFileDialog(self):
         dirName = QFileDialog.getExistingDirectory(
@@ -71,9 +108,26 @@ class SettingsDialog(QDialog):
         self.validateZEditPath()
 
     def validateZEditPath(self):
-        dir = QDir(self.ui.zeditPathEdit.text())
-        if dir.exists("zedit.exe"):
-            self.ui.errorIndicator.setVisible(False)
+        v = Validator.folder("zedit.exe")
+        if v.validate(self.ui.zeditPathEdit.text(), None):
+            self.ui.zeditPathError.setVisible(False)
+            self.updateProfilesList()
         else:
-            self.ui.errorIndicator.setVisible(True)
+            self.ui.zeditPathError.setVisible(True)
+
+    def updateProfilesList(self):
+        self.ui.zeditProfile.clear()
+        zEditFolder = self.ui.zeditPathEdit.text()
+        if not zEditFolder:
+            return
+        self.profiles = ZEditConfig.getProfiles(self.gameName, zEditFolder)
+        for i in range(len(self.profiles)):
+            name = self.profiles[i].profileName
+            self.ui.zeditProfile.addItem(name, i)
+            if name == self.zeditProfile:
+                self.ui.zeditProfile.setCurrentIndex(i)
+        if self.ui.zeditProfile.currentIndex() < 0:
+            self.ui.zeditProfileError.setVisible(True)
+        else:
+            self.ui.zeditProfileError.setVisible(False)
 

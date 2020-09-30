@@ -92,6 +92,10 @@ class PluginView(QTreeView):
             self.setColumnHidden(self.sectionForFilter(f), bool(filters & f))
         self.filterChanged.emit()
 
+    @staticmethod
+    def allFilters():
+        return Filter.All
+
     def filters(self):
         return self._models.filterModel.filters()
 

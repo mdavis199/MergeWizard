@@ -2,6 +2,7 @@ from typing import List
 from PyQt5.QtCore import pyqtSignal, QObject, QDir, QFileInfo, QFile
 from mobase import IOrganizer
 from mergewizard.domain.MOLog import moWarn, moDebug
+from mergewizard.domain.JSONObject import JSONObject
 
 # TODO: make this either Qt- or python-centric, instead of this odd mix.
 
@@ -142,3 +143,4 @@ class Profile(QObject):
         if not self.profileExists(profile):
             return True
         return QDir(self.profilePath(profile)).removeRecursively()
+

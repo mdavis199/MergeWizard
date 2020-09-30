@@ -39,6 +39,31 @@ class ZEditConfig:
     RELATIVE_PROFILE_DIR = "profiles"
 
     @staticmethod
+    def getMerges(shortGameName, profileName, zEditInstallFolder) -> Merges:
+        zEditProfileDir = QDir(zEditInstallFolder + "/" + ZEditConfig.RELATIVE_PROFILE_DIR)
+        if not zEditProfileDir.exists():
+            qDebug("Profiles path does not exist: {}".format(zEditProfileDir.absolutePath()))
+            return
+
+        profiles = ZEditConfig.parseProfileList(shortGameName)
+        for name in profiles:
+            if name == profileName:
+                relName = name + "/merges.json"
+                if not zEditProfileDir.exists(relName):
+                    qDebug('Profile "{}" does not have a "merges.json" file.'.format(name))
+                    return
+                try:
+                    filePath = zEditProfileDir.absoluteFilePath(relName)
+                    with open(filePath) as f:
+                        m = Merges(json.load(f))
+                        m.profileName = name
+                        m.profilePath = filePath
+                        return m
+                except ValueError as ex:
+                    qWarning('Invalid file "{}": {}'.format(filePath, str(ex)))
+        qDebug('Profile "{}" was not found'.format(profileName))
+
+    @staticmethod
     def getProfiles(shortGameName, zEditInstallFolder) -> List[Merges]:
         """ This returns the content of each profiles 'merges.json' """
 

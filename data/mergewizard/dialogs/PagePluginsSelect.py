@@ -1,10 +1,10 @@
-from enum import IntEnum
+from enum import IntEnum, IntFlag, auto
 from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QAction, QHeaderView
 
 from mergewizard.dialogs.WizardPage import WizardPage
-from mergewizard.domain.Context import Context
+from mergewizard.domain.Context import Context, Validator, INT_VALIDATOR
 from mergewizard.models.PluginModel import Column
 from mergewizard.models.PluginModelCollection import PluginModelCollection
 from mergewizard.views.PluginViewFactory import PluginViewFactory, ViewType
@@ -29,6 +29,13 @@ class PagePluginsSelect(WizardPage):
     class SelectedPageId(IntEnum):
         TextPanel = 0
         MergePanel = 1
+
+    class VisiblePanel(IntFlag):
+        PluginInfo = auto()
+        MergeInfo = auto()
+        TextSelect = auto()
+        MergeSelect = auto()
+        Filters = auto()
 
     def __init__(self, context: Context, parent: QWidget = None):
         super().__init__(parent)
@@ -96,35 +103,38 @@ class PagePluginsSelect(WizardPage):
         self.saveSettings()
 
     def saveSettings(self) -> None:
-        self.context.setSetting("PluginInfoPanelVisible", self.isPluginInfoPanelOpen())
-        self.context.setSetting("MergeInfoPanelVisible", self.isMergeInfoPanelOpen())
-        self.context.setSetting("TextPanelVisible", self.isTextPanelOpen())
-        self.context.setSetting("MergePanelVisible", self.isMergePanelOpen())
-        self.context.setSetting("FilterPanelVisible", self.isFilterPanelOpen())
-        self.context.setSetting("PluginFilters", self.ui.pluginsList.filters())
-        self.context.setSetting("PluginListState", self.ui.mergeInfoWidget.getExpandedStates())
+        visiblePanels = 0
+        visiblePanels |= self.VisiblePanel.PluginInfo if self.isPluginInfoPanelOpen() else visiblePanels
+        visiblePanels |= self.VisiblePanel.MergeInfo if self.isMergeInfoPanelOpen() else visiblePanels
+        visiblePanels |= self.VisiblePanel.TextSelect if self.isTextPanelOpen() else visiblePanels
+        visiblePanels |= self.VisiblePanel.MergeSelect if self.isMergePanelOpen() else visiblePanels
+        visiblePanels |= self.VisiblePanel.Filters if self.isFilterPanelOpen() else visiblePanels
+        self.context.settings.setInternal("Page1.PluginPanelStates", visiblePanels)
+        self.context.settings.setInternal("Page1.PluginFilters", self.ui.pluginsList.filters())
+        self.context.settings.setInternal("Page1.MergeInfoStates", self.ui.mergeInfoWidget.getExpandedStates())
 
     def restoreSettings(self) -> None:
-        piVisible = self.context.getSetting("PluginInfoPanelVisible", QVariant.Bool, False)
-        miVisible = self.context.getSetting("MergeInfoPanelVisible", QVariant.Bool, False)
-        tVisible = self.context.getSetting("TextPanelVisible", QVariant.Bool, False)
-        mVisible = self.context.getSetting("MergePanelVisible", QVariant.Bool, False)
+        visiblePanels = self.context.settings.internal("Page1.PluginPanelStates", 0, INT_VALIDATOR)
+        mergeInfoStates = self.context.settings.internal("Page1.MergeInfoStates", 0, INT_VALIDATOR)
+        filters = self.context.settings.internal("Page1.PluginFilters", 0, INT_VALIDATOR)
+
+        self.ui.mergeInfoWidget.setExpandedStates(mergeInfoStates)
+        self.ui.pluginFilterWidget.setFilters(filters)
+
+        piVisible = visiblePanels & self.VisiblePanel.PluginInfo
+        miVisible = visiblePanels & self.VisiblePanel.MergeInfo
+        tsVisible = visiblePanels & self.VisiblePanel.TextSelect
+        msVisible = visiblePanels & self.VisiblePanel.MergeSelect
+        fVisible = visiblePanels & self.VisiblePanel.Filters
         if piVisible:
             self.openPluginInfoPanel(piVisible)
         else:
             self.openMergeInfoPanel(miVisible)
-        if tVisible:
-            self.openTextPanel(tVisible)
+        if tsVisible:
+            self.openTextPanel(tsVisible)
         else:
-            self.openMergePanel(mVisible)
-        self.openFilterPanel(False)
-        self.ui.mergeInfoWidget.setExpandedStates(self.context.getSetting("PluginListState", QVariant.Int, None))
-
-    def restoreFilterSettings(self):
-        fVisible = self.context.getSetting("FilterPanelVisible", QVariant.Bool, False)
+            self.openMergePanel(msVisible)
         self.openFilterPanel(fVisible)
-        filters = self.context.getSetting("PluginFilters", QVariant.Int, 0)
-        self.ui.pluginFilterWidget.setFilters(filters)
 
     def isPluginInfoPanelOpen(self) -> bool:
         return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisibleTo(
@@ -216,7 +226,6 @@ class PagePluginsSelect(WizardPage):
         self.ui.progressFrame.setVisible(False)
         self.ui.progressBar.setValue(0)
         self.restoreSettings()
-        self.restoreFilterSettings()
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()
