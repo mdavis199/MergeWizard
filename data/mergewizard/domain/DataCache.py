@@ -83,7 +83,6 @@ class DataCache(QObject):
         self._dataLoader.finished.connect(self._finishedLoadingData)
         self._dataLoader.result.connect(self._setData)
         self._dataLoader.started.connect(self.dataLoadingStarted)
-        self._dataLoader.finished.connect(self.dataLoadingCompleted)
         self._dataLoader.progress.connect(self.dataLoadingProgress)
 
         self._dataLoadingStartTime = perf_counter()
@@ -94,6 +93,7 @@ class DataCache(QObject):
         self._dataLoader.disconnect()
         self._dataLoader = None
         moPerf(self._dataLoadingStartTime, perf_counter(), "DataCache.loadData - complete")
+        self.dataLoadingCompleted.emit()
 
     # ------------------------------------------------
     # Combine the info from the merge model into the

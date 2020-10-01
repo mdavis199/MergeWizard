@@ -15,11 +15,6 @@ from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
 class PagePluginsSelect(WizardPage):
 
-    # On my system, loading 675 plugins takes about 2 sec to load the data from MO and zEdit files.
-    # It takes another 3 seconds for pyQt to display it in the views (when the rows are added in bulk).
-    # Here we prevent the progress bar from showing 100% while qt is working on the gui.
-    PROGRESS_OFFSET = 1
-
     # Left panel stack widget
     class AllPageId(IntEnum):
         PluginInfoPanel = 0
@@ -65,14 +60,6 @@ class PagePluginsSelect(WizardPage):
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
         self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
 
-        # This speeds up data loading quite a bit.  Will restore everything after loading
-        self.ui.pluginFilterWidget.enableAll()
-        self.openFilterPanel(False)
-        self.openMergeInfoPanel(False)
-        self.openMergePanel(False)
-        self.openPluginInfoPanel(False)
-        self.openTextPanel(False)
-
         # splitters
         Splitter.decorate(self.ui.splitter)
         Splitter.decorate(self.ui.allPluginsSplitter)
@@ -84,43 +71,39 @@ class PagePluginsSelect(WizardPage):
         self.didResizeSplitters = False
         self.resizeSplitter()
 
-        # progress bar
-        self.ui.progressBar.setRange(0, 100 + self.PROGRESS_OFFSET)
         context.dataCache.dataLoadingStarted.connect(self.modelLoadingStarted)
-        context.dataCache.dataLoadingProgress.connect(self.modelLoadingProgress)
         context.dataCache.dataLoadingCompleted.connect(self.modelLoadingCompleted)
 
         # Buttons and other actions
         self.installActions()
 
-    def initializePage(self) -> None:
-        """ If QWizard is not set to 'independent' pages then this method is called
-        everytime the wizard switches from the previous page. Otherwise it is called only
-        the first time it switches to this page """
-        pass
+        # We want to restore the panel to the state it was in when it was last closed.
+        # Except, we want the all filters enabled, because it speeds up load time.
+        # We save the filter setting and will restore after all the data is loaded.
+        visiblePanels, mergeInfoStates, filters = self.getPageSettings()
+        self.setPanelLayout(visiblePanels)
+        self.setMergeInfoState(mergeInfoStates)
+        self._filters = filters
+        self.ui.pluginFilterWidget.enableAll()
+        self._firstTimeLoadingData = True
 
     def deinitializePage(self) -> None:
-        self.saveSettings()
+        self.savePageSettings()
 
-    def saveSettings(self) -> None:
+    # ----
+    # ---- Get and set states of variaus page elements
+    # ----
+
+    def getPanelLayout(self):
         visiblePanels = 0
         visiblePanels |= self.VisiblePanel.PluginInfo if self.isPluginInfoPanelOpen() else visiblePanels
         visiblePanels |= self.VisiblePanel.MergeInfo if self.isMergeInfoPanelOpen() else visiblePanels
         visiblePanels |= self.VisiblePanel.TextSelect if self.isTextPanelOpen() else visiblePanels
         visiblePanels |= self.VisiblePanel.MergeSelect if self.isMergePanelOpen() else visiblePanels
         visiblePanels |= self.VisiblePanel.Filters if self.isFilterPanelOpen() else visiblePanels
-        self.context.settings.setInternal("Page1.PluginPanelStates", visiblePanels)
-        self.context.settings.setInternal("Page1.PluginFilters", self.ui.pluginsList.filters())
-        self.context.settings.setInternal("Page1.MergeInfoStates", self.ui.mergeInfoWidget.getExpandedStates())
+        return visiblePanels
 
-    def restoreSettings(self) -> None:
-        visiblePanels = self.context.settings.internal("Page1.PluginPanelStates", 0, INT_VALIDATOR)
-        mergeInfoStates = self.context.settings.internal("Page1.MergeInfoStates", 0, INT_VALIDATOR)
-        filters = self.context.settings.internal("Page1.PluginFilters", 0, INT_VALIDATOR)
-
-        self.ui.mergeInfoWidget.setExpandedStates(mergeInfoStates)
-        self.ui.pluginFilterWidget.setFilters(filters)
-
+    def setPanelLayout(self, visiblePanels: int):
         piVisible = visiblePanels & self.VisiblePanel.PluginInfo
         miVisible = visiblePanels & self.VisiblePanel.MergeInfo
         tsVisible = visiblePanels & self.VisiblePanel.TextSelect
@@ -135,6 +118,37 @@ class PagePluginsSelect(WizardPage):
         else:
             self.openMergePanel(msVisible)
         self.openFilterPanel(fVisible)
+
+    def getMergeInfoState(self) -> int:
+        return self.ui.mergeInfoWidget.getExpandedStates()
+
+    def setMergeInfoState(self, state: int):
+        self.ui.mergeInfoWidget.setExpandedStates(state)
+
+    def getFilters(self):
+        return self.ui.pluginsList.filters()
+
+    def setFilters(self, filters: int):
+        self.ui.pluginFilterWidget.setFilters(filters)
+
+    # ----
+    # ---- Save and restore page settings (when app opens/closes)
+    # ----
+
+    def savePageSettings(self) -> None:
+        self.context.settings.setInternal("Page1.PluginPanelStates", self.getPanelLayout())
+        self.context.settings.setInternal("Page1.MergeInfoStates", self.getMergeInfoState())
+        self.context.settings.setInternal("Page1.PluginFilters", self.getFilters())
+
+    def getPageSettings(self) -> None:
+        visiblePanels = self.context.settings.internal("Page1.PluginPanelStates", 0, INT_VALIDATOR)
+        mergeInfoStates = self.context.settings.internal("Page1.MergeInfoStates", 0, INT_VALIDATOR)
+        filters = self.context.settings.internal("Page1.PluginFilters", 0, INT_VALIDATOR)
+        return (visiblePanels, mergeInfoStates, filters)
+
+    # ----
+    # ---- Opening and closing various panels
+    # ----
 
     def isPluginInfoPanelOpen(self) -> bool:
         return self.ui.allStacked.currentIndex() == self.AllPageId.PluginInfoPanel and self.ui.allStacked.isVisibleTo(
@@ -213,19 +227,25 @@ class PagePluginsSelect(WizardPage):
         filtered = total - showing
         self.ui.filterCount.setText(self.tr("Filtered: {}, Showing: {}, Total: {}").format(filtered, showing, total))
 
-    def modelLoadingStarted(self):
-        self.ui.progressLabel.setText(self.tr("Loading data:"))
-        self.ui.progressFrame.setVisible(True)
+    # ----
+    # ----  Loading model data
+    # ----
 
-    def modelLoadingProgress(self, value) -> None:
-        self.ui.progressBar.setValue(value)
-        if value == 100 - self.PROGRESS_OFFSET:
-            self.ui.progressLabel.setText(self.tr("Loading views:"))
+    def modelLoadingStarted(self):
+        # Hiding all the data by enabling all the filters sped up loading quite a bit.
+        # When loading 640 plugins, 533 mods, and 20 merges: this halved the time it took
+        # to load and display the data.  Originally, about 6 seconds, down to 2.5 seconds.
+        # Tried toggling setUpdatesEnabled, but load time was 5 seconds and it looked very bad.
+        #
+        # On the first time through, we don't save the filters because we will be using the ones
+        # obtained from Settings when this page was constructed.
+        if not self._firstTimeLoadingData:
+            self._filters = self.getFilters()
+        self.ui.pluginFilterWidget.enableAll()
 
     def modelLoadingCompleted(self) -> None:
-        self.ui.progressFrame.setVisible(False)
-        self.ui.progressBar.setValue(0)
-        self.restoreSettings()
+        self._firstTimeLoadingData = False
+        self.setFilters(self._filters)
         self.setUpViewsAfterModelReload()
         self.resizeSplitter()
         self.showPluginInfo()

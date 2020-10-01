@@ -1,11 +1,11 @@
 from enum import IntEnum
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint, QVariant
+from PyQt5.QtCore import pyqtSignal, Qt, QSize, QPoint, QVariant, QTimer
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
-from PyQt5.QtWidgets import QWidget, QWizard
+from PyQt5.QtWidgets import QWidget, QWizard, QMessageBox
 
 from mobase import IOrganizer
-
+from mergewizard.dialogs.ProgressBar import ProgressBar
 from mergewizard.dialogs.PagePluginsSelect import PagePluginsSelect
 from mergewizard.dialogs.PageApplyChanges import PageApplyChanges
 from mergewizard.dialogs.PageZMerge import PageZMerge
@@ -23,11 +23,18 @@ class PageId(IntEnum):
 
 
 class Wizard(QWizard):
+    startLoadingData = pyqtSignal()
+
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
         self.__context = Context(organizer)
         self.__context.settings.loadUserSettings()
-        self.loadData()
+
+        self.progressBar = ProgressBar(self)
+        self.context().dataCache.dataLoadingStarted.connect(self.progressBar.start)
+        self.context().dataCache.dataLoadingProgress.connect(self.progressBar.setValue)
+        self.context().dataCache.dataLoadingCompleted.connect(self.progressBar.accept)
+        self.progressBar.rejected.connect(self.context().dataCache.stopLoading)
 
         # self.resize(700, 500)
         self.setWizardStyle(0)
@@ -48,6 +55,9 @@ class Wizard(QWizard):
         self.addWizardPages()
         self.restoreSize()
 
+        self.startLoadingData.connect(self.loadData)
+        QTimer.singleShot(0, lambda: self.startLoadingData.emit())
+
     def context(self) -> Context:
         return self.__context
 
@@ -66,11 +76,16 @@ class Wizard(QWizard):
             self.showSettingsDialog()
 
     def showSettingsDialog(self):
-        settingsDialog = SettingsDialog(self)
-        settingsDialog.loadSettings(self.context())
+        settingsDialog = SettingsDialog(self.context(), self)
+        settingsDialog.loadSettings()
 
         if settingsDialog.exec() == SettingsDialog.Accepted:
-            settingsDialog.storeSettings(self.context())
+            settingsDialog.storeSettings()
+            if settingsDialog.changedSettings():
+                if QMessageBox.Yes == QMessageBox.question(
+                    self, self.tr("MergeWizard"), self.tr("Settings have changed.\nDo you want to reload the data?")
+                ):
+                    QTimer.singleShot(0, lambda: self.startLoadingData.emit())
 
     def keyPressEvent(self, event: QKeySequence) -> None:
         # Prevent escape from closing window
