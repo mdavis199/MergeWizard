@@ -70,6 +70,14 @@ class DataLoader(QThread):
         startTime = perf_counter()
         moTime(startTime, "DataLoader.run - started")
         # -------
+
+        self._count = 0
+        self._progress = 0
+        self._plugins = Plugins()
+        self._mergeFiles = []
+        self._mods = []
+        self._mergeNames = set()
+
         # first, get enough info to estimate the progress
         self._pluginNames = self.__organizer.pluginList().pluginNames()
         self._total = len(self._pluginNames) * 2
@@ -82,21 +90,13 @@ class DataLoader(QThread):
 
         if self._enableLoadingProfile:
             profile = ZEditConfig.loadProfile(self._gameName, self._profileName, self._zeditFolder)
-            self._profileMerges = profile.merges
-            self._total += len(self._profileMerges)
-
-        self._count = 0
-        self._progress = 0
-
-        self._plugins = Plugins()
-        self._mergeFiles = []
-        self._mods = []
-        self._mergeNames = set()
+            self._mergeFiles = profile.merges
+            self._total += len(self._mergeFiles)
 
         self.loadPlugins()
         self.loadMods()
         if self._enableLoadingProfile:
-            self.loadProfile()
+            self.loadProfile()  # we've already loaded it; we're just adding data
         if self._enableLoadingMergeFiles:
             self.loadMergeFiles()
         self.result.emit((self._plugins, self._mergeFiles, self._mods))
@@ -115,7 +115,7 @@ class DataLoader(QThread):
                 return
             priority = self.__organizer.modList().priority(name)
             state = self.__organizer.modList().state(name)
-            active = state & ModState.ACTIVE == ModState.active
+            active = state & ModState.ACTIVE == ModState.ACTIVE
             self._mods.append(Mod(name, priority, active))
         # -------
         moPerf(startTime, perf_counter(), "DataLoader.loadMods - mods loaded: {}".format(len(self._mods)))
@@ -158,15 +158,15 @@ class DataLoader(QThread):
     def loadProfile(self):
         startTime = perf_counter()
         # -------
-        for m in self._profileMerges:
+        for m in self._mergeFiles:
             self.emitProgress()
             self._mergeNames.add(m.modName)
             state = self.__organizer.modList().state(m.name)
-            m.modIsActive = state & ModState.ACTIVE == ModState.active
+            m.modIsActive = state & ModState.ACTIVE == ModState.ACTIVE
             if not self._onlyActiveMerges or m.modIsActive:
                 self.addMergeToPlugins(m)
         # -------
-        moPerf(startTime, perf_counter(), "DataLoader.loadProfile - merges loaded: {}".format(len(self._profileMerges)))
+        moPerf(startTime, perf_counter(), "DataLoader.loadProfile - merges loaded: {}".format(len(self._mergeFiles)))
 
     # -----------------------------------------------------------------
 

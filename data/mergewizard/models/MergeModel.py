@@ -1,7 +1,7 @@
 from enum import IntEnum, auto
 from typing import List
 
-from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt, qInfo
+from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt
 from PyQt5.QtGui import QColor, QFont, QIcon
 
 from mergewizard.domain.merge import MergeFile as Merge
