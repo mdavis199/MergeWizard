@@ -225,6 +225,7 @@ class SettingsBase(QObject):
 
     def add(self, key, name="", default=None, validator=None, value=None):
         settings = SettingItem(key, name, default, validator)
+        settings.settingChanged.connect(self.settingChanged)
         self._settings[key] = settings
         return settings
 

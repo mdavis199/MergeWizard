@@ -15,6 +15,13 @@ class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName("SettingsDialog")
         SettingsDialog.resize(514, 601)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(SettingsDialog.sizePolicy().hasHeightForWidth())
+        SettingsDialog.setSizePolicy(sizePolicy)
+        SettingsDialog.setMinimumSize(QtCore.QSize(514, 601))
+        SettingsDialog.setMaximumSize(QtCore.QSize(514, 601))
         self.gridLayout = QtWidgets.QGridLayout(SettingsDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtWidgets.QDialogButtonBox(SettingsDialog)

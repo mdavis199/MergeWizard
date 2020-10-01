@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QDir, QVariant, Qt
+from PyQt5.QtCore import QDir, QVariant, Qt, qInfo
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
@@ -20,7 +20,7 @@ class PageZMerge(WizardPage):
         # zedit configuration including merges(mods) from current profile
         self.zEditFolder = None
         self.zEditProfile = None
-        self.merges = None
+        self.profile = None
         # calculated names for new mods
         self.newPluginName = ""
         self.newModName = ""
@@ -72,10 +72,10 @@ class PageZMerge(WizardPage):
 
     def settingChanged(self, setting: int):
         if setting == Setting.ZEDIT_FOLDER:
-            self.validateZEditPath()
+            self.validateZMergeProfile()
             self.loadMerges()
         if setting == Setting.ZEDIT_PROFILE:
-            self.validateZEditPath()
+            self.validateZMergeProfile()
             self.loadMerges()
         if setting == Setting.PROFILENAME_TEMPLATE:
             self.initializeNames()
@@ -95,18 +95,18 @@ class PageZMerge(WizardPage):
         """
         self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
         self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
-        self.merges = None
+        self.profile = None
         self.ui.modName.clear()
         if not self.zEditFolder or not self.zEditProfile:
             return
-        self.merges = ZEditConfig.getMerges(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
-        if not self.merges:
+        self.profile = ZEditConfig.getMerges(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
+        if not self.profile:
             return
 
         self.ui.modName.insertSeparator(0)
         selectedMergeName = self.context.mergeModel.selectedMergeName()
-        for i in range(len(self.merges.merges)):
-            mergeName = self.merges.merges[i].name
+        for i in range(len(self.profile.merges)):
+            mergeName = self.profile.merges[i].name
             self.ui.modName.addItem(mergeName, i)
             if mergeName == selectedMergeName:
                 self.ui.modName.setCurrentIndex(self.ui.modName.count() - 1)
@@ -119,7 +119,7 @@ class PageZMerge(WizardPage):
 
         currentMerge = self.ui.modName.currentData()  # None ==> new merge
         if currentMerge is not None:
-            self.ui.pluginName.setText(self.merges.merges[currentMerge].filename)
+            self.ui.pluginName.setText(self.profile.merges[currentMerge].filename)
         else:
             self.ui.pluginName.setText(self.newPluginName)
 
@@ -190,7 +190,6 @@ class PageZMerge(WizardPage):
         self.ui.modNameError.setVisible(bool(msg))
 
     def validatePanel(self):
-        self.validateZMergeProfile()
         self.validateModName()
         self.validatePluginName()
 

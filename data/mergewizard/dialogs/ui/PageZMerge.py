@@ -198,6 +198,6 @@ class Ui_PageZMerge(object):
         self.warningLabel.setText(_translate("PageZMerge", "Please update settings with the zEdit installation folder."))
         self.moProfileLabel.setText(_translate("PageZMerge", "ModOrganizer Profile:"))
         self.toggleOriginal.setText(_translate("PageZMerge", "View Origninal Configuration"))
-        self.toggleJsonView.setText(_translate("PageZMerge", "View Configuration as JSON"))
+        self.toggleJsonView.setText(_translate("PageZMerge", "View Configuration as Text"))
         self.applyButton.setText(_translate("PageZMerge", "Save Changes"))
         self.launchButton.setText(_translate("PageZMerge", "Launch zMerge"))
