@@ -39,7 +39,7 @@ class ZEditConfig:
     RELATIVE_PROFILE_DIR = "profiles"
 
     @staticmethod
-    def getMerges(shortGameName, profileName, zEditInstallFolder) -> Merges:
+    def loadProfile(shortGameName, profileName, zEditInstallFolder) -> Merges:
         zEditProfileDir = QDir(zEditInstallFolder + "/" + ZEditConfig.RELATIVE_PROFILE_DIR)
         if not zEditProfileDir.exists():
             qDebug("Profiles path does not exist: {}".format(zEditProfileDir.absolutePath()))
@@ -86,7 +86,7 @@ class ZEditConfig:
                     m.profilePath = filePath
                     result.append(m)
             except ValueError as ex:
-                qWarning('Invalid file "{}": {}'.format(filePath, zEditstr(ex)))
+                qWarning('Invalid file "{}": {}'.format(filePath, str(ex)))
         return result
 
     @staticmethod

@@ -63,7 +63,7 @@ class PageZMerge(WizardPage):
     def initializePage(self):
         self.initializeMOProfileName()
         self.validateZMergeProfile()
-        self.loadMerges()
+        self.loadProfile()
         self.calculateNewNames()
         self.loadOriginalConfig()
 
@@ -73,10 +73,10 @@ class PageZMerge(WizardPage):
     def settingChanged(self, setting: int):
         if setting == Setting.ZEDIT_FOLDER:
             self.validateZMergeProfile()
-            self.loadMerges()
+            self.loadProfile()
         if setting == Setting.ZEDIT_PROFILE:
             self.validateZMergeProfile()
-            self.loadMerges()
+            self.loadProfile()
         if setting == Setting.PROFILENAME_TEMPLATE:
             self.initializeNames()
         if setting == Setting.MODNAME_TEMPLATE:
@@ -90,7 +90,7 @@ class PageZMerge(WizardPage):
     def isNewMerge(self):
         return self.context.mergeModel.isSelectedMergeNew()
 
-    def loadMerges(self):
+    def loadProfile(self):
         """ Fills in the modName combobox with the mod names from the selected profile.
         """
         self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
@@ -99,7 +99,7 @@ class PageZMerge(WizardPage):
         self.ui.modName.clear()
         if not self.zEditFolder or not self.zEditProfile:
             return
-        self.profile = ZEditConfig.getMerges(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
+        self.profile = ZEditConfig.loadProfile(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
         if not self.profile:
             return
 
