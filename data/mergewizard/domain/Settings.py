@@ -40,7 +40,7 @@ class Settings(SettingsBase):
     def _validateHidingMethod(self, x, default):
         values = ["mohidden", "optional", "disable"]
         if x is not None:
-            return x
+            return int(x)
         x = self._getUserSetting("hide-type", "Merge Plugins Hide")
         if x:
             x = x.lower()
