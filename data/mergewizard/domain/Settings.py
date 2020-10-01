@@ -91,4 +91,3 @@ class Settings(SettingsBase):
 
     def internal(self, name: str, default=None, validator=DEFAULT_VALIDATOR):
         return validator.validate(self._organizer.persistent(INTERNAL_PLUGIN_NAME, name), default)
-

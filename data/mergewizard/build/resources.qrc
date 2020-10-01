@@ -4,6 +4,7 @@
 
     <file alias="icon_save">resources/save.svg</file>
     <file alias="icon_launch">resources/launch.svg</file>
+    <file alias="icon_refresh">resources/refresh.svg</file>
     <file alias="icon_table_view">resources/table_view.svg</file>
     <file alias="icon_view_headline">resources/view_headline.svg</file>
 

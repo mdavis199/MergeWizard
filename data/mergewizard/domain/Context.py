@@ -1,6 +1,4 @@
-from typing import Any, Union, List
-from os import path
-from PyQt5.QtCore import QVariant, QObject, pyqtSignal, QDate, QTime
+from PyQt5.QtCore import QObject, pyqtSignal, QDate, QTime
 from mobase import IOrganizer
 from mergewizard.domain.Settings import Settings, Validator, DEFAULT_VALIDATOR, BOOLEAN_VALIDATOR, INT_VALIDATOR
 from mergewizard.domain.JSONObject import JSONObject
@@ -8,7 +6,6 @@ from mergewizard.domain.Profile import Profile
 from mergewizard.domain.DataCache import DataCache
 from mergewizard.models.MergeModel import MergeModel
 from mergewizard.models.PluginModel import PluginModel
-from mergewizard.constants import INTERNAL_PLUGIN_NAME, USER_SETTINGS, Setting
 from mergewizard.domain.MOLog import moWarn
 
 # ----
@@ -97,6 +94,5 @@ class Context(QObject):
                 moWarn('Failed to open MergeWizard file "{}": {}'.format(file, ex.strerror))
             except ValueError as ex:
                 moWarn('Failed to read MergeWizard file "{}": {}'.format(file, ex))
-            except TypeError as ex:
-                moWarn('Failed to read MergeWizard file "{}": File is missing values.'.format(file, ex))
-
+            except TypeError:
+                moWarn('Failed to read MergeWizard file "{}": File has incorrect format'.format(file))

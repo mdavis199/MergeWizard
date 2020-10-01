@@ -1,4 +1,4 @@
-from os import path
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QDialog, QFileDialog
 from mergewizard.domain.Context import Context, Validator
@@ -8,6 +8,8 @@ from .ui.SettingsDialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):
+    reloadDataRequest = pyqtSignal()
+
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
         self.ui = Ui_SettingsDialog()
@@ -16,6 +18,8 @@ class SettingsDialog(QDialog):
 
         self.ui.zeditPathError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.zeditProfileError.setPixmap(QPixmap(Icon.ERROR))
+        self.ui.reloadDataButton.setIcon(QIcon(Icon.RELOAD))
+        self.ui.reloadDataButton.clicked.connect(lambda: self.onReloadData())
         self.ui.zeditPathButton.setIcon(QIcon(Icon.FOLDER))
         self.ui.zeditPathButton.clicked.connect(lambda: self.showFileDialog())
         self.ui.zeditPathEdit.textChanged.connect(lambda: self.validateZEditPath())
@@ -131,3 +135,5 @@ class SettingsDialog(QDialog):
         else:
             self.ui.zeditProfileError.setVisible(False)
 
+    def onReloadData(self):
+        pass

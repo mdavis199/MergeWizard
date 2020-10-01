@@ -325,7 +325,7 @@ class PagePluginsSelect(WizardPage):
             self.context.pluginModel.resetPluginSelection()
             self.context.pluginModel.selectPluginsByName(pluginNames)
         else:
-            self.ui.pluginsSelectionGroup.setTitle(self.tr("Selected Plugins"))
+            self.ui.pluginSelectionGroup.setTitle(self.tr("Selected Plugins"))
             self.context.pluginModel.resetPluginSelection()
 
     # ----

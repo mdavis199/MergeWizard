@@ -14,14 +14,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName("SettingsDialog")
-        SettingsDialog.resize(514, 601)
+        SettingsDialog.resize(514, 633)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(SettingsDialog.sizePolicy().hasHeightForWidth())
         SettingsDialog.setSizePolicy(sizePolicy)
-        SettingsDialog.setMinimumSize(QtCore.QSize(514, 601))
-        SettingsDialog.setMaximumSize(QtCore.QSize(514, 601))
         self.gridLayout = QtWidgets.QGridLayout(SettingsDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtWidgets.QDialogButtonBox(SettingsDialog)
@@ -34,8 +32,8 @@ class Ui_SettingsDialog(object):
         self.tabWidget.setObjectName("tabWidget")
         self.generalTab = QtWidgets.QWidget()
         self.generalTab.setObjectName("generalTab")
-        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.generalTab)
-        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.generalTab)
+        self.verticalLayout_10.setObjectName("verticalLayout_10")
         self.enableHiding = QtWidgets.QGroupBox(self.generalTab)
         self.enableHiding.setCheckable(True)
         self.enableHiding.setObjectName("enableHiding")
@@ -57,7 +55,7 @@ class Ui_SettingsDialog(object):
         self.disable.setObjectName("disable")
         self.hidePluginsGroup.addButton(self.disable)
         self.verticalLayout_9.addWidget(self.disable)
-        self.verticalLayout_6.addWidget(self.enableHiding)
+        self.verticalLayout_10.addWidget(self.enableHiding)
         self.enableZMerge = QtWidgets.QGroupBox(self.generalTab)
         self.enableZMerge.setCheckable(True)
         self.enableZMerge.setObjectName("enableZMerge")
@@ -101,17 +99,19 @@ class Ui_SettingsDialog(object):
         self.zeditProfileError.setObjectName("zeditProfileError")
         self.horizontalLayout_2.addWidget(self.zeditProfileError)
         self.verticalLayout_8.addWidget(self.profileGroup)
-        self.verticalLayout_6.addWidget(self.enableZMerge)
-        self.enableLoadingZMerge = QtWidgets.QGroupBox(self.generalTab)
-        self.enableLoadingZMerge.setCheckable(True)
+        self.verticalLayout_10.addWidget(self.enableZMerge)
+        self.groupBox_2 = QtWidgets.QGroupBox(self.generalTab)
+        self.groupBox_2.setTitle("")
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.groupBox_2)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.enableLoadingZMerge = QtWidgets.QCheckBox(self.groupBox_2)
         self.enableLoadingZMerge.setObjectName("enableLoadingZMerge")
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.enableLoadingZMerge)
-        self.horizontalLayout_7.setContentsMargins(25, -1, -1, -1)
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.excludeInactiveMods = QtWidgets.QCheckBox(self.enableLoadingZMerge)
-        self.excludeInactiveMods.setObjectName("excludeInactiveMods")
-        self.horizontalLayout_7.addWidget(self.excludeInactiveMods)
         self.verticalLayout_6.addWidget(self.enableLoadingZMerge)
+        self.excludeInactiveMods = QtWidgets.QCheckBox(self.groupBox_2)
+        self.excludeInactiveMods.setObjectName("excludeInactiveMods")
+        self.verticalLayout_6.addWidget(self.excludeInactiveMods)
+        self.verticalLayout_10.addWidget(self.groupBox_2)
         self.groupBox = QtWidgets.QGroupBox(self.generalTab)
         self.groupBox.setTitle("")
         self.groupBox.setObjectName("groupBox")
@@ -132,7 +132,15 @@ class Ui_SettingsDialog(object):
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName("textEdit")
         self.verticalLayout_2.addWidget(self.textEdit)
-        self.verticalLayout_6.addWidget(self.groupBox)
+        self.verticalLayout_10.addWidget(self.groupBox)
+        self.reloadDataButton = QtWidgets.QPushButton(self.generalTab)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.reloadDataButton.sizePolicy().hasHeightForWidth())
+        self.reloadDataButton.setSizePolicy(sizePolicy)
+        self.reloadDataButton.setObjectName("reloadDataButton")
+        self.verticalLayout_10.addWidget(self.reloadDataButton)
         self.tabWidget.addTab(self.generalTab, "")
         self.defaultsTab = QtWidgets.QWidget()
         self.defaultsTab.setObjectName("defaultsTab")
@@ -317,8 +325,7 @@ class Ui_SettingsDialog(object):
         self.zeditPathError.setToolTip(_translate("SettingsDialog", "Path does not include \"zedit.exe\"."))
         self.profileGroup.setTitle(_translate("SettingsDialog", "zEdit Profile"))
         self.zeditProfileError.setToolTip(_translate("SettingsDialog", "Path does not include \"zedit.exe\"."))
-        self.enableLoadingZMerge.setToolTip(_translate("SettingsDialog", "Incorporate info from \"merge.json\" files located in mod folders."))
-        self.enableLoadingZMerge.setTitle(_translate("SettingsDialog", "Enable Loading zMerge JSON Files"))
+        self.enableLoadingZMerge.setText(_translate("SettingsDialog", "Enable Loading zMergeJSON Files"))
         self.excludeInactiveMods.setToolTip(_translate("SettingsDialog", "Excludes loading zMerge files from deactivated mods."))
         self.excludeInactiveMods.setText(_translate("SettingsDialog", "Do not import file information from deactivated mods."))
         self.textEdit.setHtml(_translate("SettingsDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -327,13 +334,13 @@ class Ui_SettingsDialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Enable zMerge Integration</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">When this option is enabled, the zEdit profile will be scanned for configured merges. This will detect plugins that have been selected for a merge even if the merged plugin has not been built. This option will also enable editing and creating zEdit merge configurations from within MergeWizard.</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">When this option is enabled, the zEdit profile will be scanned for configured merges. This will detect plugins that have been selected for a merge even if the merged plugins have not been built. This option will also enable editing and creating zEdit merge configurations from within MergeWizard.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This option will not detect built merges whose configurations were deleted from the profile.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Enable Loading zMerge JSON Files</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">When this option is enabled, merge details are loaded from &quot;merge.json&quot; files located in mod folders.  </p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">When this option is enabled, merge details are loaded from zEdit\'s files located in mod folders.  </p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This option will not detect merges that are configured but not built. </p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
@@ -343,6 +350,7 @@ class Ui_SettingsDialog(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The information in the profile may differ from the information in the mod folder if the merge was changed but not yet rebuilt.  MergeWizard gives priority to the configuration in the profile.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.reloadDataButton.setText(_translate("SettingsDialog", "Reload Data"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.generalTab), _translate("SettingsDialog", "General"))
         self.generalOptions.setTitle(_translate("SettingsDialog", "General"))
         self.useGameLoadOrder.setText(_translate("SettingsDialog", "Use Game Load Order"))

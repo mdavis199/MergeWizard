@@ -18,7 +18,7 @@ def moError(msg: str):
 
 
 def moTime(time: float, msg: str):
-    qDebug("[mw] [{:.9f}] {}".format(time, msg))
+    qDebug("[mw] [{:.9f}] [{:.9f}] {}".format(time, 0, msg))
 
 
 def moPerf(start: float, stop: float, msg: str):

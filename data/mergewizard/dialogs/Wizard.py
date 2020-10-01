@@ -26,7 +26,8 @@ class Wizard(QWizard):
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
         self.__context = Context(organizer)
-        self.__context.dataCache.loadData()
+        self.__context.settings.loadUserSettings()
+        self.loadData()
 
         # self.resize(700, 500)
         self.setWizardStyle(0)
@@ -44,12 +45,14 @@ class Wizard(QWizard):
         self.button(self.CustomButton1).setVisible(True)  # no setting at this time
         self.button(self.CustomButton2).setVisible(False)  # removing for now
         self.customButtonClicked.connect(self.handleCustomButton)
-        self.context().settings.loadUserSettings()
         self.addWizardPages()
         self.restoreSize()
 
     def context(self) -> Context:
         return self.__context
+
+    def loadData(self):
+        self.__context.dataCache.loadData(self.__context.profile.gameName(), self.__context.settings)
 
     def addWizardPages(self):
         self.setPage(PageId.PagePluginsSelect, PagePluginsSelect(self.context(), self))
@@ -65,6 +68,7 @@ class Wizard(QWizard):
     def showSettingsDialog(self):
         settingsDialog = SettingsDialog(self)
         settingsDialog.loadSettings(self.context())
+
         if settingsDialog.exec() == SettingsDialog.Accepted:
             settingsDialog.storeSettings(self.context())
 
@@ -108,3 +112,4 @@ class Wizard(QWizard):
             self.move(QPoint(x, y))
         if isMaximized:
             self.setWindowState(self.windowState() | Qt.WindowMaximized)
+

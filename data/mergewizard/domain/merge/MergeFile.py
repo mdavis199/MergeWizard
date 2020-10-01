@@ -152,20 +152,18 @@ class MergeFile(JSONObject):
         self.__mergePath = value
 
     @property
-    def modName(self):
-        return self.__modName
-
-    @modName.setter
-    def modName(self, value):
-        self.__modName = value
-
-    @property
     def modIsActive(self):
         return self.__modIsActive
 
     @modIsActive.setter
     def modIsActive(self, value: bool):
         self.__modIsActive = value
+
+    @property
+    def modName(self):
+        return self.name
+
+    # ----------------------------------
 
     def compare(self, other) -> List[str]:
         """ Compares itself with another mergefile and returns a list

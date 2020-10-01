@@ -1,10 +1,12 @@
-from enum import IntFlag, auto
+from enum import IntFlag
 from typing import List, Union
 import json
-from PyQt5.QtCore import QDir, QFile, QFileInfo, QStandardPaths, qDebug
+from PyQt5.QtCore import QDir, QStandardPaths, qDebug
 from mergewizard.domain.merge.MergeFile import Merges
 
 # REFER: https://github.com/z-edit/xelib/blob/master/src/js/setup.js
+
+
 class GameMode(IntFlag):
     FalloutNV = 0
     Fallout3 = 1
@@ -127,4 +129,3 @@ class ZEditConfig:
     @staticmethod
     def isGameValid(shortGameName: str):
         return ZEditConfig.getZEditGameMode(shortGameName) is not None
-

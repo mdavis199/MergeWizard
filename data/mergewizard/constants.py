@@ -46,6 +46,7 @@ class Icon:
     # shown in settings dialog
     FOLDER = ":/mergewizard/icon_folder"
     ERROR = ":/mergewizard/icon_error"
+    RELOAD = ":/mergewizard/icon_refresh"
 
 
 """
