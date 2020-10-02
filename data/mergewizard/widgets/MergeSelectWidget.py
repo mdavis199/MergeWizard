@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QItemSelectionModel, QModelIndex, Qt, qInfo
 from PyQt5.QtWidgets import QWidget, QHeaderView
 
+from mergewizard.domain.MOLog import moWarn
 from mergewizard.models.MergeModel import MergeSortModel, MergeModel, Column
 from .ui.MergeSelectWidget import Ui_MergeSelectWidget
 
@@ -34,6 +35,8 @@ class MergeSelectWidget(QWidget):
                 self.ui.mergeView.selectionModel().setCurrentIndex(
                     idx, QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
                 )
+            else:
+                moWarn("Failed to load merge: {}".format(name))
 
     def selectionChanged(self):
         indexes = self.ui.mergeView.selectionModel().selectedRows(Column.Name)

@@ -24,6 +24,7 @@ class PageId(IntEnum):
 
 class Wizard(QWizard):
     startLoadingData = pyqtSignal()
+    settingsChanged = pyqtSignal(list)
 
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
         super().__init__(parent)
@@ -33,8 +34,9 @@ class Wizard(QWizard):
         self.progressBar = ProgressBar(self)
         self.context().dataCache.dataLoadingStarted.connect(self.progressBar.start)
         self.context().dataCache.dataLoadingProgress.connect(self.progressBar.setValue)
-        self.context().dataCache.dataLoadingCompleted.connect(self.progressBar.accept)
+        self.context().dataCache.dataLoadingCompleted.connect(self.progressBar.acceptAfterDelay)
         self.progressBar.rejected.connect(self.context().dataCache.stopLoading)
+        self.settingsChanged.connect(self.handleChangedSettings)
 
         # self.resize(700, 500)
         self.setWizardStyle(0)
@@ -81,11 +83,20 @@ class Wizard(QWizard):
 
         if settingsDialog.exec() == SettingsDialog.Accepted:
             settingsDialog.storeSettings()
-            if settingsDialog.changedSettings():
-                if QMessageBox.Yes == QMessageBox.question(
-                    self, self.tr("MergeWizard"), self.tr("Settings have changed.\nDo you want to reload the data?")
-                ):
-                    QTimer.singleShot(0, lambda: self.startLoadingData.emit())
+            changedSettings = settingsDialog.changedSettings()
+            if changedSettings:
+                self.settingsChanged.emit(changedSettings)
+
+    def handleChangedSettings(self, changedSettings):
+        if QMessageBox.Yes == QMessageBox.question(
+            self,
+            self.tr("MergeWizard"),
+            self.tr("Settings have changed. Do you want to refresh the data?")
+            + "<br><br><i>"
+            + self.tr("Refreshing the data may change the availability of selected merges and plugins.")
+            + "</i>",
+        ):
+            QTimer.singleShot(1, lambda: self.startLoadingData.emit())
 
     def keyPressEvent(self, event: QKeySequence) -> None:
         # Prevent escape from closing window

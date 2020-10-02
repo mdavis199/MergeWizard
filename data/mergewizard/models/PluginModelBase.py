@@ -92,8 +92,6 @@ class PluginModelBase(QAbstractItemModel):
         self._plugins: Plugins = Plugins()
         self._selected: List[int] = []  # ordered list of selected plugins (user sets order)
         self._masters: List[int] = []  # ordered list of required plugins for all selected plugins (priority order)
-        self._originalSelected = []
-        self._originalMasters = []
         self._selectedPluginsChanged.connect(self.selectMasters)
 
     # ------------------------------------------------
@@ -105,32 +103,16 @@ class PluginModelBase(QAbstractItemModel):
             self.beginRemoveRows(QModelIndex(), 0, len(self._plugins) - 1)
             self._plugins.clear()
             self.endRemoveRows()
+        self._selected.clear()
+        self._masters.clear()
         if plugins:
             self.beginInsertRows(QModelIndex(), 0, len(plugins) - 1)
             self._plugins = plugins
             self.endInsertRows()
-        self._originalMasters = self._masters
-        self._originalSelected = self._selected
         self.modelLoadingCompleted.emit()
 
     # ------------------------------------------------
-    # --- Methods for detecting plugin selection changes
-    # ------------------------------------------------
-
-    def pluginsDidChange(self):
-        return self._selected != self._originalSelected
-
-    def resetPluginsDidChange(self):
-        self._originalSelected = self._selected
-
-    def mastersDidChange(self):
-        return self._masters != self._originalMasters
-
-    def resetMastersDidChange(self):
-        self._originalMasters = self._masters
-
-    # ------------------------------------------------
-    # --- Get names of selected plugins (for SavePluginsFile)
+    # --- Get names of selected plugins
     # ------------------------------------------------
 
     def selectedPluginNames(self):

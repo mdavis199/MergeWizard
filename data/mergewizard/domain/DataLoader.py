@@ -12,7 +12,6 @@ from mergewizard.domain.MOLog import moWarn, moDebug, moPerf, moTime
 
 
 class DataLoader(QThread):
-    """ Loads all plugins that MO2 knows about. """
 
     MOD_ACTIVE = int(ModState.ACTIVE)
     progress = pyqtSignal(int)
@@ -73,6 +72,7 @@ class DataLoader(QThread):
 
         self._count = 0
         self._progress = 0
+        self._total = 0
         self._plugins = Plugins()
         self._mergeFiles = []
         self._mods = []
@@ -80,7 +80,7 @@ class DataLoader(QThread):
 
         # first, get enough info to estimate the progress
         self._pluginNames = self.__organizer.pluginList().pluginNames()
-        self._total = len(self._pluginNames) * 2
+        self._total += len(self._pluginNames) * 2
 
         self._allMods = self.__organizer.modList().allMods()
         self._total += len(self._allMods)
@@ -102,7 +102,6 @@ class DataLoader(QThread):
         self.result.emit((self._plugins, self._mergeFiles, self._mods))
         # ----------
         moPerf(startTime, perf_counter(), "DataLoader.run - complete")
-        self.progress.emit(100)
 
     # -----------------------------------------------------------------
 

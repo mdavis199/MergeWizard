@@ -1,5 +1,5 @@
 from enum import IntEnum, IntFlag, auto
-from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel
+from PyQt5.QtCore import Qt, QModelIndex, QVariant, QPoint, QItemSelectionModel, qInfo
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QAction, QHeaderView
 
@@ -25,6 +25,7 @@ class PagePluginsSelect(WizardPage):
         TextPanel = 0
         MergePanel = 1
 
+    # Panel states are stored in settings as a bit mask
     class VisiblePanel(IntFlag):
         PluginInfo = auto()
         MergeInfo = auto()
@@ -32,15 +33,34 @@ class PagePluginsSelect(WizardPage):
         MergeSelect = auto()
         Filters = auto()
 
+    # This is data that is saved and restored when the
+    # DataCache is reloaded after the user changes the settings.
+    class DataToRestore:
+        filters = 0
+        selectedMergeName = ""
+        selectedPluginNames = []
+
     def __init__(self, context: Context, parent: QWidget = None):
         super().__init__(parent)
         self.ui = Ui_PagePluginsSelect()
         self.ui.setupUi(self)
         self.context = context
+        self.dataToRestore = self.DataToRestore()
 
         #  views/models for the top plugin panels
         PluginViewFactory.configureView(ViewType.All, self.ui.pluginsList, context.pluginModel)
         PluginViewFactory.configureView(ViewType.Selected, self.ui.selectedPluginsList, context.pluginModel)
+
+        # splitters
+        Splitter.decorate(self.ui.splitter)
+        Splitter.decorate(self.ui.allPluginsSplitter)
+        Splitter.decorate(self.ui.selectedPluginsSplitter)
+        self.ui.allPluginsSplitter.setStretchFactor(0, 2)
+        self.ui.allPluginsSplitter.setStretchFactor(1, 1)
+        self.ui.selectedPluginsSplitter.setStretchFactor(0, 2)
+        self.ui.selectedPluginsSplitter.setStretchFactor(1, 1)
+        self.didResizeSplitters = False
+        self.resizeSplitter()
 
         self.ui.pluginsList.selectionModel().currentChanged.connect(lambda c, p: self.showPluginInfo(c))
         self.ui.selectedPluginsList.selectionModel().currentChanged.connect(lambda c, p: self.showPluginInfo(c))
@@ -60,17 +80,6 @@ class PagePluginsSelect(WizardPage):
         self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
         self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
 
-        # splitters
-        Splitter.decorate(self.ui.splitter)
-        Splitter.decorate(self.ui.allPluginsSplitter)
-        Splitter.decorate(self.ui.selectedPluginsSplitter)
-        self.ui.allPluginsSplitter.setStretchFactor(0, 2)
-        self.ui.allPluginsSplitter.setStretchFactor(1, 1)
-        self.ui.selectedPluginsSplitter.setStretchFactor(0, 2)
-        self.ui.selectedPluginsSplitter.setStretchFactor(1, 1)
-        self.didResizeSplitters = False
-        self.resizeSplitter()
-
         context.dataCache.dataLoadingStarted.connect(self.modelLoadingStarted)
         context.dataCache.dataLoadingCompleted.connect(self.modelLoadingCompleted)
 
@@ -83,7 +92,7 @@ class PagePluginsSelect(WizardPage):
         visiblePanels, mergeInfoStates, filters = self.getPageSettings()
         self.setPanelLayout(visiblePanels)
         self.setMergeInfoState(mergeInfoStates)
-        self._filters = filters
+
         self.ui.pluginFilterWidget.enableAll()
         self._firstTimeLoadingData = True
 
@@ -91,7 +100,7 @@ class PagePluginsSelect(WizardPage):
         self.savePageSettings()
 
     # ----
-    # ---- Get and set states of variaus page elements
+    # ---- Get and set states of various page elements
     # ----
 
     def getPanelLayout(self):
@@ -235,21 +244,28 @@ class PagePluginsSelect(WizardPage):
         # Hiding all the data by enabling all the filters sped up loading quite a bit.
         # When loading 640 plugins, 533 mods, and 20 merges: this halved the time it took
         # to load and display the data.  Originally, about 6 seconds, down to 2.5 seconds.
-        # Tried toggling setUpdatesEnabled, but load time was 5 seconds and it looked very bad.
         #
         # On the first time through, we don't save the filters because we will be using the ones
         # obtained from Settings when this page was constructed.
         if not self._firstTimeLoadingData:
-            self._filters = self.getFilters()
-        self.ui.pluginFilterWidget.enableAll()
+            self.dataToRestore.filters = self.getFilters()
+            self.dataToRestore.selectedMergeName = self.ui.mergeSelectWidget.getSelectedMergeName()
+            self.dataToRestore.selectedPluginNames = self.context.pluginModel.selectedPluginNames()
+            self.ui.pluginFilterWidget.enableAll()
+        else:
+            self.dataToRestore.filters = self.context.settings.internal("Page1.PluginFilters", 0, INT_VALIDATOR)
+            self.dataToRestore.selectedMergeName = self.getLastLoadedMerge()
+            self.dataToRestore.selectedPluginNames = []
 
     def modelLoadingCompleted(self) -> None:
-        self._firstTimeLoadingData = False
-        self.setFilters(self._filters)
+        self.setFilters(self.dataToRestore.filters)
         self.setUpViewsAfterModelReload()
-        self.resizeSplitter()
         self.showPluginInfo()
-        self.selectLastLoadedMerge()
+        self.selectMergeByName(self.dataToRestore.selectedMergeName)
+        self.context.pluginModel.selectPluginsByName(self.dataToRestore.selectedPluginNames)
+        if self._firstTimeLoadingData:
+            self._firstTimeLoadingData = False
+            self.resizeSplitter()
 
     def setUpViewsAfterModelReload(self):
         section = self.ui.pluginsList.sectionForColumn(Column.PluginName)
@@ -264,11 +280,14 @@ class PagePluginsSelect(WizardPage):
             width = self.ui.pluginsList.header().sectionSize(self.ui.pluginsList.sectionForColumn(Column.PluginName))
         self.ui.pluginInfoWidget.ui.infoView.setColumnWidth(0, width)
 
-    def selectLastLoadedMerge(self):
+    def getLastLoadedMerge(self):
         data = self.context.readMergeWizardFile()
         if data:
-            self.ui.mergeSelectWidget.selectMergeByName(data.loadedMod)
-            self.selectPluginsFromMerge()
+            return data.loadedMod
+
+    def selectMergeByName(self, mergeName):
+        self.ui.mergeSelectWidget.selectMergeByName(mergeName)
+        self.selectPluginsFromMerge()
 
     def resizeSplitter(self):
         # the Selected Plugin view has fewer columns than the plugin view
@@ -277,18 +296,16 @@ class PagePluginsSelect(WizardPage):
 
         # We want to do this only once. We would not want the splitter
         # to jump around after the user has set it's position
-        if not self.didResizeSplitters:
-            self.didResizeSplitters = True
-            modColumn = self.ui.pluginsList._columns.index(Column.ModName)
-            priorityColumn = self.ui.pluginsList._columns.index(Column.Priority)
-            samColumn = self.ui.pluginsList._columns.index(Column.IsSelectedAsMaster)
-            width = self.ui.pluginsList.header().length()
-            diffWidth = (
-                self.ui.pluginsList.header().sectionSize(modColumn)
-                + self.ui.pluginsList.header().sectionSize(samColumn)
-                + self.ui.pluginsList.header().sectionSize(priorityColumn)
-            )
-            self.ui.splitter.setSizes([width, width - diffWidth])
+        modColumn = self.ui.pluginsList._columns.index(Column.ModName)
+        priorityColumn = self.ui.pluginsList._columns.index(Column.Priority)
+        samColumn = self.ui.pluginsList._columns.index(Column.IsSelectedAsMaster)
+        width = self.ui.pluginsList.header().length()
+        diffWidth = (
+            self.ui.pluginsList.header().sectionSize(modColumn)
+            + self.ui.pluginsList.header().sectionSize(samColumn)
+            + self.ui.pluginsList.header().sectionSize(priorityColumn)
+        )
+        self.ui.splitter.setSizes([width, width - diffWidth])
 
     # ----
     # ---- Methods related to the InfoView
