@@ -23,7 +23,7 @@ class PageId(IntEnum):
 
 
 class Wizard(QWizard):
-    startLoadingData = pyqtSignal()
+
     settingsChanged = pyqtSignal(list)
 
     def __init__(self, organizer: IOrganizer, parent: QWidget = None):
@@ -57,13 +57,13 @@ class Wizard(QWizard):
         self.addWizardPages()
         self.restoreSize()
 
-        self.startLoadingData.connect(self.loadData)
-        QTimer.singleShot(0, lambda: self.startLoadingData.emit())
+        QTimer.singleShot(0, lambda: self.loadData())
 
     def context(self) -> Context:
         return self.__context
 
     def loadData(self):
+        self.progressBar.start()
         self.__context.dataCache.loadData(self.__context.profile.gameName(), self.__context.settings)
 
     def addWizardPages(self):
@@ -97,7 +97,7 @@ class Wizard(QWizard):
             + "</i>",
         )
         if result == QMessageBox.Yes:
-            QTimer.singleShot(1, lambda: self.startLoadingData.emit())
+            QTimer.singleShot(1, lambda: self.loadData())
 
     def keyPressEvent(self, event: QKeySequence) -> None:
         # Prevent escape from closing window
