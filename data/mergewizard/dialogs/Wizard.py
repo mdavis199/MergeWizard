@@ -88,14 +88,15 @@ class Wizard(QWizard):
                 self.settingsChanged.emit(changedSettings)
 
     def handleChangedSettings(self, changedSettings):
-        if QMessageBox.Yes == QMessageBox.question(
+        result = QMessageBox.question(
             self,
             self.tr("MergeWizard"),
             self.tr("Settings have changed. Do you want to refresh the data?")
             + "<br><br><i>"
             + self.tr("Refreshing the data may change the availability of selected merges and plugins.")
             + "</i>",
-        ):
+        )
+        if result == QMessageBox.Yes:
             QTimer.singleShot(1, lambda: self.startLoadingData.emit())
 
     def keyPressEvent(self, event: QKeySequence) -> None:
