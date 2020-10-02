@@ -94,9 +94,15 @@ class DataLoader(QThread):
             self._total += len(self._mergeFiles)
 
         self.loadPlugins()
+        if self._stopped:
+            return
         self.loadMods()
+        if self._stopped:
+            return
         if self._enableLoadingProfile:
             self.loadProfile()  # we've already loaded it; we're just adding data
+        if self._stopped:
+            return
         if self._enableLoadingMergeFiles:
             self.loadMergeFiles()
         self.result.emit((self._plugins, self._mergeFiles, self._mods))
@@ -126,9 +132,9 @@ class DataLoader(QThread):
         # -------
         plugins = self._plugins
         for name in self._pluginNames:
+            self.emitProgress()
             if self._stopped:
                 return
-            self.emitProgress()
             plugins.add(self.loadPlugin(name))
         for name in self._pluginNames:
             self.emitProgress()
@@ -159,6 +165,8 @@ class DataLoader(QThread):
         # -------
         for m in self._mergeFiles:
             self.emitProgress()
+            if self._stopped:
+                return
             self._mergeNames.add(m.modName)
             state = self.__organizer.modList().state(m.name)
             m.modIsActive = state & ModState.ACTIVE == ModState.ACTIVE
@@ -175,6 +183,8 @@ class DataLoader(QThread):
         # -------
         for mod in self._mods:
             self.emitProgress()
+            if self._stopped:
+                return
             if not self._onlyActiveMerges or mod.active:
                 if mod.name not in self._mergeNames:
                     self.loadMergeFileForMod(mod)
