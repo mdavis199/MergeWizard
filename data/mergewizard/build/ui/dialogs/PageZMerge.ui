@@ -34,11 +34,11 @@
         <property name="uniformRowHeights">
          <bool>true</bool>
         </property>
-        <attribute name="headerCascadingSectionResizes">
-         <bool>true</bool>
-        </attribute>
         <attribute name="headerMinimumSectionSize">
-         <number>100</number>
+         <number>1</number>
+        </attribute>
+        <attribute name="headerStretchLastSection">
+         <bool>false</bool>
         </attribute>
        </widget>
       </item>
@@ -576,7 +576,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="methodGroup"/>
   <buttongroup name="archiveGroup"/>
+  <buttongroup name="methodGroup"/>
  </buttongroups>
 </ui>

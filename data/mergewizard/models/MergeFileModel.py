@@ -14,6 +14,7 @@ class Role(IntEnum):
 class Column(IntEnum):
     Property = 0
     Value = 1
+    PluginPath = 2
 
 
 # Depth: D0
@@ -132,7 +133,7 @@ class MergeFileModel(QAbstractItemModel):
     def columnCount(self, parent: QModelIndex = QModelIndex()):
         # For combobox delegates this keeps the drop-down indicators from being very far
         # from the text. The last column will be completely empty.
-        return len(Column) + 1
+        return len(Column)
 
     def index(self, row: int, col: int, parent: QModelIndex = QModelIndex()):
         if self.hasIndex(row, col, parent):
@@ -158,6 +159,8 @@ class MergeFileModel(QAbstractItemModel):
                 return self.tr("Property")
             if section == Column.Value:
                 return self.tr("Value")
+            if section == Column.PluginPath:
+                return self.tr("Data Folder")
 
     def flags(self, idx: QModelIndex):
         DEFAULT_FLAGS = Qt.ItemIsEnabled | Qt.ItemIsSelectable  # May have children
@@ -167,8 +170,7 @@ class MergeFileModel(QAbstractItemModel):
         if idx.column() == 0 and depth == Id.Depth.D0:
             if idx.row() == Row.LoadOrder or idx.row() == Row.MergedPlugins or idx.row() == Row.ZEditOptions:
                 return DEFAULT_FLAGS  # These may have children
-
-        elif idx.column() == 1:
+        else:
             if depth == Id.Depth.D0 and (idx.row() == Row.ModName or idx.row() == Row.PluginName):
                 return DEFAULT_FLAGS | Qt.ItemNeverHasChildren | Qt.ItemIsEditable
             if depth == Id.Depth.D1 and idx.parent().row() == Row.ZEditOptions:
@@ -254,6 +256,8 @@ class MergeFileModel(QAbstractItemModel):
                     return "{}".format(idx.row() + 1)
                 elif idx.column() == 1:
                     return self.mergeFile.plugins[idx.row()].filename
+                elif idx.column() == 2:
+                    return self.mergeFile.plugins[idx.row()].dataFolder
             if idx.parent().row() == Row.ZEditOptions:
                 if idx.column() == 0:
                     return MERGE_OPTIONS[idx.row()][1]

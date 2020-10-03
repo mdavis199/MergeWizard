@@ -6,6 +6,7 @@ from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
 from mergewizard.domain.merge.MergeFile import MergeFile, PluginDesc
 from mergewizard.domain.merge.ZEditConfig import ZEditConfig
+from mergewizard.domain.MOLog import moDebug
 from mergewizard.models.MergeFileModel import MergeFileModel, OptionRow as Option
 from mergewizard.widgets.ComboBoxDelegate import ComboBoxDelegate
 from mergewizard.constants import Setting, Icon
@@ -49,10 +50,10 @@ class PageZMerge(WizardPage):
 
         # zMerge Views
         self.ui.zMergeConfigView.setModel(MergeFileModel())
-        self.ui.zMergeConfigView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.ui.zMergeConfigView.header().setStretchLastSection(True)
+        self.ui.zMergeConfigView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.zMergeConfigView.header().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.ui.zMergeConfigView.header().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.ui.zMergeConfigView.header().setVisible(False)
-        self.ui.zMergeConfigView.setItemDelegateForColumn(1, ComboBoxDelegate(self))
 
         # options
         self.ui.methodGroup.setId(self.ui.clobber, 0)
@@ -145,7 +146,6 @@ class PageZMerge(WizardPage):
         self.profile = ZEditConfig.loadProfile(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
 
     def loadMergeFile(self):
-        qInfo("loading MF")
         self.ui.modName.clear()
         if self.context.mergeModel.isCurrentMergeNew():
             self.calculateNewNames()
@@ -159,11 +159,13 @@ class PageZMerge(WizardPage):
             self.ui.toggleOriginal.setEnabled(True)
             self.ui.zMergeBox.setTitle(self.tr("Merge Configuration: {}".format(mf.name)))
             self.ui.modName.addItem(mf.name, 0)
-        qInfo("mf: {}".format(mf.name))
         self.setOptionsFromMergeFile(mf)
         self.setLoadOrder(mf)
         self.setPlugins(mf)
+        self.mergeFile = mf
         self.ui.zMergeConfigView.model().setMergeFile(mf)
+        # self.ui.zMergeConfigView.header().resizeSections(QHeaderView.ResizeToContents)
+        self.ui.zMergeConfigView.resizeColumnToContents(2)
         self.ui.zMergeConfigView.expandAll()
 
     def createMergeFile(self):
@@ -302,7 +304,7 @@ class PageZMerge(WizardPage):
         if handle < 0:
             return
         exitCode = self.context.organizer.waitForApplication(handle)
-        qInfo("EXIT CODE: {}".format(exitCode))
+        moDebug(self.tr("zEdit exited with code {}").format(exitCode))
 
     def saveChanges(self):
         pass
