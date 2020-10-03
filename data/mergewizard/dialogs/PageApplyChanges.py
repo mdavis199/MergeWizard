@@ -26,13 +26,17 @@ class PageApplyChanges(WizardPage):
         self.ui.verticalSplitter.setStretchFactor(1, 1)
         self.ui.actionWidget.setContext(context)
 
+        self.context.mergeModel.currentMergeChanged.connect(lambda: self.updateTitle())
+
     def initializePage(self):
         # this is called whenever the wizard moves forward to this page.
         # We use it to ensure the action widget reflects changes made in the plugin selection
         self.ui.actionWidget.initialize()
-        selectedMerge = self.context.mergeModel.selectedMergeName()
-        if selectedMerge:
-            self.ui.selectedGroup.setTitle(self.tr("Selected Plugins: {}").format(selectedMerge))
+
+    def updateTitle(self):
+        currentMerge = self.context.mergeModel.currentMergeName()
+        if currentMerge:
+            self.ui.selectedGroup.setTitle(self.tr("Selected Plugins: {}").format(currentMerge))
         else:
             self.ui.selectedGroup.setTitle(self.tr("Selected Plugins"))
 

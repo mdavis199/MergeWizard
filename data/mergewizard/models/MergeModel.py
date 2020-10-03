@@ -1,10 +1,11 @@
 from enum import IntEnum, auto
 from typing import List
+from copy import deepcopy
 
-from PyQt5.QtCore import pyqtSlot, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QAbstractItemModel, QModelIndex, QObject, QSortFilterProxyModel, Qt
 from PyQt5.QtGui import QColor, QFont, QIcon
 
-from mergewizard.domain.merge import MergeFile as Merge
+from mergewizard.domain.merge import MergeFile
 from mergewizard.constants import Icon
 import mergewizard.models.ItemId as Id
 
@@ -20,11 +21,16 @@ class Column(IntEnum):
 
 
 class MergeModel(QAbstractItemModel):
+
+    # Emits the index of the current merge
+
+    currentMergeChanged = pyqtSignal(object)
+
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
-        self.__placeholder: Merge = Merge("")
-        self.__merges: List[Merge] = [self.__placeholder]
-        self.__selectedMerge: int = -1  # row that is selected
+        self.__placeholder: MergeFile = MergeFile("")
+        self.__merges: List[MergeFile] = [self.__placeholder]
+        self.__currentMerge: int = 0
 
     # ------------------------------------------------
     # Methods for data initialization and access
@@ -32,7 +38,7 @@ class MergeModel(QAbstractItemModel):
 
     # NOTE: These are actually the names of Mods that contain merge.json files
 
-    def setMerges(self, merges: List[Merge]):
+    def setMerges(self, merges: List[MergeFile]):
         if len(self.__merges) > 1:
             self.beginRemoveRows(QModelIndex(), 1, len(self.__merges))
             self.__merges = [self.__placeholder]
@@ -42,36 +48,42 @@ class MergeModel(QAbstractItemModel):
             self.__merges = self.__merges + sorted(merges)
             self.endInsertRows()
 
-    def setSelectedMerge(self, index: QModelIndex = QModelIndex()):
-        self.__selectedMerge = index.row()
+    def setCurrentMerge(self, index: QModelIndex = QModelIndex()):
+        self.__currentMerge = index.row()
+        self.currentMergeChanged.emit(self.index(self.__currentMerge, Column.Name))
 
-    def isSelectedMergeNew(self):
-        return self.__selectedMerge <= 0
+    def currentMerge(self) -> QModelIndex:
+        return self.index(self.__currentMerge, 1)
 
-    def selectedMergeName(self):
-        if self.__selectedMerge > 0:
-            return self.data(self.selectedMerge())
+    def isCurrentMergeNew(self):
+        return self.__currentMerge <= 0
+
+    def currentMergeName(self):
+        if self.__currentMerge > 0:
+            return self.data(self.currentMerge())
         return ""
 
-    def selectedPluginName(self):
-        if self.__selectedMerge > 0:
-            return self.__merges[self.__selectedMerge].filename
+    def currentPluginName(self):
+        if self.__currentMerge > 0:
+            return self.__merges[self.__currentMerge].filename
         return ""
 
-    def selectedMerge(self) -> QModelIndex:
-        return self.index(self.__selectedMerge, 1)
+    def currentMergeFile(self):
+        return self.__merges[self.__currentMerge]
 
     def indexForMergeName(self, name) -> QModelIndex:
+        if not name:
+            return self.index(0, Column.Name)
         row = next((i for i in range(len(self.__merges)) if self.__merges[i].name == name), -1)
         if row >= 0:
             return self.index(row, Column.Name)
         return QModelIndex()
 
-    def selectedMergePluginNames(self) -> List[str]:
-        if self.__selectedMerge < 0:
+    def currentMergePluginNames(self) -> List[str]:
+        if self.__currentMerge < 0:
             return []
         names = []
-        merge = self.__merges[self.__selectedMerge]
+        merge = self.__merges[self.__currentMerge]
         for pfd in merge.plugins:
             names.append(pfd.filename)
         return names
@@ -190,21 +202,21 @@ class MergeSortModel(QSortFilterProxyModel):
         # ---- Convenience pass-through methods
         # ----
 
-    def setSelectedMerge(self, idx: QModelIndex = QModelIndex()):
+    def setCurrentMerge(self, idx: QModelIndex = QModelIndex()):
         sourceIndex = self.sourceModel().index(idx.row(), idx.column())
-        self.sourceModel().setSelectedMerge(sourceIndex)
+        self.sourceModel().setCurrentMerge(sourceIndex)
 
-    def selectedMerge(self) -> QModelIndex:
-        self.mapFromSource(self.sourceModel().selectedMerge())
+    def currentMerge(self) -> QModelIndex:
+        self.mapFromSource(self.sourceModel().currentMerge())
 
-    def selectedMergeName(self):
-        return self.sourceModel().selectedMergeName()
+    def currentMergeName(self):
+        return self.sourceModel().currentMergeName()
 
-    def selectedPluginName(self):
-        return self.sourceModel().selectedPluginName()
+    def currentPluginName(self):
+        return self.sourceModel().currentPluginName()
 
     def indexForMergeName(self, name) -> QModelIndex:
         return self.mapFromSource(self.sourceModel().indexForMergeName(name))
 
-    def isSelectedMergeNew(self) -> bool:
-        return self.sourceModel().isSelectedMergeNew()
+    def isCurrentMergeNew(self) -> bool:
+        return self.sourceModel().isCurrentMergeNew()

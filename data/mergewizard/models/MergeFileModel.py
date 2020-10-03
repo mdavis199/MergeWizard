@@ -18,20 +18,20 @@ class Column(IntEnum):
 
 # Depth: D0
 class Row(IntEnum):
-    ModName = 0
+    WhenBuilt = 0
+    ModName = auto()
     PluginName = auto()
-    WhenBuilt = auto()
-    ZEditOptions = auto()
     LoadOrder = auto()
     MergedPlugins = auto()
+    ZEditOptions = auto()
 
 
 # Depth: D1, parentRow = Row.ZEditOptions
 class OptionRow(IntEnum):
     Method = 0
     ArchiveAction = auto()
-    BuildArchive = auto()
     UseGameLoadOrder = auto()
+    BuildArchive = auto()
     HandleFaceData = auto()
     HandleVoiceData = auto()
     HandleBillboards = auto()
@@ -47,8 +47,8 @@ class OptionRow(IntEnum):
 MERGE_OPTIONS = [
     ("method", "Merge method:"),
     ("archiveAction", "Archive action:"),
-    ("buildMergedArchive", "Build merged archive:"),
     ("useGameLoadOrder", "Use game load order:"),
+    ("buildMergedArchive", "Build merged archive:"),
     ("handleFaceData", "Handle face data:"),
     ("handleVoiceData", "Handle voice data:"),
     ("handleBillboards", "Handle billboards:"),
@@ -77,7 +77,7 @@ class MergeFileModel(QAbstractItemModel):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self._mergeFile = MergeFile()
-        self._isEditable = True
+        self._mergeFile.isNew = True
         self._showTooltipsOnPlugins = True
 
     @property
@@ -86,20 +86,7 @@ class MergeFileModel(QAbstractItemModel):
 
     @mergeFile.setter
     def mergeFile(self, value):
-        self.layoutAboutToBeChanged.emit()
-        if value is None:
-            self.mergeFile = MergeFile()
-        else:
-            self._mergeFile = value
-        self.layoutChanged.emit()
-
-    @property
-    def isEditable(self):
-        return self._isEditable
-
-    @isEditable.setter
-    def isEditable(self, value: bool):
-        self._isEditable = value
+        self.setMergeFile(value)
 
     @property
     def showPluginTooltips(self):
@@ -108,6 +95,20 @@ class MergeFileModel(QAbstractItemModel):
     @showPluginTooltips.setter
     def showPluginTooltips(self, value: bool):
         self._showTooltipsOnPlugins = value
+
+    def setMergeFile(self, m: MergeFile):
+        self.beginResetModel()
+        self._mergeFile = m
+        self.endResetModel()
+
+    def setOption(self, row, value):
+        self.setData(self.index(row, Column.Value, self.index(Row.ZEditOptions, 0)), value, Qt.EditRole)
+
+    def setModName(self, value):
+        self.setData(self.index(Row.ModName, Column.Value), value, Qt.EditRole)
+
+    def setPluginName(self, value):
+        self.setData(self.index(Row.PluginName, Column.Value), value, Qt.EditRole)
 
     # ----------------------------------------------------
     # --- Abstract model overrides
@@ -159,7 +160,7 @@ class MergeFileModel(QAbstractItemModel):
                 return self.tr("Value")
 
     def flags(self, idx: QModelIndex):
-        DEFAULT_FLAGS = Qt.ItemIsEnabled | Qt.ItemIsSelectable  # May have children and not editable
+        DEFAULT_FLAGS = Qt.ItemIsEnabled | Qt.ItemIsSelectable  # May have children
         if not idx.isValid():
             return Qt.NoItemFlags
         depth = Id.depth(idx)
@@ -167,7 +168,7 @@ class MergeFileModel(QAbstractItemModel):
             if idx.row() == Row.LoadOrder or idx.row() == Row.MergedPlugins or idx.row() == Row.ZEditOptions:
                 return DEFAULT_FLAGS  # These may have children
 
-        elif self.isEditable and idx.column() == 1:
+        elif idx.column() == 1:
             if depth == Id.Depth.D0 and (idx.row() == Row.ModName or idx.row() == Row.PluginName):
                 return DEFAULT_FLAGS | Qt.ItemNeverHasChildren | Qt.ItemIsEditable
             if depth == Id.Depth.D1 and idx.parent().row() == Row.ZEditOptions:
@@ -196,8 +197,7 @@ class MergeFileModel(QAbstractItemModel):
         return self._style_data(idx, role)
 
     def _checkstate_data(self, idx: QModelIndex):
-        if not self.isEditable:
-            return
+        return
         depth = Id.depth(idx)
         if (
             depth == Id.Depth.D1
@@ -287,28 +287,29 @@ class MergeFileModel(QAbstractItemModel):
                     return QColor(Qt.lightGray)
 
         if role == Qt.TextAlignmentRole:
-            if idx.column() == 0 and Id.depth(idx) == Id.Depth.D2:
+            if idx.column() == 0 and Id.depth(idx) == Id.Depth.D1:
                 if idx.parent().row() == Row.MergedPlugins:
+                    return Qt.AlignRight
+                elif idx.parent().row() == Row.LoadOrder:
                     return Qt.AlignRight
 
     def setData(self, idx: QModelIndex, value, role: int = Qt.EditRole):
         if not idx.isValid() or idx.column() != 1:
             return False
 
-        if role == Qt.CheckStateRole:
+        if role == Qt.EditRole:
             if Id.depth(idx) == Id.Depth.D1 and idx.parent().row() == Row.ZEditOptions and isBoolOption(idx.row()):
-                setattr(self.mergeFile, MERGE_OPTIONS[idx.row()][0], value == Qt.Checked)
+                setattr(self.mergeFile, MERGE_OPTIONS[idx.row()][0], value is True)
                 self.dataChanged.emit(idx, idx, [role])
                 return True
 
-        elif role == Qt.EditRole:
             if Id.depth(idx) == Id.Depth.D0:
                 if idx.row() == Row.ModName:
                     self.mergeFile.name = value if value is not None else ""
                     self.dataChanged.emit(idx, idx, [role])
                     return True
                 elif idx.row() == Row.PluginName:
-                    self.mergeFile.pluginName = value if value is not None else ""
+                    self.mergeFile.filename = value if value is not None else ""
                     self.dataChanged.emit(idx, idx, [role])
                     return True
             elif Id.depth(idx) == Id.Depth.D1 and idx.parent().row() == Row.ZEditOptions:

@@ -110,6 +110,7 @@ class MergeFile(JSONObject):
         self.__hash = hash(self.__key)
         self.__mergePath: str = ""  # full path to the json file
         self.__modIsActive: bool = False
+        self.__isNew: bool = False
         self.name: str = name
         self.filename: str = filename
         self.method: str = method
@@ -158,6 +159,14 @@ class MergeFile(JSONObject):
     @modIsActive.setter
     def modIsActive(self, value: bool):
         self.__modIsActive = value
+
+    @property
+    def isNew(self):
+        return self.__isNew
+
+    @isNew.setter
+    def isNew(self, value):
+        self.__isNew = value
 
     @property
     def modName(self):

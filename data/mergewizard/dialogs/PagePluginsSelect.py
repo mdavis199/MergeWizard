@@ -12,6 +12,18 @@ from mergewizard.widgets.Splitter import Splitter
 from mergewizard.constants import Icon
 from .ui.PagePluginsSelect import Ui_PagePluginsSelect
 
+"""
+Behaviors and Notes:
+RELOADING:
+- If a user selects a model and changes the selected plugins, then changes settings so that the data is reloaded...
+  ... well, we will try to restore the selected merge, but any added/removed plugins will not be restored....
+  ... Could change this with more signals, but is it worth it?
+- If they are creating a new merge, we will try to restore the plugins that were selected.
+
+- Data loading speed improved dramatically by enabling all the filters (hiding all the rows) before
+  starting the data load.
+"""
+
 
 class PagePluginsSelect(WizardPage):
 
@@ -37,7 +49,7 @@ class PagePluginsSelect(WizardPage):
     # DataCache is reloaded after the user changes the settings.
     class DataToRestore:
         filters = 0
-        selectedMergeName = ""
+        currentMergeName = ""
         selectedPluginNames = []
 
     def __init__(self, context: Context, parent: QWidget = None):
@@ -68,16 +80,17 @@ class PagePluginsSelect(WizardPage):
         self.context.pluginModel.rowsInserted.connect(lambda: self.updateFilterCount())
         self.context.pluginModel.rowsRemoved.connect(lambda: self.updateFilterCount())
         self.context.pluginModel.dataChanged.connect(lambda: self.updateFilterCount())
+        self.context.mergeModel.currentMergeChanged.connect(self.selectPluginsFromMerge)
 
         # views/models for the bottom panels
         self.ui.pluginInfoWidget.setPluginModel(context.pluginModel)
         self.ui.mergeInfoWidget.setPluginModel(context.pluginModel)
         self.ui.bulkAddWidget.setPluginModel(context.pluginModel)
         self.ui.mergeSelectWidget.setMergeModel(context.mergeModel)
+
         self.ui.pluginInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.mergeInfoWidget.doubleClicked.connect(self.onInfoWidgetDoubleClicked)
         self.ui.filterEdit.textChanged.connect(self.ui.pluginsList.setNameFilter)
-        self.ui.mergeSelectWidget.ui.selectMergeButton.clicked.connect(self.selectPluginsFromMerge)
         self.ui.pluginFilterWidget.filterChanged.connect(self.ui.pluginsList.setFilter)
 
         context.dataCache.dataLoadingStarted.connect(self.modelLoadingStarted)
@@ -89,7 +102,7 @@ class PagePluginsSelect(WizardPage):
         # We want to restore the panel to the state it was in when it was last closed.
         # Except, we want the all filters enabled, because it speeds up load time.
         # We save the filter setting and will restore after all the data is loaded.
-        visiblePanels, mergeInfoStates, filters = self.getPageSettings()
+        visiblePanels, mergeInfoStates, _ = self.getPageSettings()
         self.setPanelLayout(visiblePanels)
         self.setMergeInfoState(mergeInfoStates)
 
@@ -249,20 +262,23 @@ class PagePluginsSelect(WizardPage):
         # obtained from Settings when this page was constructed.
         if not self._firstTimeLoadingData:
             self.dataToRestore.filters = self.getFilters()
-            self.dataToRestore.selectedMergeName = self.ui.mergeSelectWidget.getSelectedMergeName()
+            self.dataToRestore.currentMergeName = self.context.mergeModel.currentMergeName()
             self.dataToRestore.selectedPluginNames = self.context.pluginModel.selectedPluginNames()
             self.ui.pluginFilterWidget.enableAll()
         else:
             self.dataToRestore.filters = self.context.settings.internal("Page1.PluginFilters", 0, INT_VALIDATOR)
-            self.dataToRestore.selectedMergeName = self.getLastLoadedMerge()
+            self.dataToRestore.currentMergeName = self.getLastLoadedMerge()
             self.dataToRestore.selectedPluginNames = []
 
     def modelLoadingCompleted(self) -> None:
         self.setFilters(self.dataToRestore.filters)
         self.setUpViewsAfterModelReload()
         self.showPluginInfo()
-        self.selectMergeByName(self.dataToRestore.selectedMergeName)
-        self.context.pluginModel.selectPluginsByName(self.dataToRestore.selectedPluginNames)
+        if self.dataToRestore.currentMergeName:
+            self.ui.mergeSelectWidget.selectMergeByName(self.dataToRestore.currentMergeName)
+        else:
+            self.context.pluginModel.resetPluginSelection()
+            self.context.pluginModel.selectPluginsByName(self.dataToRestore.pluginNames)
         if self._firstTimeLoadingData:
             self._firstTimeLoadingData = False
             self.resizeSplitter()
@@ -284,10 +300,6 @@ class PagePluginsSelect(WizardPage):
         data = self.context.readMergeWizardFile()
         if data:
             return data.loadedMod
-
-    def selectMergeByName(self, mergeName):
-        self.ui.mergeSelectWidget.selectMergeByName(mergeName)
-        self.selectPluginsFromMerge()
 
     def resizeSplitter(self):
         # the Selected Plugin view has fewer columns than the plugin view
@@ -346,24 +358,18 @@ class PagePluginsSelect(WizardPage):
     # ---- Methods related to the Merge Panel
     # ----
 
-    def selectPluginsFromMerge(self):
-        idx = self.context.mergeModel.selectedMerge()
-        if self.context.mergeModel.selectedMerge().isValid():
-            # set the title for the group box
-            if idx.row() > 0:
-                self.ui.pluginSelectionGroup.setTitle(
-                    self.tr("Selected Plugins: {}").format(self.ui.mergeSelectWidget.getSelectedMergeName())
-                )
-            else:
-                self.ui.pluginSelectionGroup.setTitle(self.tr("Selected Plugins"))
-
-            # remove plugin selections from the plugin model and select the plugins from the mod's merge.json file
-            pluginNames = self.context.mergeModel.selectedMergePluginNames()
-            self.context.pluginModel.resetPluginSelection()
-            self.context.pluginModel.selectPluginsByName(pluginNames)
+    def selectPluginsFromMerge(self, idx: QModelIndex):
+        # set the title for the group box
+        name = self.context.mergeModel.currentMergeName()
+        if name:
+            self.ui.pluginSelectionGroup.setTitle(self.tr("Selected Plugins: {}").format(name))
         else:
             self.ui.pluginSelectionGroup.setTitle(self.tr("Selected Plugins"))
-            self.context.pluginModel.resetPluginSelection()
+        # remove plugin selections from the plugin model and select the plugins from the mod's merge.json file
+        self.context.pluginModel.resetPluginSelection()
+        pluginNames = self.context.mergeModel.currentMergePluginNames()
+        if pluginNames:
+            self.context.pluginModel.selectPluginsByName(pluginNames)
 
     # ----
     # ---- Methods related to actions

@@ -19,122 +19,309 @@
   <property name="subTitle">
    <string>Create or modify a zMerge configuration for the selected plugins.</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5">
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QGroupBox" name="zMergeBox">
+     <property name="title">
+      <string>Merge Configuration</string>
      </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <widget class="QGroupBox" name="zMergeBox">
-      <property name="title">
-       <string>Merge Configuration</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QTreeView" name="zMergeConfigView">
-         <property name="uniformRowHeights">
-          <bool>true</bool>
-         </property>
-         <attribute name="headerCascadingSectionResizes">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="headerMinimumSectionSize">
-          <number>50</number>
-         </attribute>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QGroupBox" name="originalBox">
-      <property name="title">
-       <string>Original Configuration</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QTreeView" name="originalConfigView">
-         <property name="uniformRowHeights">
-          <bool>true</bool>
-         </property>
-         <attribute name="headerCascadingSectionResizes">
-          <bool>true</bool>
-         </attribute>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QTreeView" name="zMergeConfigView">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="uniformRowHeights">
+         <bool>true</bool>
+        </property>
+        <attribute name="headerCascadingSectionResizes">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="headerMinimumSectionSize">
+         <number>100</number>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="configurationBox">
+    <widget class="QWidget" name="widget_2" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>1030</width>
-       <height>167</height>
-      </size>
-     </property>
      <property name="maximumSize">
       <size>
-       <width>1030</width>
-       <height>167</height>
+       <width>425</width>
+       <height>16777215</height>
       </size>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QGroupBox" name="generalOptions">
+        <property name="title">
+         <string>General</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>136</width>
-          <height>20</height>
-         </size>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QCheckBox" name="useGameLoadOrder">
+           <property name="text">
+            <string>Use Game Load Order</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="buildMergedArchive">
+           <property name="text">
+            <string>Build Merged Archive</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QGroupBox" name="mergeMethod">
+          <property name="title">
+           <string>Merge Method</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QRadioButton" name="clobber">
+             <property name="text">
+              <string>Clobber</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">methodGroup</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="clean">
+             <property name="text">
+              <string>Clean</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">methodGroup</string>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="archiveAction">
+          <property name="title">
+           <string>Archive Action</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QRadioButton" name="extract">
+             <property name="text">
+              <string>Extract</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">archiveGroup</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="copy">
+             <property name="text">
+              <string>Copy</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">archiveGroup</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="ignore">
+             <property name="text">
+              <string>Ignore</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">archiveGroup</string>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="assetHandling">
+        <property name="title">
+         <string>Asset Handling</string>
         </property>
-       </spacer>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="faceData">
+             <property name="text">
+              <string>Handle Face Data</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="voiceData">
+             <property name="text">
+              <string>Handle Voice Data</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="billboardData">
+             <property name="text">
+              <string>Hande Billboard</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="stringFiles">
+             <property name="text">
+              <string>Handle String Files</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QCheckBox" name="translations">
+             <property name="text">
+              <string>Handle Translations</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="iniFiles">
+             <property name="text">
+              <string>Handle Ini Files</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="dialogViews">
+             <property name="text">
+              <string>Handle Dialog Views</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="generalAssets">
+             <property name="text">
+              <string>Copy General Assets</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
        <widget class="QGroupBox" name="groupBox_2">
-        <property name="minimumSize">
-         <size>
-          <width>500</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>500</width>
-          <height>16777215</height>
-         </size>
-        </property>
         <property name="title">
-         <string>Profile and Name Selection</string>
+         <string>Mod and Plugin Names</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="2">
-          <widget class="QLabel" name="pluginNameError">
-           <property name="minimumSize">
-            <size>
-             <width>18</width>
-             <height>18</height>
-            </size>
+         <item row="0" column="1">
+          <widget class="QFrame" name="warningFrame">
+           <property name="styleSheet">
+            <string notr="true">#warningFrame {border: 1px solid red; }</string>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>18</width>
-             <height>18</height>
-            </size>
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="warningIcon">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap>../../resources/warning-red.svg</pixmap>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="warningLabel">
+                <property name="text">
+                 <string>Please update the zEdit path and profile in settings.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="moProfileLabel">
+           <property name="text">
+            <string>MO Profile:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>moProfile</cstring>
            </property>
           </widget>
          </item>
@@ -182,29 +369,6 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="modNameLabel">
-           <property name="text">
-            <string>Mod Name:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="modName"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="pluginNameLabel">
-           <property name="text">
-            <string>Plugin Name:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="2">
           <widget class="QLabel" name="clearplaceholder">
            <property name="minimumSize">
@@ -221,44 +385,21 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="pluginName"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QFrame" name="warningFrame">
-           <property name="styleSheet">
-            <string notr="true">#warningFrame {border: 1px solid red; }</string>
+         <item row="2" column="0">
+          <widget class="QLabel" name="modNameLabel">
+           <property name="text">
+            <string>Mod Name:</string>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::Panel</enum>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-             <layout class="QFormLayout" name="formLayout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="warningIcon">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap>../../resources/warning-red.svg</pixmap>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="warningLabel">
-                <property name="text">
-                 <string>Please update settings with the zEdit installation folder.</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
+           <property name="buddy">
+            <cstring>modName</cstring>
+           </property>
           </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="modName"/>
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="modNameError">
@@ -276,13 +417,35 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="moProfileLabel">
+         <item row="3" column="0">
+          <widget class="QLabel" name="pluginNameLabel">
            <property name="text">
-            <string>ModOrganizer Profile:</string>
+            <string>Plugin Name:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>pluginName</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="pluginName"/>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLabel" name="pluginNameError">
+           <property name="minimumSize">
+            <size>
+             <width>18</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>18</width>
+             <height>18</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -290,21 +453,35 @@
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QFrame" name="frame">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>250</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
           <widget class="QPushButton" name="toggleOriginal">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -313,31 +490,18 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>View Origninal Configuration</string>
+            <string>View Original Configuration</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="toggleJsonView">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>View Configuration as Text</string>
-           </property>
-          </widget>
-         </item>
-         <item>
+         <item row="0" column="1" rowspan="2">
           <widget class="Line" name="line">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="2">
           <widget class="QPushButton" name="applyButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -350,7 +514,20 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="toggleJsonView">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>View Configuration as Text</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
           <widget class="QPushButton" name="launchButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -371,6 +548,35 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>zMergeConfigView</tabstop>
+  <tabstop>toggleOriginal</tabstop>
+  <tabstop>toggleJsonView</tabstop>
+  <tabstop>applyButton</tabstop>
+  <tabstop>launchButton</tabstop>
+  <tabstop>useGameLoadOrder</tabstop>
+  <tabstop>buildMergedArchive</tabstop>
+  <tabstop>clobber</tabstop>
+  <tabstop>clean</tabstop>
+  <tabstop>extract</tabstop>
+  <tabstop>copy</tabstop>
+  <tabstop>ignore</tabstop>
+  <tabstop>faceData</tabstop>
+  <tabstop>voiceData</tabstop>
+  <tabstop>billboardData</tabstop>
+  <tabstop>stringFiles</tabstop>
+  <tabstop>translations</tabstop>
+  <tabstop>iniFiles</tabstop>
+  <tabstop>dialogViews</tabstop>
+  <tabstop>generalAssets</tabstop>
+  <tabstop>moProfile</tabstop>
+  <tabstop>modName</tabstop>
+  <tabstop>pluginName</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="methodGroup"/>
+  <buttongroup name="archiveGroup"/>
+ </buttongroups>
 </ui>
