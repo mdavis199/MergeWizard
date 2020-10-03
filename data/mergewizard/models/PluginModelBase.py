@@ -118,6 +118,12 @@ class PluginModelBase(QAbstractItemModel):
     def selectedPluginNames(self):
         return [self._plugins[row].pluginName for row in self._selected]
 
+    def selectedPluginPaths(self):
+        return [self._plugins[row].modPath for row in self._selected]
+
+    def selectedMastersNames(self):
+        return [self._plugins[row].pluginName for row in self._masters]
+
     # ------------------------------------------------
     # --- Find index for plugin name
     # ------------------------------------------------

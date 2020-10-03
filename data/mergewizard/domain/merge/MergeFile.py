@@ -179,6 +179,8 @@ class MergeFile(JSONObject):
         of differing attributes.  Missing attributes and attributes that begin
          with '_' are ignored. """
 
+        if not other:
+            return []
         attrs = []
         for a in self.__dict__.items():
             if a[0].startswith("_"):

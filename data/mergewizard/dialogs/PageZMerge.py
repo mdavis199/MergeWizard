@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
-from mergewizard.domain.merge.MergeFile import MergeFile
+from mergewizard.domain.merge.MergeFile import MergeFile, PluginDesc
 from mergewizard.domain.merge.ZEditConfig import ZEditConfig
 from mergewizard.models.MergeFileModel import MergeFileModel, OptionRow as Option
 from mergewizard.widgets.ComboBoxDelegate import ComboBoxDelegate
@@ -18,10 +18,15 @@ class PageZMerge(WizardPage):
         self.ui = Ui_PageZMerge()
         self.ui.setupUi(self)
         self.context = context
+
+        # The mergeFile from the profile setup by the previous pages
+        self.mergeFile = None
+
         # zedit configuration including merges(mods) from current profile
         self.zEditFolder = None
         self.zEditProfile = None
         self.profile = None
+
         # calculated names for new mods
         self.newPluginName = ""
         self.newModName = ""
@@ -38,19 +43,16 @@ class PageZMerge(WizardPage):
 
         # name panel
         self.ui.modName.setEditable(True)
-        self.ui.modName.setInsertPolicy(QComboBox.InsertAtTop)
-        self.ui.modName.currentIndexChanged.connect(self.newModNameInserted)
+        self.ui.modName.setInsertPolicy(QComboBox.NoInsert)
 
         self.validatePanel()
 
         # zMerge Views
         self.ui.zMergeConfigView.setModel(MergeFileModel())
         self.ui.zMergeConfigView.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.ui.zMergeConfigView.header().setStretchLastSection(True)
         self.ui.zMergeConfigView.header().setVisible(False)
         self.ui.zMergeConfigView.setItemDelegateForColumn(1, ComboBoxDelegate(self))
-
-        # MergeModel changes current merge
-        self.context.mergeModel.currentMergeChanged.connect(lambda: self.onCurrentMergeChanged())
 
         # options
         self.ui.methodGroup.setId(self.ui.clobber, 0)
@@ -109,110 +111,132 @@ class PageZMerge(WizardPage):
                 Option.CopyGeneralAssets, self.ui.generalAssets.isChecked()
             )
         )
-        self.ui.modName.editTextChanged.connect(lambda x: self.ui.zMergeConfigView.model().setModName(x))
-        self.ui.modName.currentTextChanged.connect(lambda x: self.ui.modNameError.setVisible(not x))
+        self.ui.modName.editTextChanged.connect(self.onModNameEdited)
+        self.ui.modName.currentTextChanged.connect(lambda x: self.ui.zMergeConfigView.model().setModName(x))
         self.ui.pluginName.textEdited.connect(lambda x: self.ui.zMergeConfigView.model().setPluginName(x))
         self.ui.pluginName.textChanged.connect(lambda x: self.ui.pluginNameError.setVisible(not x))
 
-    @property
-    def currentMerge(self):
-        return self.ui.modName.currentData()
+        self.ui.launchButton.clicked.connect(self.launchZMerge)
+        self.ui.applyButton.clicked.connect(self.saveChanges)
+        self.ui.toggleJsonView.clicked.connect(self.showTextView)
+        self.ui.toggleOriginal.clicked.connect(self.showOriginalConfig)
+
+    # ----
+    # ---- Initialization
+    # ----
 
     def initializePage(self):
         self.initializeMOProfileName()
         self.validateZMergeProfile()
         self.loadProfile()
-        """
-        self.calculateNewNames()
-        self.loadOriginalConfig()
-        """
+        self.loadMergeFile()
 
-    def newModNameInserted(self, idx):
-        """ Limit combo box to only one new name.  When a new name is added,
-        delete the previous new name, if there is one. """
-        cb = self.ui.modName
-        if idx == 0 and cb.count() > 1 and cb.itemData(1) is None and cb.itemText(1):
-            cb.removeItem(1)
+    def initializeMOProfileName(self):
+        # TODO: If we allow creating merges to other MO profile, change this. For now this is okay.
+        self.ui.moProfile.setText(self.context.profile.currentProfileName())
 
-    def isOkToExit(self):
-        return True
+    def loadProfile(self):
+        """ Retrieves all the merge configuration from the zedit "merges.json" """
+        self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
+        self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
+        self.profile = None
+        if not self.zEditFolder or not self.zEditProfile:
+            return
+        self.profile = ZEditConfig.loadProfile(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
 
-    def settingChanged(self, setting: int):
-        if setting == Setting.ZEDIT_FOLDER:
-            self.validateZMergeProfile()
-            self.loadProfile()
-        if setting == Setting.ZEDIT_PROFILE:
-            self.validateZMergeProfile()
-            self.loadProfile()
-        if setting == Setting.PROFILENAME_TEMPLATE:
-            self.initializeNames()
-        if setting == Setting.MODNAME_TEMPLATE:
-            self.initializeNames()
-
-    def onCurrentMergeChanged(self):
-        """ Called when MergeModel's current merge changes """
-        if not self.ui.moProfile.text():
-            self.initializeMOProfileName()
-
+    def loadMergeFile(self):
+        qInfo("loading MF")
+        self.ui.modName.clear()
         if self.context.mergeModel.isCurrentMergeNew():
             self.calculateNewNames()
             mf = self.createMergeFile()
             mf.filename = self.newPluginName
             mf.name = self.newModName
-            self.setOptionsFromMergeFile(mf)
-            self.ui.zMergeConfigView.model().setMergeFile(mf)
             self.ui.toggleOriginal.setEnabled(False)
             self.ui.zMergeBox.setTitle(self.tr("New Merge Configuration"))
         else:
             mf = deepcopy(self.context.mergeModel.currentMergeFile())
-            self.setOptionsFromMergeFile(mf)
-            self.ui.zMergeConfigView.model().setMergeFile(mf)
             self.ui.toggleOriginal.setEnabled(True)
             self.ui.zMergeBox.setTitle(self.tr("Merge Configuration: {}".format(mf.name)))
+            self.ui.modName.addItem(mf.name, 0)
+        qInfo("mf: {}".format(mf.name))
+        self.setOptionsFromMergeFile(mf)
+        self.setLoadOrder(mf)
+        self.setPlugins(mf)
+        self.ui.zMergeConfigView.model().setMergeFile(mf)
         self.ui.zMergeConfigView.expandAll()
 
-    def initializeMOProfileName(self):
-        # TODO: If we allow creating merges to other MO profile, change this.
-        # For now this is okay.
-        self.ui.moProfile.setText(self.context.profile.currentProfileName())
+    def createMergeFile(self):
+        m = MergeFile()
+        m.useGameLoadOrder = self.context.settings[Setting.USE_GAME_LOADORDER]
+        m.buildMergedArchive = self.context.settings[Setting.BUILD_MERGED_ARCHIVE]
+        m.method = self.ui.methodGroup.button(self.context.settings[Setting.MERGE_METHOD]).text()
+        m.archiveAction = self.ui.archiveGroup.button(self.context.settings[Setting.ARCHIVE_ACTION]).text()
+        m.handleFaceData = self.context.settings[Setting.FACE_DATA]
+        m.handleVoiceData = self.context.settings[Setting.VOICE_DATA]
+        m.handleBillboards = self.context.settings[Setting.BILLBOARD_DATA]
+        m.handleStringFiles = self.context.settings[Setting.STRINGS_DATA]
+        m.handleTranslations = self.context.settings[Setting.TRANSLATIONS_DATA]
+        m.handleIniFiles = self.context.settings[Setting.INI_FILES_DATA]
+        m.handleDialogViews = self.context.settings[Setting.DIALOGS_DATA]
+        m.copyGeneralAssets = self.context.settings[Setting.GENERAL_ASSETS]
+        m.isNew = True
+        return m
+
+    def setOptionsFromMergeFile(self, mf: MergeFile):
+        self.ui.useGameLoadOrder.setChecked(mf.useGameLoadOrder)
+        self.ui.buildMergedArchive.setChecked(mf.buildMergedArchive)
+        self.ui.clobber.setChecked(mf.method == "Clobber")
+        if mf.archiveAction == "Extract":
+            self.ui.extract.setChecked(True)
+        elif mf.archiveAction == "Copy":
+            self.ui.copy.setChecked(True)
+        else:
+            self.ui.ignore.setChecked(True)
+        self.ui.faceData.setChecked(mf.handleFaceData)
+        self.ui.voiceData.setChecked(mf.handleVoiceData)
+        self.ui.billboardData.setChecked(mf.handleBillboards)
+        self.ui.stringFiles.setChecked(mf.handleStringFiles)
+        self.ui.translations.setChecked(mf.handleTranslations)
+        self.ui.iniFiles.setChecked(mf.handleIniFiles)
+        self.ui.dialogViews.setChecked(mf.handleDialogViews)
+        self.ui.generalAssets.setChecked(mf.copyGeneralAssets)
+        self.ui.modName.setCurrentText(mf.name)
+        self.ui.pluginName.setText(mf.filename)
+
+    def setLoadOrder(self, mf: MergeFile):
+        mf.loadOrder = self.context.pluginModel.selectedMastersNames()
+
+    def setPlugins(self, mf: MergeFile):
+        names = self.context.pluginModel.selectedPluginNames()
+        paths = self.context.pluginModel.selectedPluginPaths()
+        fds = []
+        for i in range(len(names)):
+            fds.append(PluginDesc(names[i], paths[i]))
+        mf.plugins = fds
+
+    # ----
+    # ----
+    # ----
+
+    def onModNameEdited(self, text):
+        if not text:
+            self.setModNameError("Mod name cannot be empty.")
+            return
+        t = text.lower()
+        currentMergeName = self.context.mergeModel.currentMergeName()
+        if t == currentMergeName.lower():
+            self.ui.modName.setCurrentIndex(0)
+            self.setModNameError()
+        else:
+            idx = next((i for i in range(len(self.profile.merges)) if self.profile.merges[i].name.lower() == t), -1)
+            if idx > -1:
+                self.setModNameError("Merge already exists. Choose another name.")
+            else:
+                self.setModNameError()
 
     def isNewMerge(self):
         return self.context.mergeModel.isCurrentMergeNew()
-
-    def loadProfile(self):
-        """ Fills in the modName combobox with the mod names from the selected profile.
-        """
-        self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
-        self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
-        self.profile = None
-        self.ui.modName.clear()
-        if not self.zEditFolder or not self.zEditProfile:
-            return
-        self.profile = ZEditConfig.loadProfile(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
-        if not self.profile:
-            return
-
-        self.ui.modName.insertSeparator(1)
-        selectedMergeName = self.context.mergeModel.currentMergeName()
-        for i in range(len(self.profile.merges)):
-            mergeName = self.profile.merges[i].name
-            self.ui.modName.addItem(mergeName, i)
-            if mergeName == selectedMergeName:
-                self.ui.modName.setCurrentIndex(self.ui.modName.count() - 1)
-        if self.isNewMerge():
-            self.ui.modName.setCurrentText(self.newModName)
-
-    def loadMergeFile(self):
-        """ Sets the name of the plugin (it it can) and loads the merge view.
-        This is called by the change signal from the modName combo box """
-
-        currentMerge = self.ui.modName.currentData()  # None ==> new merge
-        if currentMerge is not None:
-            self.ui.pluginName.setText(self.profile.merges[currentMerge].filename)
-        else:
-            m = self.createMergeFile()
-            m.filename = self.newPluginName
-            self.ui.zMergeConfigView.model().mergeFile = m
 
     def calculateNewNames(self):
         self.calculateNewPluginName()
@@ -263,8 +287,41 @@ class PageZMerge(WizardPage):
         selectedMerge = self.context.dataCache.mergeModel.selectedMergeName()
         # self.ui.modName.setText(selectedMerge)
 
-    def loadOriginalConfig(self):
+    def showOriginalConfig(self):
         pass
+
+    def showTextView(self):
+        pass
+
+    def launchZMerge(self):
+        """ NOTE: We can use a different profile here """
+        args = ['-appMode="merge"', '-profile="{}"'.format(self.context.settings[Setting.ZEDIT_PROFILE])]
+        path = self.context.settings[Setting.ZEDIT_FOLDER] + "/zedit.exe"
+        profile = ""
+        handle = self.context.organizer.startApplication(path, args,)
+        if handle < 0:
+            return
+        exitCode = self.context.organizer.waitForApplication(handle)
+        qInfo("EXIT CODE: {}".format(exitCode))
+
+    def saveChanges(self):
+        pass
+
+    # ----
+    # ---- How to handle changing settings
+    # ----
+
+    def settingChanged(self, setting: int):
+        if setting == Setting.ZEDIT_FOLDER:
+            self.validateZMergeProfile()
+            self.loadProfile()
+        if setting == Setting.ZEDIT_PROFILE:
+            self.validateZMergeProfile()
+            self.loadProfile()
+        if setting == Setting.PROFILENAME_TEMPLATE:
+            self.initializeNames()
+        if setting == Setting.MODNAME_TEMPLATE:
+            self.initializeNames()
 
     # ----
     # ---- Validation and Error handling
@@ -314,42 +371,4 @@ class PageZMerge(WizardPage):
             self.setPluginNameError("Plugin name cannot be empty.")
         else:
             self.setPluginNameError()
-
-    def createMergeFile(self):
-        m = MergeFile()
-        m.useGameLoadOrder = self.context.settings[Setting.USE_GAME_LOADORDER]
-        m.buildMergedArchive = self.context.settings[Setting.BUILD_MERGED_ARCHIVE]
-        m.method = self.ui.methodGroup.button(self.context.settings[Setting.MERGE_METHOD]).text()
-        m.archiveAction = self.ui.archiveGroup.button(self.context.settings[Setting.ARCHIVE_ACTION]).text()
-        m.handleFaceData = self.context.settings[Setting.FACE_DATA]
-        m.handleVoiceData = self.context.settings[Setting.VOICE_DATA]
-        m.handleBillboards = self.context.settings[Setting.BILLBOARD_DATA]
-        m.handleStringFiles = self.context.settings[Setting.STRINGS_DATA]
-        m.handleTranslations = self.context.settings[Setting.TRANSLATIONS_DATA]
-        m.handleIniFiles = self.context.settings[Setting.INI_FILES_DATA]
-        m.handleDialogViews = self.context.settings[Setting.DIALOGS_DATA]
-        m.copyGeneralAssets = self.context.settings[Setting.GENERAL_ASSETS]
-        m.isNew = True
-        return m
-
-    def setOptionsFromMergeFile(self, mf: MergeFile):
-        self.ui.useGameLoadOrder.setChecked(mf.useGameLoadOrder)
-        self.ui.buildMergedArchive.setChecked(mf.buildMergedArchive)
-        self.ui.clobber.setChecked(mf.method == "Clobber")
-        if mf.archiveAction == "Extract":
-            self.ui.extract.setChecked(True)
-        elif mf.archiveAction == "Copy":
-            self.ui.copy.setChecked(True)
-        else:
-            self.ui.ignore.setChecked(True)
-        self.ui.faceData.setChecked(mf.handleFaceData)
-        self.ui.voiceData.setChecked(mf.handleVoiceData)
-        self.ui.billboardData.setChecked(mf.handleBillboards)
-        self.ui.stringFiles.setChecked(mf.handleStringFiles)
-        self.ui.translations.setChecked(mf.handleTranslations)
-        self.ui.iniFiles.setChecked(mf.handleIniFiles)
-        self.ui.dialogViews.setChecked(mf.handleDialogViews)
-        self.ui.generalAssets.setChecked(mf.copyGeneralAssets)
-        self.ui.modName.setCurrentText(mf.name)
-        self.ui.pluginName.setText(mf.filename)
 

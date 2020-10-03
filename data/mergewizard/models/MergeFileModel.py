@@ -267,6 +267,7 @@ class MergeFileModel(QAbstractItemModel):
         depth = Id.depth(idx)
         if depth == Id.Depth.D1 and idx.parent().row() == Row.MergedPlugins:
             dataFolder = self.mergeFile.plugins[idx.row()].dataFolder
+            return '"{}"'.format(dataFolder)
             hash = getattr(self.mergeFile.plugins[idx.row()], "hash", "")
             return "<html><head/><body><p>folder: " + dataFolder + "</p><p>hash: " + hash + "</p></body></html>"
 
