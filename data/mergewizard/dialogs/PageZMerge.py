@@ -8,7 +8,7 @@ from mergewizard.domain.merge.MergeFile import MergeFile, PluginDesc
 from mergewizard.domain.merge.ZEditConfig import ZEditConfig
 from mergewizard.domain.MOLog import moDebug
 from mergewizard.models.MergeFileModel import MergeFileModel, OptionRow as Option
-from mergewizard.widgets.ComboBoxDelegate import ComboBoxDelegate
+from mergewizard.widgets.Splitter import Splitter
 from mergewizard.constants import Setting, Icon
 from .ui.PageZMerge import Ui_PageZMerge
 
@@ -22,23 +22,25 @@ class PageZMerge(WizardPage):
 
         # The mergeFile from the profile setup by the previous pages
         self.mergeFile = None
-
         # zedit configuration including merges(mods) from current profile
         self.zEditFolder = None
         self.zEditProfile = None
         self.profile = None
-
         # calculated names for new mods
         self.newPluginName = ""
         self.newModName = ""
 
-        # error indicators
+        # ----
+        # ---- Finish setting up ui
+        # ----
+
+        Splitter.decorate(self.ui.splitter)
+
+        # Icons
         self.ui.warningFrame.setVisible(False)
         self.ui.warningIcon.setPixmap(QPixmap(Icon.ERROR))
         self.ui.pluginNameError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.modNameError.setPixmap(QPixmap(Icon.ERROR))
-
-        # button
         self.ui.applyButton.setIcon(QIcon(Icon.SAVE))
         self.ui.launchButton.setIcon(QIcon(Icon.LAUNCH))
 
@@ -49,19 +51,29 @@ class PageZMerge(WizardPage):
         self.validatePanel()
 
         # zMerge Views
+        Splitter.decorate(self.ui.splitter)
         self.ui.zMergeConfigView.setModel(MergeFileModel())
         self.ui.zMergeConfigView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.ui.zMergeConfigView.header().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.ui.zMergeConfigView.header().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.ui.zMergeConfigView.header().setVisible(False)
+        self.ui.originalConfigView.setModel(MergeFileModel())
+        self.ui.originalConfigView.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.ui.originalConfigView.header().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.ui.originalConfigView.header().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.ui.originalConfigView.header().setVisible(False)
+        self.ui.originalBox.setVisible(False)
 
-        # options
+        # option groups
         self.ui.methodGroup.setId(self.ui.clobber, 0)
         self.ui.methodGroup.setId(self.ui.clean, 1)
         self.ui.archiveGroup.setId(self.ui.extract, 0)
         self.ui.archiveGroup.setId(self.ui.copy, 1)
         self.ui.archiveGroup.setId(self.ui.ignore, 2)
 
+        # ----
+        # ---- Signals
+        # ----
         self.ui.useGameLoadOrder.clicked.connect(
             lambda: self.ui.zMergeConfigView.model().setOption(
                 Option.UseGameLoadOrder, self.ui.useGameLoadOrder.isChecked()
@@ -120,7 +132,7 @@ class PageZMerge(WizardPage):
         self.ui.launchButton.clicked.connect(self.launchZMerge)
         self.ui.applyButton.clicked.connect(self.saveChanges)
         self.ui.toggleJsonView.clicked.connect(self.showTextView)
-        self.ui.toggleOriginal.clicked.connect(self.showOriginalConfig)
+        self.ui.toggleOriginal.clicked.connect(self.toggleOriginalConfig)
 
     # ----
     # ---- Initialization
@@ -155,7 +167,10 @@ class PageZMerge(WizardPage):
             self.ui.toggleOriginal.setEnabled(False)
             self.ui.zMergeBox.setTitle(self.tr("New Merge Configuration"))
         else:
-            mf = deepcopy(self.context.mergeModel.currentMergeFile())
+            original = self.context.mergeModel.currentMergeFile()
+            mf = deepcopy(original)
+            self.ui.originalConfigView.model().setMergeFile(original)
+            self.ui.originalConfigView.expandAll()
             self.ui.toggleOriginal.setEnabled(True)
             self.ui.zMergeBox.setTitle(self.tr("Merge Configuration: {}".format(mf.name)))
             self.ui.modName.addItem(mf.name, 0)
@@ -207,7 +222,7 @@ class PageZMerge(WizardPage):
         self.ui.pluginName.setText(mf.filename)
 
     def setLoadOrder(self, mf: MergeFile):
-        mf.loadOrder = self.context.pluginModel.selectedMastersNames()
+        mf.loadOrder = self.context.pluginModel.selectedMastersNames() + self.context.pluginModel.selectedPluginNames()
 
     def setPlugins(self, mf: MergeFile):
         names = self.context.pluginModel.selectedPluginNames()
@@ -289,8 +304,8 @@ class PageZMerge(WizardPage):
         selectedMerge = self.context.dataCache.mergeModel.selectedMergeName()
         # self.ui.modName.setText(selectedMerge)
 
-    def showOriginalConfig(self):
-        pass
+    def toggleOriginalConfig(self):
+        self.ui.originalBox.setVisible(self.ui.toggleOriginal.isChecked())
 
     def showTextView(self):
         pass
