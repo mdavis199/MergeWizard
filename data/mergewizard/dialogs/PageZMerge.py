@@ -110,7 +110,9 @@ class PageZMerge(WizardPage):
             )
         )
         self.ui.modName.editTextChanged.connect(lambda x: self.ui.zMergeConfigView.model().setModName(x))
+        self.ui.modName.currentTextChanged.connect(lambda x: self.ui.modNameError.setVisible(not x))
         self.ui.pluginName.textEdited.connect(lambda x: self.ui.zMergeConfigView.model().setPluginName(x))
+        self.ui.pluginName.textChanged.connect(lambda x: self.ui.pluginNameError.setVisible(not x))
 
     @property
     def currentMerge(self):
