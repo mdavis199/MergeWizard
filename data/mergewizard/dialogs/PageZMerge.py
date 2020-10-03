@@ -39,6 +39,7 @@ class PageZMerge(WizardPage):
         # name panel
         self.ui.modName.setEditable(True)
         self.ui.modName.setInsertPolicy(QComboBox.InsertAtTop)
+        self.ui.modName.currentIndexChanged.connect(self.newModNameInserted)
 
         self.validatePanel()
 
@@ -124,6 +125,13 @@ class PageZMerge(WizardPage):
         self.loadOriginalConfig()
         """
 
+    def newModNameInserted(self, idx):
+        """ Limit combo box to only one new name.  When a new name is added,
+        delete the previous new name, if there is one. """
+        cb = self.ui.modName
+        if idx == 0 and cb.count() > 1 and cb.itemData(1) is None and cb.itemText(1):
+            cb.removeItem(1)
+
     def isOkToExit(self):
         return True
 
@@ -141,6 +149,9 @@ class PageZMerge(WizardPage):
 
     def onCurrentMergeChanged(self):
         """ Called when MergeModel's current merge changes """
+        if not self.ui.moProfile.text():
+            self.initializeMOProfileName()
+
         if self.context.mergeModel.isCurrentMergeNew():
             self.calculateNewNames()
             mf = self.createMergeFile()
@@ -179,7 +190,7 @@ class PageZMerge(WizardPage):
         if not self.profile:
             return
 
-        self.ui.modName.insertSeparator(0)
+        self.ui.modName.insertSeparator(1)
         selectedMergeName = self.context.mergeModel.currentMergeName()
         for i in range(len(self.profile.merges)):
             mergeName = self.profile.merges[i].name
@@ -230,7 +241,6 @@ class PageZMerge(WizardPage):
                 return
         basename = basename[len0:]
         self.newPluginName = basename + EXT
-        qInfo("New PluginName: {}".format(self.newPluginName))
 
     def calculateNewModName(self):
         self.newModName = ""
