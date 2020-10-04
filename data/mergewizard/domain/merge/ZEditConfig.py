@@ -3,6 +3,7 @@ from typing import List, Union
 import json
 from PyQt5.QtCore import QDir, QStandardPaths, qDebug
 from mergewizard.domain.merge.MergeFile import Merges
+from mergewizard.domain.MOLog import moWarn, moError
 
 # REFER: https://github.com/z-edit/xelib/blob/master/src/js/setup.js
 
@@ -44,7 +45,7 @@ class ZEditConfig:
     def loadProfile(shortGameName, profileName, zEditInstallFolder) -> Merges:
         zEditProfileDir = QDir(zEditInstallFolder + "/" + ZEditConfig.RELATIVE_PROFILE_DIR)
         if not zEditProfileDir.exists():
-            qDebug("Profiles path does not exist: {}".format(zEditProfileDir.absolutePath()))
+            moWarn("Profiles path does not exist: {}".format(zEditProfileDir.absolutePath()))
             return
 
         profiles = ZEditConfig.parseProfileList(shortGameName)
@@ -52,7 +53,7 @@ class ZEditConfig:
             if name == profileName:
                 relName = name + "/merges.json"
                 if not zEditProfileDir.exists(relName):
-                    qDebug('Profile "{}" does not have a "merges.json" file.'.format(name))
+                    moWarn('Profile "{}" does not have a "merges.json" file.'.format(name))
                     return
                 try:
                     filePath = zEditProfileDir.absoluteFilePath(relName)
@@ -62,8 +63,9 @@ class ZEditConfig:
                         m.profilePath = filePath
                         return m
                 except ValueError as ex:
-                    qWarning('Invalid file "{}": {}'.format(filePath, str(ex)))
-        qDebug('Profile "{}" was not found'.format(profileName))
+                    moWarn('Failed to read zEdit profile. Invalid file: "{}": {}'.format(filePath, str(ex)))
+        moError('Profile "{}" was not found'.format(profileName))
+        return Merges()
 
     @staticmethod
     def getProfiles(shortGameName, zEditInstallFolder) -> List[Merges]:

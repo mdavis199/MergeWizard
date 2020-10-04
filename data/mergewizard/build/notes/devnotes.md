@@ -13,3 +13,7 @@
      - Here we should just update the subset of data that is affected (Future effort.)
    - User gets option to refresh.
    - Refresh notice and changes sent to each page in turn.
+10. Improve error display. If zedit profile is missing, we write it to mo log, but
+    user cannot always see this.
+11. Check for unapplied changes when on zMerge page
+12. Create backup of zMerge profile before changing

@@ -201,7 +201,7 @@ class MergeFile(JSONObject):
 
 
 class Merges(JSONObject):
-    def __init__(self, mergeList):
+    def __init__(self, mergeList=[]):
         self.merges = []
         self._profilePath = ""
         self._profileName = ""

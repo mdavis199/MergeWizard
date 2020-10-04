@@ -73,7 +73,7 @@ class Context(QObject):
         if not self.profile.profileExists(profileName):
             return False
         data = self.MWData()
-        data.loadedMod = self.mergeModel.selectedMergeName()
+        data.loadedMod = self.mergeModel.currentMergeName()
         data.configuredDate = QDate.toString(QDate.currentDate(), "yyyy.MM.dd")
         data.configuredTime = QTime.toString(QTime.currentTime(), "hh:mm:ss ap t")
         try:

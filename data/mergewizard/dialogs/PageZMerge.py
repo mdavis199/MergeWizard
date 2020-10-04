@@ -1,12 +1,13 @@
 from copy import deepcopy
+import json
 from PyQt5.QtCore import QDir, QVariant, Qt, qInfo, QEvent
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView
+from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView, QMessageBox
 from mergewizard.dialogs.WizardPage import WizardPage
 from mergewizard.domain.Context import Context
 from mergewizard.domain.merge.MergeFile import MergeFile, PluginDesc
 from mergewizard.domain.merge.ZEditConfig import ZEditConfig
-from mergewizard.domain.MOLog import moDebug
+from mergewizard.domain.MOLog import moDebug, moWarn, moInfo
 from mergewizard.models.MergeFileModel import MergeFileModel, OptionRow as Option
 from mergewizard.widgets.Splitter import Splitter
 from mergewizard.widgets.VisibilityWatcher import VisibilityWatcher
@@ -125,9 +126,10 @@ class PageZMerge(WizardPage):
             )
         )
         self.ui.modName.editTextChanged.connect(self.onModNameEdited)
-        self.ui.modName.currentTextChanged.connect(lambda x: self.setModName(x))
-        self.ui.pluginName.textEdited.connect(lambda x: self.ui.zMergeConfigView.model().setPluginName(x))
+        self.ui.modName.currentTextChanged.connect(lambda x: self.setModName(x.strip()))
+        self.ui.pluginName.textEdited.connect(lambda x: self.ui.zMergeConfigView.model().setPluginName(x.strip()))
         self.ui.pluginName.textChanged.connect(lambda x: self.ui.pluginNameError.setVisible(not x))
+        self.ui.pluginName.editingFinished.connect(lambda x: self.setText(x.strip()))
 
         self.ui.launchButton.clicked.connect(self.launchZMerge)
         self.ui.applyButton.clicked.connect(self.saveChanges)
@@ -161,6 +163,10 @@ class PageZMerge(WizardPage):
             return
         self.profile = ZEditConfig.loadProfile(self.context.profile.gameName(), self.zEditProfile, self.zEditFolder)
 
+    # ----
+    # ---- Methods for creating a mergefile (either for a new merge or for an edited existing merge)
+    # ----
+
     def loadMergeFile(self):
         self.ui.modName.clear()
         if self.context.mergeModel.isCurrentMergeNew():
@@ -184,7 +190,6 @@ class PageZMerge(WizardPage):
         self.setPlugins(mf)
         self.mergeFile = mf
         self.ui.zMergeConfigView.model().setMergeFile(mf)
-        # self.ui.zMergeConfigView.header().resizeSections(QHeaderView.ResizeToContents)
         self.ui.zMergeConfigView.resizeColumnToContents(2)
         self.ui.zMergeConfigView.expandAll()
 
@@ -242,6 +247,7 @@ class PageZMerge(WizardPage):
     # ----
 
     def onModNameEdited(self, text):
+        text = text.strip()
         if not text:
             self.setModNameError("Mod name cannot be empty.")
             return
@@ -263,6 +269,10 @@ class PageZMerge(WizardPage):
             self.ui.zMergeBox.setTitle(self.tr("New Merge: {}".format(text)))
         else:
             self.ui.zMergeBox.setTitle(self.tr("Merge: {}").format(text))
+
+    # ----
+    # ---- Methods related to calculating names for new merges
+    # ----
 
     def isNewMerge(self):
         return self.context.mergeModel.isCurrentMergeNew()
@@ -312,9 +322,9 @@ class PageZMerge(WizardPage):
         else:
             self.newModName = parts[0] + basename + parts[1]
 
-    def initializeNames(self):
-        selectedMerge = self.context.dataCache.mergeModel.selectedMergeName()
-        # self.ui.modName.setText(selectedMerge)
+    # ----
+    # ---- Button actions
+    # ----
 
     def toggleOriginalConfig(self):
         self.ui.originalBox.setVisible(self.ui.toggleOriginal.isChecked())
@@ -323,15 +333,64 @@ class PageZMerge(WizardPage):
         """ NOTE: We can use a different profile here """
         args = ['-appMode="merge"', '-profile="{}"'.format(self.context.settings[Setting.ZEDIT_PROFILE])]
         path = self.context.settings[Setting.ZEDIT_FOLDER] + "/zedit.exe"
+        cwd = ""
         profile = ""
-        handle = self.context.organizer.startApplication(path, args,)
+        handle = self.context.organizer.startApplication(path, args, cwd, profile)
         if handle < 0:
             return
         exitCode = self.context.organizer.waitForApplication(handle)
         moDebug(self.tr("zEdit exited with code {}").format(exitCode))
 
     def saveChanges(self):
-        pass
+        # TODO: check for unapplied changes
+        # TODO: create backup of profile?
+        mf = self.ui.zMergeConfigView.model().mergeFile
+        mfNameLower = mf.name.lower()
+        isNew = mfNameLower != self.context.mergeModel.currentMergeName().lower()
+        order = self.context.settings[Setting.MERGE_ORDER]
+        if not isNew:
+            for i in range(len(self.profile.merges)):
+                if self.profile.merges[i].name.lower() == mfNameLower:
+                    if order == 3 or order == 4:
+                        self.profile.merges.pop(i)
+                    else:
+                        self.profile.merges[i] = mf
+                    break
+        if order == 0:
+            if isNew:
+                self.profile.merges.append(mf)
+            self.profile.merges.sort()
+        elif order == 1 and isNew:
+            self.profile.merges.insert(0, mf)
+        elif order == 2 and isNew:
+            self.profile.merges.append(mf)
+        elif order == 3:
+            self.profile.merges.insert(0, mf)
+        elif order == 4:
+            self.profile.merges.append(mf)
+
+        try:
+            with open(self.profile.profilePath, "w", encoding="utf8") as f:
+                json.dump(
+                    self.profile.merges,
+                    f,
+                    sort_keys=False,
+                    indent=2,
+                    default=lambda o: {k: v for k, v in o.__dict__.items() if not k.startswith("_")},
+                )
+            self.messageBox(True, "Merge saved to zEdit profile.")
+        except OSError as ex:
+            self.messageBox(False, self.tr('Failed to open profile "{}": {}').format(self.profile.profilePath, str(ex)))
+        except (ValueError, TypeError) as ex:
+            self.messageBox(False, self.tr("Failed to write merge to profile: {}").format(str(ex)))
+
+    def messageBox(self, success: bool, msg: str):
+        if not success:
+            moWarn(msg)
+            QMessageBox.critical(self, "MergeWizard", msg)
+        else:
+            moInfo(msg)
+            QMessageBox.information(self, "MergeWizard", msg)
 
     # ----
     # ---- How to handle changing settings
@@ -344,10 +403,6 @@ class PageZMerge(WizardPage):
         if setting == Setting.ZEDIT_PROFILE:
             self.validateZMergeProfile()
             self.loadProfile()
-        if setting == Setting.PROFILENAME_TEMPLATE:
-            self.initializeNames()
-        if setting == Setting.MODNAME_TEMPLATE:
-            self.initializeNames()
 
     # ----
     # ---- Validation and Error handling
@@ -363,28 +418,17 @@ class PageZMerge(WizardPage):
             self.ui.modNameError.setToolTip(msg)
         self.ui.modNameError.setVisible(bool(msg))
 
+    def setZEditError(self, msg=None):
+        if msg:
+            self.ui.warningLabel.setText(msg)
+            self.ui.warningFrame.setVisible(True)
+        else:
+            self.ui.warningFrame.setVisible(False)
+
     def validatePanel(self):
+        self.validateZMergeProfile()
         self.validateModName()
         self.validatePluginName()
-
-    def hasErrors(self):
-        return (
-            self.ui.warningFrame.isVisible() or self.ui.pluginNameError.isVisible() or self.ui.modNameError.isVisible()
-        )
-
-    def validateZMergeProfile(self):
-        self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
-        if not self.zEditFolder:
-            self.ui.warningLabel.setText(self.tr("Please update settings with the zEdit installation folder."))
-            self.ui.warningFrame.setVisible(True)
-            self.zEditProfile = None
-        else:
-            self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
-            if not self.zEditProfile:
-                self.ui.warningLabel.setText(self.tr("Please update settings with the zEdit profile name."))
-                self.ui.warningFrame.setVisible(True)
-            else:
-                self.ui.warningFrame.setVisible(False)
 
     def validateModName(self):
         if not self.ui.modName.currentText():
@@ -397,4 +441,15 @@ class PageZMerge(WizardPage):
             self.setPluginNameError("Plugin name cannot be empty.")
         else:
             self.setPluginNameError()
+
+    def validateZMergeProfile(self):
+        self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
+        if not self.zEditFolder:
+            self.setZEditError(self.tr("Please update settings with the zEdit installation folder."))
+        else:
+            self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
+            if not self.zEditProfile:
+                self.setZEditError(self.tr("Please update settings with the zEdit profile name."))
+            else:
+                self.setZEditError()
 
