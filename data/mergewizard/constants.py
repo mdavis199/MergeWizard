@@ -42,6 +42,7 @@ class Icon:
     # shown in the zmerge configuration page
     SAVE = ":/mergewizard/icon_save"
     LAUNCH = ":/mergewizard/icon_launch"
+    VIEW = ":/mergewizard/icon_pageview"
 
     # shown in settings dialog
     FOLDER = ":/mergewizard/icon_folder"

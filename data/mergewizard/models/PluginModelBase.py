@@ -124,6 +124,9 @@ class PluginModelBase(QAbstractItemModel):
     def selectedMastersNames(self):
         return [self._plugins[row].pluginName for row in self._masters]
 
+    def loadOrderNames(self):
+        return [p.pluginName for p in sorted(self._plugins.values(), key=Plugin.priority_sort) if not p.isMissing]
+
     # ------------------------------------------------
     # --- Find index for plugin name
     # ------------------------------------------------

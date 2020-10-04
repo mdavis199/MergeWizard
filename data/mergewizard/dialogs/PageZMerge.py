@@ -1,5 +1,5 @@
 from copy import deepcopy
-from PyQt5.QtCore import QDir, QVariant, Qt, qInfo
+from PyQt5.QtCore import QDir, QVariant, Qt, qInfo, QEvent
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QComboBox, QHeaderView
 from mergewizard.dialogs.WizardPage import WizardPage
@@ -9,6 +9,7 @@ from mergewizard.domain.merge.ZEditConfig import ZEditConfig
 from mergewizard.domain.MOLog import moDebug
 from mergewizard.models.MergeFileModel import MergeFileModel, OptionRow as Option
 from mergewizard.widgets.Splitter import Splitter
+from mergewizard.widgets.VisibilityWatcher import VisibilityWatcher
 from mergewizard.constants import Setting, Icon
 from .ui.PageZMerge import Ui_PageZMerge
 
@@ -34,8 +35,6 @@ class PageZMerge(WizardPage):
         # ---- Finish setting up ui
         # ----
 
-        Splitter.decorate(self.ui.splitter)
-
         # Icons
         self.ui.warningFrame.setVisible(False)
         self.ui.warningIcon.setPixmap(QPixmap(Icon.ERROR))
@@ -43,6 +42,7 @@ class PageZMerge(WizardPage):
         self.ui.modNameError.setPixmap(QPixmap(Icon.ERROR))
         self.ui.applyButton.setIcon(QIcon(Icon.SAVE))
         self.ui.launchButton.setIcon(QIcon(Icon.LAUNCH))
+        self.ui.toggleOriginal.setIcon(QIcon(Icon.VIEW))
 
         # name panel
         self.ui.modName.setEditable(True)
@@ -125,14 +125,18 @@ class PageZMerge(WizardPage):
             )
         )
         self.ui.modName.editTextChanged.connect(self.onModNameEdited)
-        self.ui.modName.currentTextChanged.connect(lambda x: self.ui.zMergeConfigView.model().setModName(x))
+        self.ui.modName.currentTextChanged.connect(lambda x: self.setModName(x))
         self.ui.pluginName.textEdited.connect(lambda x: self.ui.zMergeConfigView.model().setPluginName(x))
         self.ui.pluginName.textChanged.connect(lambda x: self.ui.pluginNameError.setVisible(not x))
 
         self.ui.launchButton.clicked.connect(self.launchZMerge)
         self.ui.applyButton.clicked.connect(self.saveChanges)
-        self.ui.toggleJsonView.clicked.connect(self.showTextView)
         self.ui.toggleOriginal.clicked.connect(self.toggleOriginalConfig)
+
+        # disable the save changes button if any of the error indicators are showing
+        visibilityWatcher = VisibilityWatcher(self)
+        visibilityWatcher.add([self.ui.warningFrame, self.ui.modNameError, self.ui.pluginNameError])
+        visibilityWatcher.visibilityChanged.connect(lambda x: self.ui.applyButton.setEnabled(not x))
 
     # ----
     # ---- Initialization
@@ -141,14 +145,14 @@ class PageZMerge(WizardPage):
     def initializePage(self):
         self.initializeMOProfileName()
         self.validateZMergeProfile()
-        self.loadProfile()
+        self.loadZEditProfile()
         self.loadMergeFile()
 
     def initializeMOProfileName(self):
         # TODO: If we allow creating merges to other MO profile, change this. For now this is okay.
         self.ui.moProfile.setText(self.context.profile.currentProfileName())
 
-    def loadProfile(self):
+    def loadZEditProfile(self):
         """ Retrieves all the merge configuration from the zedit "merges.json" """
         self.zEditFolder = self.context.settings[Setting.ZEDIT_FOLDER]
         self.zEditProfile = self.context.settings[Setting.ZEDIT_PROFILE]
@@ -165,15 +169,16 @@ class PageZMerge(WizardPage):
             mf.filename = self.newPluginName
             mf.name = self.newModName
             self.ui.toggleOriginal.setEnabled(False)
-            self.ui.zMergeBox.setTitle(self.tr("New Merge Configuration"))
+            self.ui.originalBox.setVisible(False)
         else:
             original = self.context.mergeModel.currentMergeFile()
             mf = deepcopy(original)
             self.ui.originalConfigView.model().setMergeFile(original)
             self.ui.originalConfigView.expandAll()
             self.ui.toggleOriginal.setEnabled(True)
-            self.ui.zMergeBox.setTitle(self.tr("Merge Configuration: {}".format(mf.name)))
+            self.ui.originalBox.setTitle(self.tr("Original: {}".format(mf.name)))
             self.ui.modName.addItem(mf.name, 0)
+        self.setModName(mf.name)
         self.setOptionsFromMergeFile(mf)
         self.setLoadOrder(mf)
         self.setPlugins(mf)
@@ -222,7 +227,7 @@ class PageZMerge(WizardPage):
         self.ui.pluginName.setText(mf.filename)
 
     def setLoadOrder(self, mf: MergeFile):
-        mf.loadOrder = self.context.pluginModel.selectedMastersNames() + self.context.pluginModel.selectedPluginNames()
+        mf.loadOrder = self.context.pluginModel.loadOrderNames()
 
     def setPlugins(self, mf: MergeFile):
         names = self.context.pluginModel.selectedPluginNames()
@@ -251,6 +256,13 @@ class PageZMerge(WizardPage):
                 self.setModNameError("Merge already exists. Choose another name.")
             else:
                 self.setModNameError()
+
+    def setModName(self, text):
+        self.ui.zMergeConfigView.model().setModName(text)
+        if self.isNewMerge():
+            self.ui.zMergeBox.setTitle(self.tr("New Merge: {}".format(text)))
+        else:
+            self.ui.zMergeBox.setTitle(self.tr("Merge: {}").format(text))
 
     def isNewMerge(self):
         return self.context.mergeModel.isCurrentMergeNew()
@@ -306,9 +318,6 @@ class PageZMerge(WizardPage):
 
     def toggleOriginalConfig(self):
         self.ui.originalBox.setVisible(self.ui.toggleOriginal.isChecked())
-
-    def showTextView(self):
-        pass
 
     def launchZMerge(self):
         """ NOTE: We can use a different profile here """

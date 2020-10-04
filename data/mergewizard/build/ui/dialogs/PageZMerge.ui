@@ -494,13 +494,6 @@
        </spacer>
       </item>
       <item>
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QFrame" name="frame">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -508,8 +501,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="toggleOriginal">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -525,43 +525,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1" rowspan="2">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="applyButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Save Changes</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="toggleJsonView">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>View as Text</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
+         <item>
           <widget class="QPushButton" name="launchButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -571,6 +535,26 @@
            </property>
            <property name="text">
             <string>Launch zMerge</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="applyButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Save Changes</string>
            </property>
           </widget>
          </item>
@@ -584,10 +568,7 @@
  </widget>
  <tabstops>
   <tabstop>zMergeConfigView</tabstop>
-  <tabstop>toggleOriginal</tabstop>
-  <tabstop>toggleJsonView</tabstop>
   <tabstop>applyButton</tabstop>
-  <tabstop>launchButton</tabstop>
   <tabstop>useGameLoadOrder</tabstop>
   <tabstop>buildMergedArchive</tabstop>
   <tabstop>clobber</tabstop>
@@ -610,7 +591,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="methodGroup"/>
   <buttongroup name="archiveGroup"/>
+  <buttongroup name="methodGroup"/>
  </buttongroups>
 </ui>
