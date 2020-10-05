@@ -278,7 +278,7 @@ class PagePluginsSelect(WizardPage):
             self.ui.mergeSelectWidget.selectMergeByName(self.dataToRestore.currentMergeName)
         else:
             self.context.pluginModel.resetPluginSelection()
-            self.context.pluginModel.selectPluginsByName(self.dataToRestore.pluginNames)
+            self.context.pluginModel.selectPluginsByName(self.dataToRestore.selectedPluginNames)
         if self._firstTimeLoadingData:
             self._firstTimeLoadingData = False
             self.resizeSplitter()
